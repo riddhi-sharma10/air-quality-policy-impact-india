@@ -1,2 +1,4 @@
 # air-quality-policy-impact-india
-Did burning and emission restrictions cut air pollution in northern India? Combines CPCB station data, NASA fire detections and ERA5 weather to separate policy effects from weather and fires.
+Northern India has severe pollution spikes every autumn and winter, and authorities respond with restrictions on stubble burning, construction and vehicles. It is unclear whether those restrictions lower measured pollution or whether weather would have reduced it anyway.
+
+This project integrates hourly air quality readings (CPCB via OpenAQ), satellite fire detections (NASA FIRMS) and weather data (ERA5) into one dataset. It estimates the policy effect with difference-in-differences, and uses boosted models with SHAP to find what drives the spikes. The aim is to help a pollution control board decide where and when to enforce restrictions.
