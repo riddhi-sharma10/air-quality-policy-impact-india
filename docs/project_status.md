@@ -37,15 +37,17 @@ Row count is an estimate: with about 50 stations and about 85% hourly coverage, 
 
 | Done | Left |
 | --- | --- |
-| Account and licence; limits learned (7 variables cost about 1,008 per day, so at most 120 days per request); each request returns an instant and an accum file | Test the wide box (N 29.5, S 25, W 76.5, E 85.75) in the form: does the size bar change with the area? |
-| Delhi 2022: Jan–Apr and May–Jul downloaded, renamed and checked (2,880 and 2,208 steps, 8 × 7 grid, expver 1) | Request the window: about 7 requests (2025 Feb–Apr, May–Jul, Aug–Oct, Nov–Dec; 2026 Jan–Mar, Apr–Jun, Jul–Sep), two or three at a time |
-| `inspect_era5.py` works and exits non-zero on failure | Decide the two queued 2022 requests: Nov–Dec 2022 has no pollution data, so consider cancelling it |
-| Understood: time is UTC; precipitation is the hour ending at the timestamp, so sum hourly values | Update the checker and the download script for the new window and area (both still assume Delhi 2022) |
-| | Extract values at each station's nearest grid cell |
-| | Choose the time alignment (pollution and ERA5 are 30 minutes apart) |
-| | Convert units; compute wind speed and direction; pick the wind-direction convention and test it |
-| | Mark the newest months as preliminary (ERA5T) |
-| | Compare ERA5 with the stations' own local temperature and wind (available from Oct 2025) |
+| Account and licence; limits learned (7 variables cost about 1,008 per day, so at most 120 days per request); each request returns an instant and an accum file | Install `cdsapi` and set up `~/.cdsapirc` (neither is on this machine yet; keep the key out of commands and Git) |
+| Delhi 2022: Jan–Apr and May–Jul downloaded, renamed and checked (2,880 and 2,208 steps, 8 × 7 grid, expver 1) | Test the wide box (N 29.5, S 25, W 76.5, E 85.75) in the CDS form: does the size bar change with the area? If rejected, split into two areas |
+| `inspect_era5.py` works and exits non-zero on failure (left as is for the 2022 files) | Request the window: 7 requests, two or three at a time, with `python src/download_era5.py <period>` or `--all` (`--list` shows what is missing) |
+| Understood: time is UTC; precipitation is the hour ending at the timestamp, so sum hourly values | Decide the two queued 2022 requests: Nov–Dec 2022 has no pollution data, so consider cancelling it |
+| **New:** `src/era5_window.py` holds the shared settings: wide box (19 × 38 grid, covers all 56 stations), 7 request periods of at most 92 days that cover Feb 2025 to Sep 2026 with no gaps, file names | Choose the time alignment (pollution and ERA5 are 30 minutes apart); `era5_station_hourly.csv` keeps clean UTC hours so this can be decided at merge time |
+| **New:** `src/download_era5.py` builds each request, downloads it, unzips and renames to `era5_window_<period>_instant.nc` and `_accum.nc`. Not yet run against the real CDS, so the unzip and rename step is untested | Run `inspect_era5_window.py` once files arrive |
+| **New:** `src/inspect_era5_window.py` checks each file (variables, hours, duplicates, gaps, grid, expver, NaNs) and the joined series against the study window; exits non-zero on failure. Missing periods count as failures | Compare ERA5 with the stations' own local temperature and wind (available from Oct 2025) |
+| **New:** `src/extract_era5_stations.py` takes the nearest grid cell per station and writes `data/processed/era5_station_hourly.csv`: units converted (°C, hPa, mm), wind speed, wind-from direction (same convention as the fire upwind feature), ERA5T flag `era5_preliminary`, trimmed to the study window, stations outside the box skipped | Rerun the extraction after the real files are downloaded and check the preliminary (ERA5T) row count |
+| **New:** `tests/test_extract_era5_stations.py` (5 tests pass): units, rain clipping, wind speed and direction, nearest cell, request periods | |
+| **New:** extraction tested on the 2022 Jan–Apr file: 118,080 rows, 41 stations, no NaNs, plausible ranges; Lucknow, Kanpur and Patna stations correctly skipped (Delhi-only box) | |
+| **New:** `.gitignore` now excludes `data/processed/era5_station_*.csv` (regenerate with `extract_era5_stations.py`) | |
 
 The CDS queue is the bottleneck. Today it held about 10,000 queued requests, and priority drops if you hold many at once.
 
@@ -88,7 +90,7 @@ The CDS queue is the bottleneck. Today it held about 10,000 queued requests, and
 
 1. Regenerate the key and settle the night-detection check.
 2. Rebuild the station list on hours covered, then bulk-download OpenAQ.
-3. Test the ERA5 wide box and submit the window requests in small batches.
+3. Test the ERA5 wide box and submit the window requests in small batches (scripts are ready; see section 2).
 4. While ERA5 queues: compile the GRAP table, rerun the fire features, run the start-versus-end test.
 5. Merge, check, then analyse.
 
