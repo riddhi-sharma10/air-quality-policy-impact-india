@@ -1,0 +1,4 @@
+id,decision,reason
+11607,drop,close pair with 5634; fewer PM2.5+PM10 hours (6384 vs 10963)
+10900,drop,close pair with 10921; fewer PM2.5+PM10 hours (6671 vs 11890)
+5652,"keep, PM2.5 only",PM10 coverage 0.0% < 70.0%

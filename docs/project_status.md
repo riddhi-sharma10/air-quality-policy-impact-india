@@ -17,21 +17,35 @@ The final dataset is one table with one row per station per hour. Each row holds
 | Policy | GRAP stage in force, the GRAP schedule version, before or after each order | CAQM orders |
 | Calendar | hour, weekday, season, festival flags | derived |
 
-Row count is an estimate: with about 50 stations and about 85% hourly coverage, roughly 600,000 rows, well above the 100,000 minimum. The real number depends on the rebuilt station list.
+Row count: 54 stations × 14,136 hours = 763,344 rows, of which 664,591 have PM2.5 (the minimum is 100,000). The pollution part is built; the rest is still to be joined.
 
-## 1. OpenAQ (pollution): the biggest remaining job
+## 1. OpenAQ (pollution): done
 
 | Done | Left |
 | --- | --- |
-| Station metadata for Delhi, Lucknow, Kanpur and Patna; `stations.csv` with 56 stations | Rebuild the list by hours of PM2.5 and PM10 covered inside the window. The old list used only first and last dates |
-| AirNow station 8118 kept as a separate validation series | Decide multi-ID sites (R K Puram, Anand Vihar) and the close pairs (Lodhi Road, Gurugram) |
-| AWS CLI works; archive layout understood | Bulk download all kept stations, 2025 to 2026 |
-| Test downloads for stations 6358 and 2456 inspected | Aggregate to the clock hour with one rule (Delhi values repeat across four stamps; Lucknow has real 15-minute data), and keep the number of readings per hour |
-| Findings: each pollutant has one unit in the window; PM2.5 hours present 85.2% (Delhi) and 89.9% (Lucknow); gases appear in ppb; NOx and local wind start 8 Oct 2025 | Resolve the open points: about 9% of the :15 stamps change in Delhi, and 8.5% of hours hold more than one value |
-| | Test whether a timestamp marks the start or end of the hour. This is untested |
-| | Quality checks: negatives, flatlines, spikes, missing hours; report counts |
-| | Validate CPCB PM2.5 against AirNow 8118 |
-| | Output `pollution_hourly` and its data dictionary |
+| Station metadata for Delhi, Lucknow, Kanpur and Patna; `stations.csv` with 56 stations | Nothing blocking. Your sign-off on the one-hour label shift is assumed; to undo it use `stamp_hour_ist` |
+| AirNow station 8118 kept as a separate validation series | Optional: if ERA5 is downloaded, re-check the shift against ERA5 temperature |
+| AWS CLI works; archive layout understood | Modelling choice for outage hours: default is to drop `network_outage` hours |
+| **New:** bulk download of all 56 stations plus 8118, 2025 and 2026 (`src/download_openaq_archive.py`; incremental, so rerun to repair). Parallel runs of 16 crashed on this machine's memory; 8 workers is the safe limit | Pick the pollution-to-ERA5 time alignment at the merge step |
+| **New:** station list rebuilt on hours covered (`openaq_station_coverage.py` then `select_stations.py`): 54 kept (33 Delhi, 3 Ghaziabad, 2 Noida, 1 Gurugram treated; 7 Patna, 5 Lucknow, 3 Kanpur control). Decisions in `station_selection_log.csv` | |
+| **New:** close pairs resolved by more hours: Lodhi Road keeps 5634 (not 11607), Gurugram keeps 10921 (not 10900). Multi-ID sites need no choice: the other R K Puram and Anand Vihar IDs stopped in 2018 to 2022. Station 5652 (Patna) has no PM10, so it is kept as PM2.5-only | |
+| **New:** hourly aggregation rule set: mean of the HH:00 to HH:45 readings, `n_*` readings kept, several sensors averaged per stamp (`build_pollution_hourly.py`) | |
+| **New:** start-versus-end test done: AirNow 8118 is end-stamped; after shifting `hour_ist` back one hour the Delhi median matches 8118 best at lag 0 (r 0.954, vs 0.950 at +1 h and 0.930 at −1 h) | |
+| **New:** quality checks run, counts in `pollution_quality_report.csv`: negatives set empty, PM2.5 > 1000 and PM10 > 2000 set empty, PM runs of 24 or more identical hours set empty, spikes counted only. One unit per pollutant everywhere (`pollution_units.csv`) | |
+| **New:** CPCB PM2.5 validated against 8118 (hourly): Delhi median r = 0.954, bias +2.3, MAE 11.7 µg/m³; single stations r = 0.75 to 0.91 | |
+| **New:** output `data/processed/pollution_hourly.csv` (777,480 rows, 55 stations including 8118, no duplicates; git-ignored) and `docs/pollution_hourly_dictionary.md` | |
+| **New:** tests in `tests/test_pollution_hourly.py` (3 pass) | |
+| **New:** end-of-interval check on the true 15-minute feeds, using the daily temperature cycle against Delhi: phase differences from the longitude expectation are 0.08 h (Lucknow), −0.23 h (Kanpur) and 0.33 h (Patna), so no 1-hour offset. The shift applies to all four cities | |
+| **New:** network outages flagged: `network_pm25_share` and `network_outage` (fewer than half the stations report) mark 928 of 14,136 hours (6.6%); 662,378 PM2.5 rows remain outside them | |
+
+**Findings**
+- Of the 54 kept stations, PM2.5 is present in 87% of hours (664,591 of 763,344 rows); PM2.5 and PM10 together in 648,525 rows. This is well above the 100,000-row minimum.
+- Missing hours are not random. All stations are empty from 11 to 20 Jan 2026 (about 35% of that month), and there are shorter outages on 9 to 11 Apr 2025, 24 to 25 Jun 2026 and 28 to 29 Aug 2026. These are now flagged in `network_outage`; any model should treat them as outages and not as clean air.
+- The earlier "8.5% of hours hold more than one value" is real: about 8% of Delhi PM hours change mid-hour. Averaging covers it. Gas readings change every 15 minutes, so most gas hours hold several values.
+- Hour 00 IST in CPCB files has only the :45 stamp, since 00:00 to 00:30 never appear.
+- PM flat-lines (24 hours or more) are rare, with the largest at stations 5626 (541 PM10 hours) and 5613 (283). The 5613 and 5626 PM10 flatlines are removed.
+- `hour_utc` falls at :30 past the UTC hour, which is the 30-minute gap to ERA5.
+- The OpenAQ key is not used anywhere in this pipeline (the archive is public), so regenerating it is no longer blocking.
 
 ## 2. ERA5 (weather)
 
@@ -83,13 +97,13 @@ The CDS queue is the bottleneck. Today it held about 10,000 queued requests, and
 
 ## Decisions that block progress
 
-1. Regenerate the OpenAQ key. It has appeared in several pasted commands.
-2. Choose the hour-aggregation rule and the time alignment.
+1. Regenerate the OpenAQ key anyway, since it appeared in pasted commands (the archive pipeline does not need it).
+2. Confirm the one-hour label shift for pollution (section 1) and choose the pollution-to-ERA5 time alignment.
 
 ## Suggested order
 
 1. Regenerate the key and settle the night-detection check.
-2. Rebuild the station list on hours covered, then bulk-download OpenAQ.
+2. ~~Rebuild the station list on hours covered, then bulk-download OpenAQ.~~ Done (section 1).
 3. Test the ERA5 wide box and submit the window requests in small batches (scripts are ready; see section 2).
 4. While ERA5 queues: compile the GRAP table, rerun the fire features, run the start-versus-end test.
 5. Merge, check, then analyse.

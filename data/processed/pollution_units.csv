@@ -1,0 +1,13 @@
+parameter,units,stations,n
+co,ppb,54,2378632
+no,ppb,54,2376118
+no2,ppb,54,2402394
+nox,ppb,54,1450451
+o3,ug/m3,54,2392349
+pm10,ug/m3,53,2379146
+pm25,ug/m3,55,2402278
+relativehumidity,%,46,2098620
+so2,ppb,47,2053997
+temperature,c,46,2062762
+wind_direction,deg,46,1230029
+wind_speed,m/s,46,1241675

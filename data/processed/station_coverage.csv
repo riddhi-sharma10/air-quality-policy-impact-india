@@ -1,0 +1,58 @@
+id,name,city,sub_area,group,pair_flag,n_files,n_rows,hours_pm25,hours_pm10,hours_both,pct_pm25,pct_pm10,pct_both
+5626,"DTU, New Delhi - CPCB",Delhi (25 km),Delhi,treated,,578,515320,12991,13010,12981,91.9,92.0,91.8
+6986,"Knowledge Park - V, Greater Noida - UPPCB",Delhi (25 km),Noida,treated,,578,497289,12907,12966,12901,91.3,91.7,91.3
+8365,"Nehru Nagar, Delhi - DPCC",Delhi (25 km),Delhi,treated,,577,505324,12938,13008,12859,91.5,92.0,91.0
+5613,"ITO, New Delhi - CPCB",Delhi (25 km),Delhi,treated,,573,352414,12865,12865,12855,91.0,91.0,90.9
+8917,"Ashok Vihar, Delhi - DPCC",Delhi (25 km),Delhi,treated,,575,509002,12847,12966,12842,90.9,91.7,90.8
+7140,"Gomti Nagar, Lucknow - UPPCB",Lucknow,Lucknow,control,,578,509759,12817,12945,12816,90.7,91.6,90.7
+234568,"FTI Kidwai Nagar, Kanpur - UPPCB",Kanpur,Kanpur,control,,576,512596,12794,12816,12794,90.5,90.7,90.5
+6931,"Dwarka-Sector 8, Delhi - DPCC",Delhi (25 km),Delhi,treated,,575,511981,12849,12900,12789,90.9,91.3,90.5
+6960,"Patparganj, Delhi - DPCC",Delhi (25 km),Delhi,treated,,576,506047,12753,12812,12728,90.2,90.6,90.0
+8915,"Wazirpur, Delhi - DPCC",Delhi (25 km),Delhi,treated,,575,502779,12772,12850,12721,90.4,90.9,90.0
+10486,"Mundka, Delhi - DPCC",Delhi (25 km),Delhi,treated,,576,505317,12769,12782,12720,90.3,90.4,90.0
+229252,"NSI Kalyanpur, Kanpur - UPPCB",Kanpur,Kanpur,control,,575,510949,12732,12848,12715,90.1,90.9,89.9
+8472,"Bawana, Delhi - DPCC",Delhi (25 km),Delhi,treated,,573,505509,12698,12811,12682,89.8,90.6,89.7
+2456,"Talkatora District Industries Center, Lucknow - CPCB",Lucknow,Lucknow,control,,569,485765,12701,12687,12676,89.8,89.7,89.7
+6929,"Major Dhyan Chand National Stadium, Delhi - DPCC",Delhi (25 km),Delhi,treated,,578,513307,12791,12893,12634,90.5,91.2,89.4
+10831,"Rohini, Delhi - DPCC",Delhi (25 km),Delhi,treated,,576,507787,12701,12990,12615,89.8,91.9,89.2
+227386,"B R Ambedkar University, Lucknow - UPPCB",Lucknow,Lucknow,control,,576,505274,12650,12703,12603,89.5,89.9,89.2
+8239,"Okhla Phase-2, Delhi - DPCC",Delhi (25 km),Delhi,treated,,576,507408,12766,12718,12574,90.3,90.0,89.0
+5627,"CRRI Mathura Road, New Delhi - IMD",Delhi (25 km),Delhi,treated,,565,303702,12622,12622,12567,89.3,89.3,88.9
+6957,"Jawaharlal Nehru Stadium, Delhi - DPCC",Delhi (25 km),Delhi,treated,,577,504252,12670,12709,12562,89.6,89.9,88.9
+229404,"Kukrail Picnic Spot-1, Lucknow - UPPCB",Lucknow,Lucknow,control,,576,493118,12570,12589,12551,88.9,89.1,88.8
+6359,"IHBAS, Dilshad Garden,New Delhi - CPCB",Delhi (25 km),Delhi,treated,,571,414296,12585,12570,12550,89.0,88.9,88.8
+8475,"Sonia Vihar, Delhi - DPCC",Delhi (25 km),Delhi,treated,,574,496536,12713,12735,12542,89.9,90.1,88.7
+10484,"Sri Aurobindo Marg, Delhi - DPCC",Delhi (25 km),Delhi,treated,,575,497864,12640,12671,12541,89.4,89.6,88.7
+5630,"Shadipur, Delhi - CPCB",Delhi (25 km),Delhi,treated,,560,481275,12541,12552,12516,88.7,88.8,88.5
+6934,"Dr. Karni Singh Shooting Range, Delhi - DPCC",Delhi (25 km),Delhi,treated,,576,505565,12645,12718,12496,89.5,90.0,88.4
+10670,"Muradpur, Patna - BSPCB",Patna,Patna,control,,565,454758,12520,12518,12495,88.6,88.6,88.4
+5659,"Lalbagh, Lucknow - CPCB",Lucknow,Lucknow,control,,568,487493,12483,12506,12467,88.3,88.5,88.2
+6938,"Vivek Vihar, Delhi - DPCC",Delhi (25 km),Delhi,treated,,577,494152,12592,12594,12447,89.1,89.1,88.1
+5662,"Nehru Nagar, Kanpur - UPPCB",Kanpur,Kanpur,control,,571,487678,12404,12399,12399,87.7,87.7,87.7
+17,"R K Puram, Delhi - DPCC",Delhi (25 km),Delhi,treated,,573,488332,12590,12459,12337,89.1,88.1,87.3
+6924,"Indirapuram, Ghaziabad - UPPCB",Delhi (25 km),Ghaziabad,treated,,571,483580,12525,12468,12305,88.6,88.2,87.0
+6932,"Alipur, Delhi - DPCC",Delhi (25 km),Delhi,treated,,570,477464,12391,12380,12297,87.7,87.6,87.0
+5622,"NSIT Dwarka, Delhi - CPCB",Delhi (25 km),Delhi,treated,,558,464487,12306,12291,12283,87.1,86.9,86.9
+8235,"Jahangirpuri, Delhi - DPCC",Delhi (25 km),Delhi,treated,,576,486925,12356,12809,12245,87.4,90.6,86.6
+10645,"Industrial Area, Hajipur - BSPCB",Patna,Patna,control,,564,431203,12233,12233,12231,86.5,86.5,86.5
+7495,"DRM Office Danapur, Patna - BSPCB",Patna,Patna,control,,564,479720,12209,12283,12209,86.4,86.9,86.4
+50,"Punjabi Bagh, Delhi - DPCC",Delhi (25 km),Delhi,treated,,570,491626,12335,12395,12154,87.3,87.7,86.0
+10599,"Rajbansi Nagar, Patna - BSPCB",Patna,Patna,control,,552,463305,12119,12133,12118,85.7,85.8,85.7
+6980,"Sector-1, Noida - UPPCB",Delhi (25 km),Noida,treated,,572,465206,12192,12301,12082,86.2,87.0,85.5
+10630,"Govt. High School Shikarpur, Patna - BSPCB",Patna,Patna,control,,563,476506,12076,12072,12063,85.4,85.4,85.3
+5665,"Vasundhara, Ghaziabad - UPPCB",Delhi (25 km),Ghaziabad,treated,,577,464019,12065,12159,11956,85.3,86.0,84.6
+5610,"North Campus, DU, Delhi - IMD",Delhi (25 km),Delhi,treated,,559,291177,12005,12009,11954,84.9,85.0,84.6
+235,"Anand Vihar, New Delhi - DPCC",Delhi (25 km),Delhi,treated,,574,476741,12323,12191,11952,87.2,86.2,84.6
+10921,"NISE Gwal Pahari, Gurugram - IMD",Delhi (25 km),Gurugram,treated,10900.0,555,291384,11960,11993,11890,84.6,84.8,84.1
+6358,"Mandir Marg, New Delhi - DPCC",Delhi (25 km),Delhi,treated,,577,480504,12043,12598,11884,85.2,89.1,84.1
+5541,"Burari Crossing, New Delhi - IMD",Delhi (25 km),Delhi,treated,,553,273302,11862,11877,11825,83.9,84.0,83.7
+11603,"Chandni Chowk, Delhi - IITM",Delhi (25 km),Delhi,treated,,570,291550,11763,11702,11663,83.2,82.8,82.5
+5570,"Aya Nagar, New Delhi - IMD",Delhi (25 km),Delhi,treated,,526,274503,11349,11440,11323,80.3,80.9,80.1
+10697,"Samanpura, Patna - BSPCB",Patna,Patna,control,,528,433047,11298,11263,11216,79.9,79.7,79.3
+7005,"Loni, Ghaziabad - UPPCB",Delhi (25 km),Ghaziabad,treated,,566,442254,11316,11433,11154,80.1,80.9,78.9
+5404,"Pusa, Delhi - IMD",Delhi (25 km),Delhi,treated,,543,264315,11187,11264,11143,79.1,79.7,78.8
+5634,"Lodhi Road, New Delhi - IMD",Delhi (25 km),Delhi,treated,11607.0,503,266956,10976,11086,10963,77.6,78.4,77.6
+10900,"Teri Gram, Gurugram - HSPCB",Delhi (25 km),Gurugram,treated,10921.0,371,218289,6741,6707,6671,47.7,47.4,47.2
+11607,"Lodhi Road, Delhi - IITM",Delhi (25 km),Delhi,treated,5634.0,302,131688,6395,6411,6384,45.2,45.4,45.2
+5652,"IGSC Planetarium Complex, Patna - BSPCB",Patna,Patna,control,,542,357916,10217,0,0,72.3,0.0,0.0
+8118,New Delhi,Delhi (25 km),Delhi,treated,,576,13518,13513,0,0,95.6,0.0,0.0
