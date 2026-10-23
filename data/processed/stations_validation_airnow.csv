@@ -1,0 +1,2 @@
+﻿id,name,city,sub_area,group,pair_flag,provider,owner,latitude,longitude,pollutants,datetimeFirst,datetimeLast,isMonitor
+8118,New Delhi,Delhi (25 km),Delhi,treated,,AirNow,Unknown Governmental Organization,28.63576,77.22445,pm25,2016-11-09T19:00:00Z,2026-10-23T09:30:00Z,True

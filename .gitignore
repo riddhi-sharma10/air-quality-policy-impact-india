@@ -1,0 +1,6 @@
+﻿.env
+*.key
+data/raw/openaq_archive/
+data/raw/era5/
+data/raw/firms/
+__pycache__/

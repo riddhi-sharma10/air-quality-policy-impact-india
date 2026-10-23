@@ -1,0 +1,5 @@
+﻿source,what,url or endpoint,query parameters,retrieved on,saved as
+OpenAQ API v3,station list (stations within 25 km of central Delhi; includes parts of the NCR),https://api.openaq.org/v3/locations,"coordinates=28.61,77.21; radius=25000; limit=100",2026-10-23,data/raw/openaq_api/delhi.json
+OpenAQ API v3,station list (Lucknow),https://api.openaq.org/v3/locations,"coordinates=26.85,80.95; radius=25000; limit=100",2026-10-23,data/raw/openaq_api/lucknow.json
+OpenAQ API v3,station list (Kanpur),https://api.openaq.org/v3/locations,"coordinates=26.45,80.33; radius=25000; limit=100",2026-10-23,data/raw/openaq_api/kanpur.json
+OpenAQ API v3,station list (Patna),https://api.openaq.org/v3/locations,"coordinates=25.59,85.14; radius=25000; limit=100",2026-10-23,data/raw/openaq_api/patna.json
