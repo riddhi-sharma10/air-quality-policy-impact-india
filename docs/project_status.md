@@ -65,17 +65,18 @@ Row count: 54 stations × 14,136 hours = 763,344 rows, of which 664,591 have PM2
 
 The CDS queue is the bottleneck. Today it held about 10,000 queued requests, and priority drops if you hold many at once.
 
-## 3. FIRMS (fires)
+## 3. FIRMS (fires): code complete; the final runs wait for the raw files and ERA5
 
 | Done | Left |
 | --- | --- |
-| Request 829739 downloaded: archive file (857,474 rows, to 30 Jun 2026) and near-real-time file (1,369 rows, from 1 Jul 2026) | Resolve the night-detection date check (UTC against IST dates); the earlier report's two statements conflict |
-| Quality checks passed: no duplicates, all rows inside the box, plausible seasons | Rerun `build_fire_features.py` for the new station list and window |
-| `build_fire_features.py` written; independent brute-force test matched on 28 of 28 cases | Read lines 76, 78, 111 to 114 and 160 yourself and explain them |
-| Rules set: IST dates, no-detection dates are missing and not zero, near-real-time rows flagged | Upwind-weighted feature: needs ERA5 wind and a tested direction convention |
-| | Decide the lag (same day, previous 24 and 48 hours) so fires can't "explain" earlier readings |
-| | Keep `fire_features_daily.csv` out of Git; document how to regenerate it |
-| | State the limit that the window has only one burning season (Oct–Nov 2025) |
+| Request 829739 downloaded: archive file (857,474 rows, to 30 Jun 2026) and near-real-time file (1,369 rows, from 1 Jul 2026). Quality checks passed: no duplicates, all rows inside the box, plausible seasons | Rerun `build_fire_features.py` and `add_fire_lags.py` on the final 54 stations with `--stations data/processed/stations_final.csv` (commands in the README). The table now on disk used the old 56-station list and still contains the dropped duplicates 10900 and 11607. Needs the raw FIRMS files, which are not on every machine |
+| `build_fire_features.py` written; independent brute-force test matched on 28 of 28 cases; `tests/test_fire_geometry.py` passes | Run `build_upwind_features.py` for the whole window once the ERA5 window files exist (it was tested only on ERA5 Delhi Jan–Jul 2022: 41 stations, 77,859 rows) |
+| Night-detection date check settled: night passes are at about 19:00–22:00 UTC, so they belong to the next IST date and the conversion in the script is right. `src/check_night_dates.py` compares it with an independent calculation | Run `check_night_dates.py` once where the FIRMS files are and keep its output with the provenance log |
+| Rules set: IST dates, near-real-time rows flagged, dates with no detection anywhere in the file stored as missing (NaN), not zero | Optional decision: monsoon days (Jun–Sep) with no detection anywhere are probably cloud, not an outage; they could be set to zero instead (35 of the 67 empty dates in the old table fall in July) |
+| Lags built in `src/add_fire_lags.py`: `lag0`, `lag1`, `lag2` (a 2-day running sum). Only `lag1` and `lag2` may be used for an hourly reading, because `lag0` contains passes after the hour; `assert_hourly_safe` enforces this | Read the UTC-to-IST conversion (lines 78–83 of `build_fire_features.py`) and the distance query (lines 120–123) yourself and be able to explain them |
+| Upwind feature built in `src/build_upwind_features.py` (radius x half-angle; u and v averaged over the day, never the angles) | |
+| The window has only one burning season: stated in the README Limitations | |
+| Fire tables are git-ignored (`data/processed/fire_*.csv`) and no longer tracked; the README gives the regeneration commands and expected row counts | |
 
 ## 4. Policy orders (CAQM GRAP): table, order PDFs and hourly flag built
 

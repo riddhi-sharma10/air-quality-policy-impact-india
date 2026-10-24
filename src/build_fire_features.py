@@ -9,7 +9,7 @@ Dates are IST (UTC+5:30): acq_date + acq_time are UTC, so a night pass at about
 
 Usage:
   python src/build_fire_features.py                                   # all dates, data/processed/stations.csv
-  python src/build_fire_features.py --stations data/processed/stations_window.csv \
+  python src/build_fire_features.py --stations data/processed/stations_final.csv \
          --start 2025-02-19 --end 2026-09-30 --out data/processed/fire_features_daily.csv
 All detections are read; only IST dates inside --start/--end get features.
 """

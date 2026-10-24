@@ -32,15 +32,15 @@ Inputs: `data/raw/firms/fire_archive_SV-C2_829739.csv` (857,474 rows) and `data/
 
 ```
 # 1. daily counts and FRP per station, IST date and radius (2 extra days at the start are needed for the lags)
-python src/build_fire_features.py --stations data/processed/stations_window.csv --start 2025-02-17 --end 2026-09-30 --out data/processed/fire_features_daily.csv
+python src/build_fire_features.py --stations data/processed/stations_final.csv --start 2025-02-17 --end 2026-09-30 --out data/processed/fire_features_daily.csv
 # 2. lagged versions, trimmed to the study window
 python src/add_fire_lags.py --features data/processed/fire_features_daily.csv --start 2025-02-19 --end 2026-09-30 --out data/processed/fire_features_lags.csv
 # 3. upwind counts (needs ERA5 u10 and v10 covering the dates; stations outside the ERA5 box are skipped)
-python src/build_upwind_features.py --stations data/processed/stations_window.csv --wind-days 1 --out data/processed/fire_upwind_daily.csv
+python src/build_upwind_features.py --stations data/processed/stations_final.csv --wind-days 1 --out data/processed/fire_upwind_daily.csv
 # tests
 python tests/test_fire_geometry.py
 ```
-`stations_window.csv` is the rebuilt station list for the study window; until it exists use `data/processed/stations.csv` (56 stations). Expected rows: step 1 is stations x 591 dates x 3 radii (56 stations: 99,288); step 2 is stations x 589 dates x 3 radii (56 stations: 98,952); step 3 is stations in the ERA5 box x dates with a full wind day x 3 radii x 3 half-angles (41 Delhi stations, ERA5 Jan-Jul 2022: 77,859). Every script prints its checks as PASS or FAIL and exits with a non-zero code if one fails.
+`data/processed/stations_final.csv` is the station list for the study window (54 stations, chosen on hours covered); the older `stations.csv` has 56, including the duplicates 10900 and 11607 that were dropped. Expected rows: step 1 is stations x 591 dates x 3 radii (54 stations: 95,742; the table built on the old 56-station list has 99,288); step 2 is stations x 589 dates x 3 radii (54 stations: 95,418); step 3 is stations in the ERA5 box x dates with a full wind day x 3 radii x 3 half-angles (41 Delhi stations, ERA5 Jan-Jul 2022: 77,859). Only `lag1` and `lag2` may be used to explain an hourly reading. Every script prints its checks as PASS or FAIL and exits with a non-zero code if one fails.
 
 ## Limitations
 - **Fire data:** the study window (2025-02-19 to 2026-09-30) contains only one stubble-burning season (October-November 2025), so any test of a fire effect has low statistical power. Fire detections are an incomplete measure: the satellite sees a place only when it passes overhead and cloud or heavy smoke can hide fires, so a day with no rows can mean no fire or no usable pass, which the data cannot tell apart (such days are stored as missing, not zero). The fall in October detections in the downloaded FIRMS box between 2022 (23,859) and 2025 (8,475) is not evidence of any policy effect, because it was not compared with a control group or adjusted for weather or satellite coverage. Detections from 1 July 2026 are near-real-time (preliminary) and may be replaced by the final product. The daily upwind feature is approximate: it uses ERA5 wind on a 0.25-degree grid (about 28 km), averaged over a day, as a stand-in for smoke transport over tens to hundreds of kilometres, and it is not a trajectory model.
