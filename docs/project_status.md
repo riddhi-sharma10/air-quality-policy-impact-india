@@ -77,14 +77,16 @@ The CDS queue is the bottleneck. Today it held about 10,000 queued requests, and
 | | Keep `fire_features_daily.csv` out of Git; document how to regenerate it |
 | | State the limit that the window has only one burning season (Oct–Nov 2025) |
 
-## 4. Policy orders (CAQM GRAP): nothing built yet
+## 4. Policy orders (CAQM GRAP): table, order PDFs and hourly flag built
 
 | Done | Left |
 | --- | --- |
-| Located the CAQM site; some order dates noted from search snippets | Compile the table from the PDFs: order date, stage, invoked or revoked, area, order number, link |
-| | Cover every order from February 2025 to September 2026 (only parts have been seen so far) |
-| | Record the GRAP schedule version for each order (revised 13 Dec 2024 and 21 Nov 2025) |
-| | Turn the table into an hourly stage flag, including revoke and re-invoke cases |
+| `data/processed/grap_orders.csv`: 38 rows, Sep 2024 to Oct 2026. 30 rows have the order PDF read (16 PDF only, 14 also with a PIB release), 6 have only a PIB release, 2 are references to earlier orders. Each row has the order serial (where written on the order), file name and link | The orders say "with immediate effect" and almost none gives a time of day. Only three do (the Sub-Committee meeting times on 13.12.2025 at 10:00 AM and 6:30 PM and on 17.01.2026 at 8:15 PM). For the other changes the time is the PIB posting time (an upper bound) or an assumed 12:00, so about 7% of hours are flagged `uncertain` |
+| All 32 PDFs saved in `data/raw/caqm_grap_pdfs/` (git-ignored, 116 MB); source URLs are in the `pdf_url` column and the provenance log | Find the one missing order: a Stage-I revocation between 24 Feb and 7 Mar 2025 (`grap_gaps.csv`). Nothing before 2 Apr 2025 is listed on the CAQM site; no PIB release found |
+| `src/build_grap_hourly.py` writes `grap_hourly.csv` (14,136 IST hours, stage 0–4, schedule version, `uncertain` flag); 5 checks pass | Decide how to treat `uncertain` hours in the analysis; the orders cover the whole NCR, so there is no per-area flag |
+| Baseline: Stage-II was in force from 22 Oct 2024 until 24 Feb 2025, so the window starts at stage 2. Stage-I invoked 7 Mar, revoked 15 Mar, invoked 24 Mar, revoked 29 Mar 2025 (PIB) | Check the 15 Jun to 13 Oct 2025 stretch: no orders are listed, so stage 0 there is an inference. The 07.06 and 15.06.2025 orders show Stage-I was in force from 07.06 until 15.06 |
+| Schedule chain read from the documents: Direction No. 83 of 17.09.2024, amended 20.11.2024, comprehensively revised by the order of 13.12.2024 (so the 13 Dec 2024 date was right), modified 21.11.2025, revised by Direction No. 104 of 29.09.2026 (all with immediate effect) | The 11.11.2025 Stage-III invocation (no. 1444) is only on the site as its clarification (no. 1445); the original was not found as a file |
+| The 26.11.2025 order confirms Stage-III revoked while Stage-I and II stay invoked, so the stage after it is 2 | |
 
 ## 5. Merging and finishing
 
@@ -105,7 +107,7 @@ The CDS queue is the bottleneck. Today it held about 10,000 queued requests, and
 1. Regenerate the key and settle the night-detection check.
 2. ~~Rebuild the station list on hours covered, then bulk-download OpenAQ.~~ Done (section 1).
 3. Test the ERA5 wide box and submit the window requests in small batches (scripts are ready; see section 2).
-4. While ERA5 queues: compile the GRAP table, rerun the fire features, run the start-versus-end test.
+4. While ERA5 queues: ~~compile the GRAP table~~ (done, section 4), rerun the fire features, run the start-versus-end test.
 5. Merge, check, then analyse.
 
 The semester ends on 24 Nov, about four weeks away. The merge needs ERA5, so submit those requests as soon as the window is settled.

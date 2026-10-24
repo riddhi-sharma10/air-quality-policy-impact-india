@@ -8,10 +8,22 @@ This project integrates hourly air quality readings (CPCB via OpenAQ), satellite
 - `src/` scripts (`build_station_table.py` builds the station list from the OpenAQ JSON files)
 - `data/raw/openaq_api/` OpenAQ v3 station lists (kept in the repo, small)
 - `data/processed/` station tables produced by the scripts
+- `src/build_grap_hourly.py` turns `data/processed/grap_orders.csv` (GRAP orders compiled by hand from the CAQM PDFs and PIB releases, with a `verification` column) and `grap_gaps.csv` into an hourly stage flag, `grap_hourly.csv`
 - `docs/provenance_log.csv` where every dataset came from and when
 
 ## Re-downloading large data
 Large downloads are git-ignored (`data/raw/openaq_archive/`, `data/raw/era5/`, `data/raw/firms/`). To rebuild them, follow the rows in `docs/provenance_log.csv`. API keys are never committed: set them as environment variables or put them in a local `.env` file (also git-ignored).
+
+- **CAQM GRAP orders:** the order and schedule PDFs are in `data/raw/caqm_grap_pdfs/` (git-ignored, 32 files, 116 MB). Each source address is in the `pdf_url` column of `data/processed/grap_orders.csv`; download one with `curl -L -o <file> "<pdf_url>"`. Orders before 2 Apr 2025 are not on the CAQM site and come from PIB press releases (release numbers in the `pib_prid` column).
+
+## Regenerating the GRAP stage flag
+`data/processed/grap_hourly.csv` (one row per IST hour, 19 Feb 2025 to 30 Sep 2026, stage 0 to 4 for the whole NCR) is built from the order table:
+
+```
+python src/build_grap_hourly.py
+```
+
+An invocation of Stage k sets the stage to k and a revocation of Stage k sets it to k-1. Most orders say "with immediate effect" and give no time of day, so each change takes effect at the order's meeting time if stated, otherwise at the time PIB posted its release, otherwise at 12:00 IST; hours on such dates and inside the known gap in `grap_gaps.csv` are flagged `uncertain`. The script prints its checks and exits non-zero if one fails.
 
 ## Regenerating the fire features
 The fire tables are derived, large (about 25 MB) and git-ignored (`data/processed/fire_*.csv`). They are rebuilt from the FIRMS files, the station list and (for the upwind feature) ERA5 winds.
