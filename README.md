@@ -23,7 +23,7 @@ Large downloads are git-ignored (`data/raw/openaq_archive/`, `data/raw/era5/`, `
 python src/build_grap_hourly.py
 ```
 
-An invocation of Stage k sets the stage to k and a revocation of Stage k sets it to k-1. Most orders say "with immediate effect" and give no time of day, so each change takes effect at the order's meeting time if stated, otherwise at the time PIB posted its release, otherwise at 12:00 IST; hours on such dates and inside the known gap in `grap_gaps.csv` are flagged `uncertain`. The script prints its checks and exits non-zero if one fails.
+An invocation of Stage k sets the stage to k and a revocation of Stage k sets it to k-1. Most orders say "with immediate effect" and give no time of day, so each change takes effect at the order's meeting time if stated, otherwise at the time PIB posted its release, otherwise at 12:00 IST; hours on such dates and inside the missing-order gap in `grap_gaps.csv` are flagged `uncertain`, and the two stretches the orders only imply (19 to 23 Feb 2025 and 16 Jun to 13 Oct 2025) are flagged `inferred`. Columns are described in `docs/grap_hourly_dictionary.md`; tests: `python -m pytest tests/test_grap_hourly.py -q`. The script prints its checks and exits non-zero if one fails.
 
 ## Regenerating the fire features
 The fire tables are derived, large (about 25 MB) and git-ignored (`data/processed/fire_*.csv`). They are rebuilt from the FIRMS files, the station list and (for the upwind feature) ERA5 winds.

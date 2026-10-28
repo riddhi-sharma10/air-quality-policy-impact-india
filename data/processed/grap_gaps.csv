@@ -1,2 +1,4 @@
-start_date,end_date,reason
-2025-02-25,2025-03-06,"PIB 24.02.2025 says Stage-I remained invoked, but the PIB release of 07.03.2025 invokes Stage-I again: a Stage-I revocation between the two is missing. No source found for its date, so the stage on these days is 1 or 0"
+start_date,end_date,kind,reason
+2025-02-19,2025-02-23,inferred,"The window starts at stage 2. The PIB release of 24.02.2025 says Stage-II had been in force since 22.10.2024; the order itself was not read, so the stage for these days rests on that one statement"
+2025-02-25,2025-03-06,missing_order,"PIB 24.02.2025 says Stage-I remained invoked, but the PIB release of 07.03.2025 invokes Stage-I again: a Stage-I revocation between the two is missing. No source found for its date, so the stage on these days is 1 or 0"
+2025-06-16,2025-10-13,inferred,"No orders are listed between the Stage-I revocation of 15.06.2025 and the Stage-I invocation of 14.10.2025, so stage 0 follows from the absence of invocations (the CAQM site lists no order in this stretch)"

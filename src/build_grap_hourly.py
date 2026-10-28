@@ -1,18 +1,24 @@
 """Turn the CAQM GRAP order table into an hourly stage flag (IST) for the whole NCR.
 
-Reads data/processed/grap_orders.csv (one row per order) and grap_gaps.csv (periods where an
-order is known to be missing) and writes data/processed/grap_hourly.csv.
+Reads data/processed/grap_orders.csv (one row per order) and grap_gaps.csv (periods the orders do
+not settle) and writes data/processed/grap_hourly.csv. See docs/grap_hourly_dictionary.md.
 
 Stage logic: invoking Stage k sets the stage in force to k; revoking Stage k sets it to k-1
 (the orders say "revocation of Stage-III and intensifying actions under Stage-I & II").
 Orders on the same date are applied in file order.
 
-Effective time: orders say "with immediate effect" but the table has no time of issue yet. Each
+Hour convention: ts_ist is the START of the hour, and grap_stage is the stage in force at that
+instant. An hour that contains a change keeps the old stage; the first row at the new stage is
+the first hour that starts at or after the change.
+
+Effective time: orders say "with immediate effect" but almost none gives a time of issue. Each
 change takes effect at effective_time_ist if filled; otherwise at pib_posted_ist (the time the
 PIB press release went out, so the order is no later than this); otherwise at --assume-time.
-Every hour on a date whose time is not an order time, and every hour inside a known gap, is
-flagged uncertain=True; drop those rows (or run a robustness check without them) rather than
-trusting the stage there.
+Every hour on a date whose time is not an order time is flagged uncertain=True, and so is every
+hour inside a gap of kind "missing_order". Hours inside a gap of kind "inferred" (the stage
+follows from the absence of orders or from a later press release) are flagged inferred=True and
+not uncertain. Drop uncertain rows, or run a robustness check without them, rather than trusting
+the stage there.
 
 Usage:  python src/build_grap_hourly.py [--start 2025-02-19 --end 2026-09-30 --assume-time 12:00]
 """
@@ -35,13 +41,29 @@ def check(label, ok):
     print(f"  [{'PASS' if ok else 'FAIL'}] {label}")
 
 
-def load_orders(assume_time):
-    o = pd.read_csv(ORDERS_CSV, dtype={"effective_time_ist": str, "pib_posted_ist": str})
+def prepare_orders(o, assume_time):
+    """Add time_known and the effective timestamp to an orders table."""
+    o = o.copy()
+    for col in ("effective_time_ist", "pib_posted_ist"):
+        if col not in o:
+            o[col] = pd.NA
     o["order_date"] = pd.to_datetime(o["order_date"])
     o["time_known"] = o["effective_time_ist"].notna()
     clock = o["effective_time_ist"].fillna(o["pib_posted_ist"]).fillna(assume_time)
     o["effective"] = o["order_date"] + pd.to_timedelta(clock + ":00")
     return o
+
+
+def load_orders(assume_time):
+    o = pd.read_csv(ORDERS_CSV, dtype={"effective_time_ist": str, "pib_posted_ist": str})
+    return prepare_orders(o, assume_time)
+
+
+def load_gaps():
+    g = pd.read_csv(GAPS_CSV, parse_dates=["start_date", "end_date"])
+    if "kind" not in g:
+        g["kind"] = "missing_order"
+    return g
 
 
 def stage_changes(o):
@@ -58,11 +80,44 @@ def stage_changes(o):
                                 f"(an invocation is missing or the order is wrong)")
             level = stage - 1
         elif r["action"] != "schedule":
-            sys.exit(f"unknown action {r['action']!r} on {r['order_date'].date()}")
+            raise ValueError(f"unknown action {r['action']!r} on {r['order_date'].date()}")
         version = r["schedule_version"]
         rows.append({"effective": r["effective"], "stage": level, "version": version,
                      "time_known": r["time_known"], "order_date": r["order_date"]})
     return pd.DataFrame(rows), warnings
+
+
+def build_hourly(o, gaps, start, end):
+    """Hourly table for start..end (IST dates, inclusive) from prepared orders and the gaps table."""
+    changes, warnings = stage_changes(o)
+    hours = pd.date_range(pd.Timestamp(start), pd.Timestamp(end) + pd.Timedelta(hours=23), freq="h")
+    out = pd.DataFrame({"ts_ist": hours})
+    # the last change at or before each hour start (a same-moment tie goes to the later row)
+    idx = changes["effective"].searchsorted(hours, side="right") - 1
+    if (idx < 0).any():
+        raise ValueError("window starts before the first order in the orders table")
+    out["grap_stage"] = changes["stage"].to_numpy()[idx]
+    out["schedule_version"] = changes["version"].to_numpy()[idx]
+
+    # Uncertain: hours on a date whose order time is not an order time, and hours in a missing-order gap
+    unknown_dates = set(o.loc[~o["time_known"] & (o["order_date"] >= pd.Timestamp(start)), "order_date"])
+    day = out["ts_ist"].dt.normalize()
+    out["uncertain"] = day.isin(unknown_dates)
+    reason = pd.Series("", index=out.index)
+    reason[out["uncertain"]] = "order time not known (PIB posting time or assumed)"
+    in_gap = pd.Series(False, index=out.index)
+    inferred = pd.Series(False, index=out.index)
+    for _, g in gaps.iterrows():
+        inside = (day >= g["start_date"]) & (day <= g["end_date"])
+        if g["kind"] == "inferred":
+            inferred |= inside
+        else:
+            in_gap |= inside
+    reason[in_gap] = "known gap in orders"
+    out["uncertain"] |= in_gap
+    out["uncertain_reason"] = reason
+    out["inferred"] = inferred
+    return out, changes, warnings
 
 
 def main():
@@ -73,32 +128,13 @@ def main():
     args = ap.parse_args()
 
     o = load_orders(args.assume_time)
-    changes, warnings = stage_changes(o)
+    gaps = load_gaps()
     if not o["order_date"].is_monotonic_increasing:
         sys.exit("grap_orders.csv must be sorted by order_date")
-
-    hours = pd.date_range(pd.Timestamp(args.start), pd.Timestamp(args.end) + pd.Timedelta(hours=23), freq="h")
-    out = pd.DataFrame({"ts_ist": hours})
-    # the last change at or before each hour (a same-moment tie goes to the later row)
-    idx = changes["effective"].searchsorted(hours, side="right") - 1
-    if (idx < 0).any():
-        sys.exit("window starts before the first order in grap_orders.csv")
-    out["grap_stage"] = changes["stage"].to_numpy()[idx]
-    out["schedule_version"] = changes["version"].to_numpy()[idx]
-
-    # Uncertainty: hours on a date whose order time is assumed, and hours inside a known gap
-    unknown_dates = set(o.loc[~o["time_known"] & (o["order_date"] >= pd.Timestamp(args.start)), "order_date"])
-    day = out["ts_ist"].dt.normalize()
-    out["uncertain"] = day.isin(unknown_dates)
-    reason = pd.Series("", index=out.index)
-    reason[out["uncertain"]] = "order time not known (PIB posting time or assumed)"
-    gaps = pd.read_csv(GAPS_CSV, parse_dates=["start_date", "end_date"])
-    in_gap = pd.Series(False, index=out.index)
-    for _, g in gaps.iterrows():
-        in_gap |= (day >= g["start_date"]) & (day <= g["end_date"])
-    reason[in_gap] = "known gap in orders"
-    out["uncertain"] |= in_gap
-    out["uncertain_reason"] = reason
+    try:
+        out, changes, warnings = build_hourly(o, gaps, args.start, args.end)
+    except ValueError as e:
+        sys.exit(str(e))
 
     out["ts_ist"] = out["ts_ist"].dt.strftime("%Y-%m-%d %H:%M")
     OUT_CSV.parent.mkdir(parents=True, exist_ok=True)
@@ -111,6 +147,7 @@ def main():
                             "certain_hours": out.loc[~out["uncertain"], "grap_stage"].value_counts().sort_index()}).fillna(0).astype(int)
     print(summary.to_string())
     print(f"uncertain hours: {int(out['uncertain'].sum()):,} of {len(out):,} ({out['uncertain'].mean():.1%})")
+    print(f"inferred hours:  {int(out['inferred'].sum()):,} of {len(out):,} ({out['inferred'].mean():.1%})")
     print("verification of the orders used:", o["verification"].value_counts().to_dict())
     if warnings:
         print("\nWarnings:")
@@ -124,9 +161,11 @@ def main():
     check("every stage change inside the window is on an order date",
           (out["grap_stage"].ne(out["grap_stage"].shift()).iloc[1:]
            & ~pd.to_datetime(out["ts_ist"]).dt.normalize().iloc[1:].isin(o["order_date"])).sum() == 0)
-    # warnings are only acceptable where a gap explains them
+    check("no hour is both uncertain-by-gap and inferred",
+          not (out["inferred"] & (out["uncertain_reason"] == "known gap in orders")).any())
+    # warnings are only acceptable where a missing-order gap explains them
     gap_days = set()
-    for _, g in gaps.iterrows():
+    for _, g in gaps[gaps["kind"] != "inferred"].iterrows():
         gap_days |= set(pd.date_range(g["start_date"], g["end_date"]))
     unexplained = [w for w in warnings if pd.Timestamp(w[:10]) not in gap_days
                    and not any(abs((pd.Timestamp(w[:10]) - d).days) <= 1 for d in (min(gap_days), max(gap_days)))

@@ -84,7 +84,7 @@ The CDS queue is the bottleneck. Today it held about 10,000 queued requests, and
 | --- | --- |
 | `data/processed/grap_orders.csv`: 38 rows, Sep 2024 to Oct 2026. 30 rows have the order PDF read (16 PDF only, 14 also with a PIB release), 6 have only a PIB release, 2 are references to earlier orders. Each row has the order serial (where written on the order), file name and link | The orders say "with immediate effect" and almost none gives a time of day. Only three do (the Sub-Committee meeting times on 13.12.2025 at 10:00 AM and 6:30 PM and on 17.01.2026 at 8:15 PM). For the other changes the time is the PIB posting time (an upper bound) or an assumed 12:00, so about 7% of hours are flagged `uncertain` |
 | All 32 PDFs saved in `data/raw/caqm_grap_pdfs/` (git-ignored, 116 MB); source URLs are in the `pdf_url` column and the provenance log | Find the one missing order: a Stage-I revocation between 24 Feb and 7 Mar 2025 (`grap_gaps.csv`). Nothing before 2 Apr 2025 is listed on the CAQM site; no PIB release found |
-| `src/build_grap_hourly.py` writes `grap_hourly.csv` (14,136 IST hours, stage 0–4, schedule version, `uncertain` flag); 5 checks pass | Decide how to treat `uncertain` hours in the analysis; the orders cover the whole NCR, so there is no per-area flag |
+| `src/build_grap_hourly.py` writes `grap_hourly.csv` (14,136 IST hours, stage 0–4, schedule version, `uncertain` and `inferred` flags); 6 self-checks and 10 tests (`tests/test_grap_hourly.py`) pass; dictionary in `docs/grap_hourly_dictionary.md` | Decide how to treat `uncertain` hours (6.8%) in the analysis; suggested: keep them in the main run and repeat without them. The 3,000 `inferred` hours (19–23 Feb and 16 Jun to 13 Oct 2025) are flagged but kept. The orders cover the whole NCR, so the merge needs a `grap_stage_applied` column (0 for the control cities) |
 | Baseline: Stage-II was in force from 22 Oct 2024 until 24 Feb 2025, so the window starts at stage 2. Stage-I invoked 7 Mar, revoked 15 Mar, invoked 24 Mar, revoked 29 Mar 2025 (PIB) | Check the 15 Jun to 13 Oct 2025 stretch: no orders are listed, so stage 0 there is an inference. The 07.06 and 15.06.2025 orders show Stage-I was in force from 07.06 until 15.06 |
 | Schedule chain read from the documents: Direction No. 83 of 17.09.2024, amended 20.11.2024, comprehensively revised by the order of 13.12.2024 (so the 13 Dec 2024 date was right), modified 21.11.2025, revised by Direction No. 104 of 29.09.2026 (all with immediate effect) | The 11.11.2025 Stage-III invocation (no. 1444) is only on the site as its clarification (no. 1445); the original was not found as a file |
 | The 26.11.2025 order confirms Stage-III revoked while Stage-I and II stay invoked, so the stage after it is 2 | |
@@ -105,7 +105,7 @@ The CDS queue is the bottleneck. Today it held about 10,000 queued requests, and
 
 ## Suggested order
 
-1. Regenerate the key and settle the night-detection check.
+1. Regenerate the key (optional: the archive pipeline does not need it). The night-detection check is settled (section 3); run `check_night_dates.py` where the FIRMS files are to keep its output.
 2. ~~Rebuild the station list on hours covered, then bulk-download OpenAQ.~~ Done (section 1).
 3. Test the ERA5 wide box and submit the window requests in small batches (scripts are ready; see section 2).
 4. While ERA5 queues: ~~compile the GRAP table~~ (done, section 4), rerun the fire features, run the start-versus-end test.
