@@ -4,7 +4,7 @@ One row per IST hour for 19 Feb 2025 to 30 Sep 2026: 589 days × 24 = **14,136 r
 
 | Column | Meaning | Values |
 | --- | --- | --- |
-| `ts_ist` | The **start** of the hour, IST, as `YYYY-MM-DD HH:MM` (the hour 18:00 to 19:00 is `18:00`). Same convention as `hour_ist` in `pollution_hourly.csv`, so the two join directly | |
+| `ts_ist` | The **start** of the hour, IST, as `YYYY-MM-DD HH:MM` (the hour 18:00 to 19:00 is `18:00`). Same start-of-hour convention as `hour_ist` in `pollution_hourly.csv`, but the text format differs (that file writes `2025-02-19 00:00:00`), so parse both with `pd.to_datetime` before joining | |
 | `grap_stage` | The stage in force at that instant, from the orders. 0 means no GRAP stage invoked | 0, 1, 2, 3, 4 |
 | `schedule_version` | The version of the GRAP rules in force at that instant (see below) | `13-Dec-2024`, `21-Nov-2025`, `Sep-2026` |
 | `uncertain` | True when the stage at this hour may be wrong around a change: the hour is on a date whose order has no stated time, or inside a missing-order gap | True / False |
@@ -48,7 +48,7 @@ By schedule: `13-Dec-2024` 6,612 hours, `21-Nov-2025` 7,488 hours, `Sep-2026` 36
 
 ## Using it in the merge
 
-- Join on the hour only: `pollution.hour_ist == grap.ts_ist`.
+- Join on the hour only, after parsing both columns as datetimes: `pd.to_datetime(pollution.hour_ist) == pd.to_datetime(grap.ts_ist)`. A plain string join matches nothing.
 - GRAP applies inside the NCR. The control cities (Patna, Lucknow, Kanpur) are outside it, so create `grap_stage_applied`, equal to `grap_stage` for treated stations and 0 for control stations. Keep the raw `grap_stage` as well.
 - Stages III and IV together are 971 hours (6.9%), almost all in Nov 2025 to Jan 2026, so most of the policy variation sits in one winter.
 - The stage is called because pollution is high, so a plain correlation of PM2.5 with `grap_stage` will look positive. Use it for description, and the difference-in-differences for the effect.
