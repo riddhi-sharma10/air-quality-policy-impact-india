@@ -24,7 +24,7 @@ Target table: one row per station per IST hour, 54 stations × 14,136 hours = **
 | --- | --- | --- | --- |
 | G1 | Fire days with no detection: missing or zero | **Settled** | Rule below |
 | G2 | Provenance of the weather point files | **Settled** | Already in `docs/provenance_log.csv` (commit 83b4e6e): CDS time-series dataset, 11 cells, 14,136 hours, one file patched for 120 hours from the gridded Nov–Dec 2025 files |
-| G3 | Festival flags had no list or source | **Settled** (dates to be checked against the official gazette) | List below |
+| G3 | Festival flags had no list or source | **Settled and confirmed** against the official Delhi government notifications | List below |
 | G4 | Primary upwind setting | **Settled** | 100 km, 45°, `wind_days` 1 (reason below). All 9 combinations stay in the upwind table for sensitivity checks |
 | G5 | Who builds what, who reviews | **Settled** | Riddhi does all the work up to the final dataset (owner table below); no second reviewer, so the tests and checks are the safeguard |
 
@@ -50,12 +50,12 @@ Flags are in IST dates. Only festivals that plausibly change local emissions are
 
 | Festival | Date(s) in the window | Source note |
 | --- | --- | --- |
-| Holi (and Holika Dahan the night before) | 14 Mar 2025; 4 Mar 2026 (one source says 3 Mar, so flag 3–4 Mar 2026) | secondary lists; check the official gazette |
-| Dussehra | 2 Oct 2025 (20 Oct 2026 is after the window) | secondary lists |
-| Diwali | 20 Oct 2025 (8 Nov 2026 is after the window) | NDMC circular and secondary lists agree |
+| Holi (and Holika Dahan the day before) | 14 Mar 2025 (Holika Dahan 13 Mar); 4 Mar 2026 (Holika Dahan 3 Mar) | official: gazetted holiday, Holika Dahan restricted |
+| Dussehra | 2 Oct 2025 (20 Oct 2026 is after the window) | official: gazetted holiday |
+| Diwali | 20 Oct 2025 (8 Nov 2026 is after the window); Naraka Chaturdasi is also 20 Oct and Govardhan Puja 22 Oct | official: gazetted holiday |
 | New Year's Eve | 31 Dec 2025 | fixed date |
 
-Left out on purpose: Chhath Puja and Eid (not confirmed as gazetted holidays in the sources found, and not a clear emissions driver). The window therefore contains **one** Diwali and one Dussehra, so any festival effect rests on a single occurrence; say so in the dictionary. Before the final run, confirm the dates against the Delhi government gazette (GNCTD holiday list for 2025 and 2026) and write the check date in the provenance log.
+Left out on purpose: Chhath Puja (28 Oct 2025, a restricted holiday) and Eid (not a clear emissions driver). The window therefore contains **one** Diwali and one Dussehra, so any festival effect rests on a single occurrence; say so in the dictionary. Confirmed on 3 Nov 2026 against the Delhi government notifications: No.F.53/689/GAD/CN/2024-25 (holidays 2025) and No.F.53/812/GAD/CN/2025 dated 04.12.2025 (holidays 2026), General Administration Department, GNCT of Delhi. New Year's Eve is a fixed date and is not in either list. Record these two notification numbers in the provenance log when the flags are built (Phase B2).
 
 ## G4: why 100 km and 45°
 
@@ -70,7 +70,21 @@ ERA5 2 m temperature was compared with the stations' own temperature sensors (46
 | previous on-the-hour stamp (`floor`) | 0.844 | 2.87 °C |
 | next on-the-hour stamp (`ceil`) | 0.872 | 2.53 °C |
 
-`ceil` is better, which supports B-1. Monthly mean bias runs from about −1.6 to +0.9 °C, a grid-versus-station difference, not a timing fault.
+`ceil` is better than `floor`. Monthly mean bias runs from about −1.6 to +0.9 °C, a grid-versus-station difference, not a timing fault.
+
+**Wider timing test (3 Nov 2026, before B1).** The same comparison with the ERA5 stamp moved k hours later than `ceil` (higher correlation is better):
+
+| k | Sensor temperature, level (r, MAE in °C) | Sensor temperature, hourly changes (r) |
+| --- | --- | --- |
+| −1 | 0.844, 2.87 | 0.273 |
+| 0 | 0.872, 2.53 | 0.338 |
+| **+1** | **0.887, 2.33** | 0.392 |
+| +2 | 0.887, 2.33 | **0.401** |
+| +3 | | 0.367 |
+
+The within-day pattern agrees (correlation of departures from the day's mean: 0.633 at k = −1, 0.750 at 0, 0.812 at +1). Pollutants respond to boundary-layer growth (morning, hourly changes) most strongly at k = 0 to +1 for PM2.5 (r −0.099, −0.097), at +1 for NO2 (−0.083) and at +1 to +2 for CO (−0.061, −0.062). Every check peaks later than k = 0, with a central value near +1; the cause is not settled (the CPCB hour labels may be about an hour early, or the sensors lag, or the pollutants respond late to boundary-layer growth). This is why the offset is a setting with a required sensitivity run, not a fixed choice. The mean daily temperature curves differ in shape (the minimum matches at k = 0; ERA5 peaks about an hour later), so the curves alone cannot settle it. It also reopens one item in the status doc ("re-check the shift against ERA5 temperature"): the one-hour label shift made with AirNow station 8118 stays as built, and B-1 handles the remaining offset against ERA5.
+
+**Resolution (3 Nov 2026, before B1 was accepted).** Raw temperature feeds (46 stations, Oct to Dec 2025) were compared with ERA5 interpolated to the exact clock time, shifting the ERA5 series in 15-minute steps: the best shift is 0 for the median station (quartiles 0 to 0), so the raw stamps are real clock times, not end-of-hour labels, and none of those feeds repeats a value on four stamps. The AirNow check behind the one-hour label shift concerns the hourly PM2.5 numbers, where a value stamped H is the average of the hour before H. So the shift is right for PM2.5 and one hour too early for the 15-minute channels. Other evidence for PM2.5: hourly PM2.5 changes in Lucknow, Kanpur and Patna against the Delhi median peak at lag 0 or within half an hour of it (correlation 0.22 to 0.24), and PM2.5 changes against boundary-layer changes in the morning peak at k = 0 to +1 for Delhi (-0.119, -0.117) and at k = 0 for the other cities (-0.050). Conclusion: weather is aligned to the PM2.5 hour with offset 0 (B-1), and the other channels are moved one row (B-10). The earlier choice of offset +1 reflected the 15-minute channels, not PM2.5.
 
 ## G5: owners (to fill in)
 
@@ -78,7 +92,7 @@ ERA5 2 m temperature was compared with the stations' own temperature sensors (46
 | --- | --- | --- |
 | Part A: upwind fire table | Riddhi | self-check: tests plus the script's built-in checks, no second reviewer |
 | Part B: merge script and final table | Riddhi | self-check: tests plus the Phase B4 checks, no second reviewer |
-| Festival date check against the gazette | Riddhi | none |
+| Festival date check against the gazette | done 3 Nov 2026 | none |
 
 Riddhi does all the work up to and including the final dataset, so there is no hand-off between people. With no second reviewer, the tests and the printed PASS/FAIL checks in each phase are the safeguard, and each phase is finished only when they pass on the real files.
 
@@ -170,7 +184,7 @@ All timestamp columns must be parsed with `pd.to_datetime` before joining; the t
 
 | # | Decision | Recommendation |
 | --- | --- | --- |
-| B-1 | Pollution to ERA5 time alignment | Pollution `hour_ist` covers [hour, hour + 1 h) IST. Its `hour_utc` is at :30, so the hour's midpoint is `hour_utc` + 30 min, which is an ERA5 stamp. Join the instant variables (wind, temperature, dewpoint, pressure, boundary layer height) at `hour_utc.ceil('h')`. Rain is the hour ending at the stamp, so it overlaps half the pollution hour on either side; use the same stamp and say so in the dictionary |
+| B-1 | Pollution to ERA5 time alignment (settled in B0: weather aligned to the PM2.5 hour with `ERA5_STAMP_OFFSET_HOURS = 0`; gases and local sensors realigned one row, B-10) | The original recommendation, kept for the record: join the instant variables at `hour_utc.ceil('h')` and rain at the same stamp. The settled answer in the Phase B0 table below replaces it (rain is now a half-and-half average of two stamps) |
 | B-2 | Outage hours | Keep all rows, keep `network_outage`, and let each analysis choose. The default stays "drop `network_outage` hours" in models |
 | B-3 | GRAP `uncertain` and `inferred` hours | Keep both flags in the table; run the main analysis with them in and a robustness run without |
 | B-4 | Fire columns allowed | Only `lag1` and `lag2` for hourly rows. Reuse `assert_hourly_safe` from `src/add_fire_lags.py`; apply the same one-day shift to upwind columns |
@@ -182,18 +196,46 @@ All timestamp columns must be parsed with `pd.to_datetime` before joining; the t
 
 ## Phases
 
-### Phase B0: decisions (0.5 day)
-- Settle B-1 to B-9, with the pollution-to-ERA5 alignment (B-1) as the one the team must sign off.
-- Done when: the table above has a chosen answer for each row.
+### Phase B0: decisions (0.5 day): DONE 3 Nov 2026
+All of B-1 to B-9 have a chosen answer, below. They replace the recommendations in the table above where they differ. Checked on the real files while settling them.
 
-### Phase B1: skeleton (0.5 day)
+| # | Settled answer |
+| --- | --- |
+| B-1 | **Weather is aligned to the PM2.5 hour.** `hour_ist` is the start of the PM2.5 hour, so `hour_utc.ceil('h')` is the ERA5 stamp at the middle of it: **`ERA5_STAMP_OFFSET_HOURS = 0`**, one named setting at the top of `build_final_dataset.py`. Instant variables (`u10`, `v10`, `t2m_c`, `d2m_c`, `sp_hpa`, `blh_m`, wind speed and direction) at `S = hour_utc.ceil('h') + offset`; rain `tp_mm = 0.5 x tp(S) + 0.5 x tp(S + 1 h)` (the stamp at T is the hour ending at T). Keep `era5_time_utc` (the stamp S) in the table. Evidence in the section below (PM2.5 labels agree across the four cities; PM2.5 against boundary-layer change peaks at 0 to +0.5 h; the AirNow check). **Sensitivity run required in the analysis:** repeat the main model with offsets +1 and -1. **Consequence:** the first 5 hours of 19 Feb 2025 IST (270 rows) have no weather, because the table starts at 00:00 UTC; they stay NaN |
+| B-2 | Keep every row. Keep `network_pm25_share` and `network_outage` (928 hours, 50,112 rows for 54 stations). Models drop `network_outage` hours by default |
+| B-3 | Keep `grap_uncertain` and `grap_inferred` (renamed from `uncertain` and `inferred`). Main run keeps them, a robustness run drops `grap_uncertain` |
+| B-4 | Fire columns in the table are only lag1 and lag2 (checked by `assert_hourly_safe`). Upwind uses the previous IST day. `lag1` on date d is the value on d-1; `lag2` is d-1 plus d-2 and is NaN if either day is NaN. After the G1 rule the lags are recomputed from the daily counts |
+| B-5 | `group` from `stations_final.csv` (39 treated, 15 control). `grap_stage_applied` = `grap_stage` for treated, 0 for control. Keep the raw `grap_stage` as well |
+| B-6 | Station 8118 is not in the table. Station list comes from `stations_final.csv`, which does not contain it (checked) |
+| B-7 | `hour` (IST), `weekday`, `month`, `season`, and `festival` (name or empty), `festival_day`, `festival_window` as in G3. Season: winter Dec-Feb, summer Mar-May, monsoon Jun-Sep, post-monsoon Oct-Nov |
+| B-8 | Event-time columns come from the stage changes in `grap_hourly` (30 changes in the window): `hours_since_stage_change` (NaN before the first change on 24 Feb 2025 19:00) and `last_change_direction` (`up` or `down`). Orders that do not change the stage, like 7 Mar 2025, give no event |
+| B-9 | `data/processed/final_dataset.csv` (git-ignored) and `final_dataset.parquet` (`pyarrow` 25.0.1 is installed) |
+| B-10 | **Gases and the stations' own sensors are realigned to the PM2.5 hour.** Their raw stamps are real clock times (temperature matches ERA5 at lag 0 on the raw stamps at 46 stations), but `pollution_hourly.csv` labels every channel with the PM2.5 shift, so in one row these channels describe the hour after the PM2.5. In the merge, `NONPM_ALIGN_LAG_ROWS = 1`: for `no`, `no2`, `nox`, `so2`, `co`, `o3`, their `n_*` counts, `local_temp_c`, `local_rh` and `local_wind_speed`, the value in the row for hour h is taken from the row for hour h - 1. The first hour of each station (19 Feb 2025 00:00) is then empty for these columns. `pm25`, `pm10`, `network_pm25_share` and `network_outage` are not moved. The pollution file itself stays as built. Set the lag to 0 to switch it off |
+
+Verified before closing B0: every source column named in the list exists in its file (pollution, stations, weather, fire lags, upwind, GRAP); `group` has the values `treated` and `control`; radii are 50, 100 and 200; GRAP has 30 stage changes (14 up, 16 down); weather rows missing at offset 0, 1 and 2 are 270, 216 and 162; gases and local sensors lose the first hour of each station (54 rows) after B-10 (all on 19 Feb 2025 IST).
+
+**Final column list (about 70 columns):**
+- **Identifiers (9):** `station_id`, `name`, `city`, `sub_area`, `group`, `latitude`, `longitude`, `hour_ist`, `hour_utc`
+- **Pollution (21):** `pm25`, `pm10`, `no`, `no2`, `nox`, `so2`, `co`, `o3`; the eight `n_*` reading counts; `local_temp_c`, `local_rh`, `local_wind_speed` (validation only, not model inputs); `network_pm25_share`, `network_outage` (the shift-helper column `stamp_hour_ist` is dropped). Gases and local sensors are realigned one row (B-10)
+- **Weather (10):** `era5_time_utc`, `u10`, `v10`, `wind_speed`, `wind_from_deg`, `t2m_c`, `d2m_c`, `sp_hpa`, `blh_m`, `tp_mm`
+- **Fire (16):** for radius 50, 100 and 200: `n_nh_lag1`, `frp_nh_lag1`, `n_nh_lag2`, `frp_nh_lag2` (12 columns); upwind at 100 km and 45 degrees: `n_up_nh_lag1`, `frp_up_nh_lag1`; `fire_day_status`, `fire_is_nrt` (true when a day used is on or after 1 Jul 2026)
+- **Policy (7):** `grap_stage`, `grap_stage_applied`, `schedule_version`, `grap_uncertain`, `grap_inferred`, `hours_since_stage_change`, `last_change_direction`
+- **Calendar (7):** `hour`, `weekday`, `month`, `season`, `festival`, `festival_day`, `festival_window`
+
+**Expected missing values (for the Phase B4 checks):** weather, 270 rows (first 5 hours of 19 Feb 2025 IST, at offset 0); gases and local sensors, 54 more (first hour, from B-10); upwind lag1, the first 2 IST days (19 and 20 Feb 2025) plus days after a G1 outage date; fire lags, days that use a G1 outage date; pollution as it is today (PM2.5 present in 664,591 of 763,344 rows).
+
+### Phase B1: skeleton (0.5 day): DONE 3 Nov 2026
+Result: `src/build_final_dataset.py` (functions `load_stations`, `load_pollution`, `build_spine`, `join_pollution`; run with `python src/build_final_dataset.py`) and `tests/test_final_dataset.py` (10 tests; full suite 47 pass). On the real files: spine 763,344 rows (54 stations x 14,136 hours), no duplicate keys, every station has every hour, station 8118 absent, the spine and the pollution table hold the same station-hours, PM2.5 present in 664,591 rows (87.1%), every pollution column equals its source, 50,112 outage rows (928 hours x 54). 8 of 8 script checks pass. Check sensitivity shown: a pollution table with 100 rows removed makes the script report FAIL and exit 1. The run so far wrote only to a scratch file; the real `final_dataset.csv` is written when B2 and B3 are done.
+
+Plan as written:
 - Create `src/build_final_dataset.py`.
 - Build the **spine**: every combination of the 54 `stations_final.csv` ids and the 14,136 hourly stamps. Left-join everything onto it, so a missing source shows up as NaN and the row count cannot change by accident.
 - Join pollution first and drop 8118.
 - Done when: the spine has 763,344 rows and 664,591 of them have PM2.5.
 
 ### Phase B2: weather, policy, calendar (1 day)
-- Weather: parse `time_utc`, apply B-1, join on `station_id` and the aligned stamp; keep the ERA5 columns that are in the target table (`u10`, `v10`, `wind_speed`, `wind_from_deg`, `t2m_c`, `d2m_c`, `sp_hpa`, `blh_m`, `tp_mm`).
+- Realign the gas and local-sensor columns by one row per B-10 (a test: the value in the row for hour h equals the source value for hour h - 1; the first hour is empty).
+- Weather: parse `time_utc`, apply B-1 (instant variables at the `ceil` stamp plus the offset of 0, rain as the half-and-half rule), join on `station_id` and the aligned stamp; keep the ERA5 columns in the B0 column list.
 - Policy: parse `ts_ist`, join on hour; add `grap_stage_applied`, `post_order`, `days_since_last_order`.
 - Calendar: hour, weekday, month, season, festival flags.
 - Done when: each join leaves the row count at 763,344 and the report prints how many rows matched.
@@ -210,7 +252,7 @@ The script prints PASS or FAIL for each and exits non-zero on failure:
 - 763,344 rows; no duplicate (`station_id`, `hour_ist`); 54 stations; 14,136 hours each.
 - PM2.5 non-null count equals 664,591 (nothing lost or added by the joins).
 - Every join: rows matched and unmatched, and no row multiplied (a many-to-many join would show up as extra rows).
-- Missing-value summary per column group; weather and GRAP have 0 missing, fire has only the known start-of-window and no-detection-day gaps.
+- Missing-value summary per column group; GRAP has 0 missing, weather only the 270 rows of B-1, fire only the start-of-window and outage-day gaps listed in B0.
 - Range checks (temperature, pressure, wind speed, rain).
 - Fire columns: only `lag1`/`lag2` and shifted upwind.
 - Spot checks: three random rows traced by hand back to each source file.
