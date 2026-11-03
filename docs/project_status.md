@@ -24,7 +24,7 @@ Row count: 54 stations × 14,136 hours = 763,344 rows, of which 664,591 have PM2
 | Done | Left |
 | --- | --- |
 | Station metadata for Delhi, Lucknow, Kanpur and Patna; `stations.csv` with 56 stations | Nothing blocking. Your sign-off on the one-hour label shift is assumed; to undo it use `stamp_hour_ist` |
-| AirNow station 8118 kept as a separate validation series | Optional: if ERA5 is downloaded, re-check the shift against ERA5 temperature |
+| AirNow station 8118 kept as a separate validation series | Done 3 Nov 2026: re-checked against ERA5 temperature. Raw 15-minute temperature stamps are real clock times, so the one-hour shift is right for the hourly PM2.5 numbers and about an hour early for gases and local sensors. The final-table merge realigns those by one row (plan B-10); `pollution_hourly.csv` is unchanged |
 | AWS CLI works; archive layout understood | Modelling choice for outage hours: default is to drop `network_outage` hours |
 | **New:** bulk download of all 56 stations plus 8118, 2025 and 2026 (`src/download_openaq_archive.py`; incremental, so rerun to repair). Parallel runs of 16 crashed on this machine's memory; 8 workers is the safe limit | Pick the pollution-to-ERA5 time alignment at the merge step |
 | **New:** station list rebuilt on hours covered (`openaq_station_coverage.py` then `select_stations.py`): 54 kept (33 Delhi, 3 Ghaziabad, 2 Noida, 1 Gurugram treated; 7 Patna, 5 Lucknow, 3 Kanpur control). Decisions in `station_selection_log.csv` | |
