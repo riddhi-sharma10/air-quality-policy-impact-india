@@ -1,0 +1,81 @@
+Reading inputs
+  fire_archive_SV-C2_829739.csv: 857,474 rows, 15 columns
+  fire_nrt_SV-C2_829739.csv: 1,369 rows, 14 columns
+  stations: 54; pollution: 777,480 rows; weather: 763,344 rows; GRAP: 14,136 hours; fire: 95,742 daily rows, 285,768 upwind rows, 858,843 detections
+B1: spine and pollution
+  B-11 values set to empty (outside physical limits): no 91, no2 32, so2 64, o3 190, co 3, local_temp_c 102, local_rh 1,382, local_wind_speed 1
+B2: realign gases and sensors by 1 row, weather (stamp offset 0 h), policy, calendar
+B3: fire columns (empty-day rule, lag1 and lag2, upwind from the previous day)
+
+Join report (rows matched and unmatched after each join)
+  pollution (station, hour): 763,344 matched, 0 unmatched, 763,344 rows after the join
+  weather (station, ERA5 stamp): 763,074 matched, 270 unmatched, 763,344 rows after the join
+  policy (hour): 763,344 matched, 0 unmatched, 763,344 rows after the join
+  fire lags (station, IST date): 763,344 matched, 0 unmatched, 763,344 rows after the join
+  upwind, previous day (station, IST date): 760,752 matched, 2,592 unmatched, 763,344 rows after the join
+
+Checks: B1
+  [PASS] 54 stations x 14,136 hours = 763,344 rows
+  [PASS] no duplicate (station_id, hour_ist)
+  [PASS] every station has every hour
+  [PASS] station set equals stations_final.csv; validation station 8118 absent
+  [PASS] the table and the pollution table hold the same station-hours
+  [PASS] PM2.5 rows unchanged (664,591)
+  [PASS] PM and network columns equal their source values (not moved)
+Checks: B-10 gas and sensor realignment
+  [PASS] each of the 15 gas/sensor columns in hour h equals the source in hour h - 1
+  [PASS] the first hour of every station is empty for those columns
+Checks: B-11 quality limits
+  [PASS] no gas or sensor value is outside its limits
+  [PASS] the number of values removed equals the number outside the limits in the source (1,865 values)
+  [PASS] PM2.5 and PM10 are untouched by B-11 (their limits were applied when pollution_hourly.csv was built)
+Checks: B-1 weather
+  [PASS] the weather table is a complete hourly series for every station
+  [PASS] instant weather variables equal the ERA5 table at the stamp (all stations, all rows)
+  [PASS] rain equals 0.5 x tp(S) + 0.5 x tp(S + 1 h) (all stations, all rows)
+  [PASS] weather is empty exactly where the stamp (or the next one, for rain) is outside the ERA5 table (270 rows, the first 5 hours of the window for every station)
+  [PASS] era5_time_utc is set exactly where the weather is present
+Checks: joins
+  [PASS] no join changed the number of rows (all 5 joins leave 763,344 rows)
+  [PASS] unmatched rows are exactly the expected ones: pollution 0, weather 270, policy 0, fire lags 0, upwind, previous day 2,592
+Checks: policy
+  [PASS] grap_stage equals grap_hourly.csv at every hour (all rows)
+  [PASS] no missing GRAP values
+  [PASS] grap_stage_applied = grap_stage for treated stations and 0 for control
+  [PASS] 30 stage changes; hours_since_stage_change is empty only before the first one (139 hours per station)
+  [PASS] direction of the changes: 14 up and 16 down, matching the stage steps
+Checks: fire (B3)
+  [PASS] the dates with no detection in the daily fire table are exactly the dates the rule classifies as empty
+  [PASS] empty-day rule (G1): 8 cloud days set to 0 and 14 outage days kept missing (plan: 8 and 14)
+  [PASS] only lag1 / lag2 columns are used (assert_hourly_safe) and no lag0 or same-day column is present
+  [PASS] every fire column is constant within an IST date for each station (hourly rows use the previous days only)
+  [PASS] lag1 is empty exactly on the dates after an outage day (all radii, all rows)
+  [PASS] lag2 is empty exactly when d - 1 or d - 2 is an outage day (all radii, all rows)
+  [PASS] upwind lag1 is empty exactly after an outage day or before the upwind table starts (2025-02-20): 20,736 rows
+  [PASS] after a cloud day (zero assumed) lag1 is 0, not empty (all radii, upwind too)
+  [PASS] fire_day_status is the status of d - 1 (outage rows match the empty lag1 rows) and is never empty
+  [PASS] fire_is_nrt is true exactly from 2026-07-02 (preliminary data in the lag): 117,936 rows
+  [PASS] 40 station-dates recounted from the raw detections (lag1 and lag2, counts and FRP), a quarter of them next to empty days
+  [PASS] 30 station-dates: upwind lag1 on date d equals the upwind table on date d - 1
+Checks: ranges (B4)
+  [PASS] values inside physical limits: pm25 0 to 1000, pm10 0 to 2000, t2m_c -10 to 55, d2m_c -30 to 40, sp_hpa 850 to 1100, wind_speed 0 to 40, wind_from_deg 0 to 360, blh_m 0 to 8000, tp_mm 0 to 200 ...
+  [PASS] dewpoint is never above the temperature (small rounding allowed; rows without weather are not compared)
+  [PASS] counts are not negative (n_* reading counts, fire counts)
+  [PASS] fire radius ordering: 50 km <= 100 km <= 200 km for lag1 and lag2 counts
+  [PASS] upwind count (100 km, 45 degrees) is not above the all-direction count at 100 km (lag1)
+Checks: calendar
+  [PASS] hour, weekday, month agree with the timestamp (20 Oct 2025 is a Monday)
+  [PASS] every row has a season; seasons follow the month (Dec-Feb winter ... Oct-Nov post_monsoon)
+  [PASS] festival rows: 5 festival days x 24 hours x 54 stations = 6,480 (found 6,480); windows of 3 days = 19,440 (found 19,440)
+  [PASS] festival names are set exactly inside the windows ('none' outside)
+
+Missing values by column group
+  pollution: 1,914,749 empty cells; columns with the most: local_wind_speed 417,957, nox 358,508, local_temp_c 193,555
+  weather: 2,700 empty cells; columns with the most: era5_time_utc 270, u10 270, v10 270
+  fire: 298,080 empty cells; columns with the most: n_nh_50km_lag2 24,624, frp_nh_50km_lag2 24,624, frp_nh_100km_lag2 24,624
+  policy: 7,506 empty cells; columns with the most: hours_since_stage_change 7,506
+  calendar: 0 empty cells; columns with the most: 
+
+wrote D:\Projects\air-quality-policy-impact-india\data\processed\final_dataset.csv and final_dataset.parquet: 763,344 rows, 70 columns
+
+45 checks passed, 0 failed
