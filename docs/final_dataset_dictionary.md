@@ -1,6 +1,6 @@
 # Data dictionary: `data/processed/final_dataset.csv`
 
-One row per station per IST hour for 19 Feb 2025 to 30 Sep 2026: **54 stations × 14,136 hours = 763,344 rows, 70 columns**. Every station has every hour; missing data is an empty cell, except the two text columns that use `none` (see Missing values). It is built by `python src/build_final_dataset.py` from five inputs and written as `final_dataset.csv` (360 MB) and `final_dataset.parquet` (39 MB, the same values, faster to read). Both are git-ignored, so copy them between machines instead of downloading them. The script runs 43 checks and writes nothing if one fails; tests are in `tests/test_final_dataset.py`, `tests/test_fire_empty_days.py` and `tests/test_upwind_points.py`.
+One row per station per IST hour for 19 Feb 2025 to 30 Sep 2026: **54 stations × 14,136 hours = 763,344 rows, 70 columns**. Every station has every hour; missing data is an empty cell, except the two text columns that use `none` (see Missing values). It is built by `python src/build_final_dataset.py` from five inputs and written as `final_dataset.csv` (360 MB) and `final_dataset.parquet` (39 MB, the same values, faster to read). Both are git-ignored, so copy them between machines instead of downloading them. The script runs 45 checks and writes nothing if one fails; tests are in `tests/test_final_dataset.py`, `tests/test_fire_empty_days.py` and `tests/test_upwind_points.py`.
 
 **Sources:** stations from `stations_final.csv`; pollution from `pollution_hourly.csv`; weather from `era5_station_hourly.csv` (ERA5 single-point series, nearest 0.25° cell); fire from `fire_features_daily.csv` (the lags are recomputed after the empty-day rule) and `fire_upwind_daily.csv` (FIRMS request 829739); policy from `grap_hourly.csv`; festival dates from the Delhi government holiday notifications (see `docs/provenance_log.csv`). Station 8118 (AirNow, validation only) is not in the table.
 
@@ -28,11 +28,11 @@ One row per station per IST hour for 19 Feb 2025 to 30 Sep 2026: **54 stations �
 | --- | --- | --- | --- | --- |
 | `pm25` | µg/m³ | PM2.5, mean of the readings in the hour. The outcome variable | 98,753 | 0 to 1000 |
 | `pm10` | µg/m³ | PM10 (54 stations kept, but station 5652 has none) | 106,271 | 0 to 2000 |
-| `no` | ppb | Nitric oxide. Realigned one hour (see below); values above 2,000 set to empty | 96,826 | 0 to 1991 |
-| `no2` | ppb | Nitrogen dioxide. Realigned one hour; values above 1,000 set to empty | 93,186 | 0 to 1000 |
-| `nox` | labelled ppb, probably ppm | Nitrogen oxides. **Unit doubtful:** the archive says ppb, but the values are about 1/1000 of NO + NO2 at every station, so they are probably ppm. Not rescaled; use it only as a relative measure. Realigned one hour | 358,508 | 0 to 3.614 |
-| `so2` | ppb | Sulphur dioxide. Realigned one hour; values above 1,000 set to empty | 177,639 | 0 to 1000 |
-| `co` | labelled ppb, probably mg/m³ | Carbon monoxide. **Unit doubtful:** the archive says ppb, but the median is about 1, which matches mg/m³ (the usual Indian reporting unit), not ppb. Not rescaled; use it only as a relative measure. Realigned one hour; values above 100 set to empty | 93,363 | 0 to 58.12 |
+| `no` | labelled ppb, probably µg/m³ | Nitric oxide. **Unit doubtful** (see Unit labels). Realigned one hour; values above 2,000 set to empty | 96,826 | 0 to 1991 |
+| `no2` | labelled ppb, probably µg/m³ | Nitrogen dioxide. **Unit doubtful** (see Unit labels). Realigned one hour; values above 1,000 set to empty | 93,186 | 0 to 1000 |
+| `nox` | labelled ppb, probably ppm | Nitrogen oxides. **Unit doubtful** (see Unit labels): about 1/1500 of NO + NO2. Realigned one hour | 358,508 | 0 to 3.614 |
+| `so2` | labelled ppb, probably µg/m³ | Sulphur dioxide. **Unit doubtful** (see Unit labels). Realigned one hour; values above 1,000 set to empty | 177,639 | 0 to 1000 |
+| `co` | labelled ppb, probably mg/m³ | Carbon monoxide. **Unit doubtful** (see Unit labels): the median is about 1. Realigned one hour; values above 100 set to empty | 93,363 | 0 to 58.12 |
 | `o3` | µg/m³ | Ozone. Realigned one hour; values above 1,000 set to empty | 93,282 | 0 to 1000 |
 | `n_pm25` | count | Readings averaged into `pm25` (0 = no data) | 0 | 0 to 6 |
 | `n_pm10` | count | Readings averaged into `pm10` | 0 | 0 to 6 |
@@ -113,6 +113,15 @@ One row per station per IST hour for 19 Feb 2025 to 30 Sep 2026: **54 stations �
 - **Weather (decision B-1).** ERA5 stamps are on the hour in UTC and `hour_utc` is at :30, so the stamp in the middle of the PM2.5 hour is `hour_utc` rounded up (setting `ERA5_STAMP_OFFSET_HOURS = 0`). Rain is the hour ending at a stamp, so `tp_mm` averages the stamp and the next one. Timing checks against ERA5 and across the four cities support this for PM2.5. For a robustness check, rerun the model with the offset at +1 and −1.
 - **Gases and the stations' own sensors (decision B-10).** Their raw stamps are real clock times, but the pollution file gives every channel the PM2.5 label, so in the pollution file those columns describe the hour after the PM2.5 in the same row. In this table they are taken from the row one hour earlier (`NONPM_ALIGN_LAG_ROWS = 1`) so that every column in a row describes the same hour. The first hour of each station is empty for them. `pm25`, `pm10`, `network_pm25_share` and `network_outage` stay in their row. `pollution_hourly.csv` itself is unchanged.
 - **Fire and the upwind feature use the previous days only.** Every hour of IST date d gets the fire values of d−1 (`lag1`) or d−1 plus d−2 (`lag2`), so no detection after the hour can explain a reading. The upwind columns are the previous day's same-day values. There are no lag-0 or same-day fire columns; the build refuses them.
+
+## Unit labels in the archive: the gas columns are unit-doubtful
+The archive labels NO, NO2, NOx, SO2 and CO as ppb. Two checks on the data show that this cannot be right for CO and NOx, and probably not for NO, NO2 and SO2 either:
+
+- **CO:** the median is 0.88 and the 99th percentile 4.74 in file units. About 1 ppb is impossible for urban air (even clean background air holds about 100 ppb), while about 1 is normal in mg/m³, the unit Indian pollution control boards use for CO.
+- **NOx against NO + NO2:** row by row, NOx = 0.00066 × (NO + NO2) (correlation 0.88; per-station slope 0.00046 to 0.00102, median 0.00066). If NO and NO2 were in ppb and NOx in ppm, the slope would be 0.001. If NO and NO2 are in µg/m³ and NOx in ppm it should be about 0.0006 to 0.0007, because 1 ppb of NO2 is 1.88 µg/m³ and 1 ppb of NO is 1.23 µg/m³. The data fit the second case.
+- **Conclusion (inferred, not confirmed):** `co` is probably mg/m³, `nox` probably ppm, and `no`, `no2` and `so2` probably µg/m³, the units the Indian boards report. `o3` is labelled µg/m³ and agrees with that. Confirming it needs the original CPCB files or OpenAQ's notes on how it ingests them; I found neither.
+- **What it affects:** a unit is a fixed multiplier, so changes, ratios within one column, logs and standardised values are not affected. It does matter when a gas is compared with a standard or with another gas, so do not do that with these columns. No column is rescaled in this table.
+- **Where the usual Indian units come from:** the UPPCB report to the National Green Tribunal in OA 725 of 2022 (CAAQMS CO in mg/m³, other gases and PM in µg/m³) and CPCB-derived public sites that state 'µg/m³, CO in mg/m³'.
 
 ## Cleaning done in this table (decision B-11)
 `pollution_hourly.csv` cleaned PM only (negatives, PM2.5 above 1,000, PM10 above 2,000, flat runs). The gas and sensor columns still held instrument glitches, for example SO2 of 2×10¹⁶ ppb, NO of 59,000 ppb, relative humidity from −90 % to 183 % and temperatures down to −61 °C. In this table, values outside these limits are set to empty before anything else is done to them (the limit itself is kept):
