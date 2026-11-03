@@ -101,12 +101,18 @@ Riddhi does all the work up to and including the final dataset, so there is no h
 
 ## Phases
 
-### Phase A0: decisions (0.5 day)
-- Confirm A-1 to A-4 with the team.
-- Write the expected row count: 54 stations × 588 dates (20 Feb 2025 to 30 Sep 2026) × 3 radii × 3 half-angles = **285,768 rows**.
-- Done when: the four decisions are written into this file.
+### Phase A0: decisions (0.5 day): DONE 3 Nov 2026
+- A-1 to A-4 are final as written in the table above (A-4 settled in G4).
+- Checked on `era5_station_hourly.csv`: every station has 14,136 hours. Every station has a full 24-hour set of stamps for **588 IST days, 20 Feb 2025 to 30 Sep 2026**. The two incomplete days are 19 Feb 2025 (19 hours) and 1 Oct 2026 (5 hours), and the script correctly turns both into NaN, so A-2 holds.
+- Expected output: 54 stations × 588 dates × 3 radii × 3 half-angles = **285,768 rows**.
+- Places in `build_upwind_features.py` that read the gridded dataset and must change in Phase A1: `load_era5` (line 44), `station_wind` (line 56, uses `ds.sel`), the "inside the ERA5 box" filter in `main` (uses the dataset's lat/lon range), and the hand spot check (uses `ds.sel` to recompute the wind). The fire geometry, the counts and the other checks need no change.
+- The script's default station file is the old 56-station `stations.csv`. Every run command must pass `--stations data/processed/stations_final.csv`.
+- New requirement for the merge (Phase B3): the empty-day rule (G1) also applies to the upwind columns, which are NaN on dates with no detection anywhere, so the same 8 cloud days become 0 and the other 14 stay NaN before the one-day shift.
 
-### Phase A1: code change (0.5 day)
+### Phase A1: code change (0.5 day): DONE 3 Nov 2026
+Result: `--wind-source table|grid` (default `table`) and `--wind-table` added; `station_wind` now takes an hourly frame, shared by both sources; `grid_hourly` and `load_wind_table` added; the box filter and the hand spot check read whichever source was chosen. Verified: `--help` shows the options; the grid path reproduces the existing 2022 test table exactly (77,859 rows, identical values); the table path ran on 15 Oct to 15 Nov 2025 with 54 stations, 8 of 8 checks passing (written to a scratch file, the real output was not touched). The default source changed from grid to table, so old commands for the 2022 files need `--wind-source grid` (README update is in A4).
+
+Plan as written:
 - `build_upwind_features.py`:
   - Add `load_wind_table(path)`: read `era5_station_hourly.csv`, keep `station_id, time_utc, u10, v10`.
   - Make `station_wind` accept an hourly frame (`time_utc`, `u`, `v`) instead of an xarray dataset. The grid path builds that frame from `ds.sel(...)`, so both sources share the same daily-mean code.
@@ -115,7 +121,10 @@ Riddhi does all the work up to and including the final dataset, so there is no h
 - Keep the existing rules: u and v are averaged, never the angles; a day needs all 24 hours or it is NaN; ERA5 stamps are UTC on the hour, IST day d holds the stamps 00:30 to 23:30 IST.
 - Done when: `python src/build_upwind_features.py --help` shows the new option and the grid path still runs on the 2022 files.
 
-### Phase A2: tests (0.5 day)
+### Phase A2: tests (0.5 day): DONE 3 Nov 2026
+Result: `tests/test_upwind_points.py`, 11 tests, all pass (full suite: 37 pass). They cover the full-day mean, an incomplete day giving NaN, vectors averaged not angles, the window start (19 Feb NaN, 20 Feb first full day), the two-day mean, the wind-from convention, the table loader and its error exits, the grid helper, a table-versus-grid comparison for **all 54 stations** over 3 Nov to 28 Dec 2025 for both `wind_days` 1 and 2 (max difference 2e-5 m/s; shifting the table by 1 hour gives 0.19 m/s, so the test can fail), and one end-to-end run of the script. Also run once to scratch files, not yet written to the real output: the full table (285,768 rows, 54 stations, 20 Feb 2025 to 30 Sep 2026, no duplicates, 8 of 8 script checks pass; the 22 NaN fire dates are exactly the 22 empty days of G1) and `wind_days` 2 (285,282 rows, starts 21 Feb 2025, 8 of 8 checks pass).
+
+Plan as written:
 Add `tests/test_upwind_points.py` on small made-up frames:
 - a day with 24 hours gives a mean vector, a day with 23 gives NaN;
 - u and v averaged, not angles (two opposite winds give a speed near 0, not a direction);
