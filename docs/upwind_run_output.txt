@@ -1,0 +1,38 @@
+Reading inputs
+  fire_archive_SV-C2_829739.csv: 857,474 rows, 15 columns
+  fire_nrt_SV-C2_829739.csv: 1,369 rows, 14 columns
+  wind table: 54 stations, 2025-02-19 00:00:00 .. 2026-09-30 23:00:00 UTC
+  stations with wind in the table: 54 of 54 (others skipped: no wind)
+  dates with a full wind set: 2025-02-20 to 2026-09-30 (588 days), wind averaged over 1 IST day(s)
+
+Summary
+  wrote data\processed\fire_upwind_daily.csv: 285,768 rows (54 stations x 588 dates x 3 radii x 3 thetas)
+  100 km, theta 45: mean upwind n+h per day 3.03 (all directions 10.59); share of detections upwind 28.6% (a 90-degree cone is 25% of the circle; fires are not spread evenly around a station, so this is not a baseline)
+
+Checks
+  [PASS] theta = 180 reproduces the plain count (all stations, radii, periods, FRP too)
+  [PASS] upwind count/FRP: theta 30 <= 45 <= 60
+  [PASS] upwind count/FRP: 50 km <= 100 km <= 200 km
+  [PASS] upwind count <= count in all directions
+  [PASS] no missing wind in the output
+
+Spot check: station 17, IST date 2025-02-21, wind averaged over 1 day(s): u=0.209, v=-1.149 m/s -> from 349.7 deg (24 hourly values)
+                ist  latitude  longitude  dist_km  bearing   diff  upwind_45   frp
+2025-02-21 02:41:00     28.34      77.22    25.07   172.90 176.80      False  0.93
+2025-02-21 02:41:00     28.79      77.05    28.24   331.68  18.02       True  0.86
+2025-02-21 02:41:00     28.74      76.93    32.18   308.89  40.81       True  1.48
+2025-02-21 02:41:00     28.78      76.95    33.41   315.25  34.46       True  0.71
+2025-02-21 02:41:00     28.85      76.95    39.78   324.59  25.12       True  1.18
+2025-02-21 13:57:00     27.92      77.29    72.30   171.82 177.88      False  5.00
+2025-02-21 13:57:00     27.92      77.29    72.36   171.62 178.09      False  5.54
+2025-02-21 13:57:00     29.16      77.67    81.53    34.82  45.12      False  2.92
+2025-02-21 13:57:00     29.26      76.86    84.07   337.87  11.84       True 18.47
+2025-02-21 13:57:00     29.26      76.86    84.13   338.01  11.69       True 12.41
+2025-02-21 13:57:00     29.26      76.86    84.27   337.69  12.02       True  7.94
+2025-02-21 13:57:00     29.21      77.71    88.46    35.26  45.55      False  4.33
+2025-02-21 13:57:00     29.11      77.91    92.72    49.30  59.60      False  2.97
+  [PASS] spot check: wind (u, v) from the raw ERA5 hours matches the table (0.2087, -1.1491)
+  [PASS] spot check: upwind count at 100 km, theta 45 (7) == recount with the second bearing method (7)
+  [PASS] spot check: count in all directions (13) == 13
+
+8 checks passed, 0 failed
