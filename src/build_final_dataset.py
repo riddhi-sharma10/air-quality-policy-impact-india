@@ -429,7 +429,14 @@ def main():
 
     print("B1: spine and pollution")
     spine = build_spine(stations, STUDY_START, STUDY_END)
+    joins = []   # (label, rows after the join, rows matched): the join report and its checks
+
+    def log_join(label, tab, matched):
+        joins.append((label, len(tab), int(np.asarray(matched).sum())))
+
     table = join_pollution(spine, pollution)
+    pol_keys = pollution[pollution["station_id"].isin(stations["station_id"])].set_index(KEY).index
+    log_join("pollution (station, hour)", table, table.set_index(KEY).index.isin(pol_keys))
     table, qc_removed = qc_gases_sensors(table)
     print("  B-11 values set to empty (outside physical limits): " + ", ".join(f"{c} {n:,}" for c, n in qc_removed.items() if n))
     n_st = len(stations)
@@ -438,13 +445,22 @@ def main():
     print(f"B2: realign gases and sensors by {NONPM_ALIGN_LAG_ROWS} row, weather (stamp offset {ERA5_STAMP_OFFSET_HOURS} h), policy, calendar")
     table = align_nonpm(table)
     table = join_weather(table, era5)
+    log_join("weather (station, ERA5 stamp)", table, table["u10"].notna())
     table = join_policy(table, grap)
+    log_join("policy (hour)", table, table["grap_stage"].notna())
     table = add_calendar(table)
     print("B3: fire columns (empty-day rule, lag1 and lag2, upwind from the previous day)")
     status = date_status(detections)
     nrt_first = daily.loc[daily["is_nrt"], "ist_date"].min()
-    table = join_fire(table, fire_lags_wide(daily, status), upwind_lag1(upwind, status), status, nrt_first)
+    lags_wide, up_prev = fire_lags_wide(daily, status), upwind_lag1(upwind, status)
+    day_key = pd.MultiIndex.from_arrays([table["station_id"], table["hour_ist"].dt.normalize()])
+    table = join_fire(table, lags_wide, up_prev, status, nrt_first)
+    log_join("fire lags (station, IST date)", table, day_key.isin(pd.MultiIndex.from_frame(lags_wide[["station_id", "ist_date"]])))
+    log_join("upwind, previous day (station, IST date)", table, day_key.isin(pd.MultiIndex.from_frame(up_prev[["station_id", "fire_date"]])))
     table = order_columns(table)
+    print("\nJoin report (rows matched and unmatched after each join)")
+    for label, n, m in joins:
+        print(f"  {label}: {m:,} matched, {n - m:,} unmatched, {n:,} rows after the join")
 
     # ------------------------------------------------------------------ checks (expected values by plain index arithmetic)
     t = table.sort_values(KEY).reset_index(drop=True)
@@ -515,6 +531,17 @@ def main():
           f"the first {int(miss.sum()) // n_st} hours of the window for every station)",
           (miss.to_numpy() == exp_miss).all() and t.loc[miss, "hour_ist"].max() < start_ist + (int(miss.sum()) // n_st) * HOUR)
     check("era5_time_utc is set exactly where the weather is present", (t["era5_time_utc"].notna() == ~miss).all())
+
+    print("Checks: joins")
+    jd = {label.split(" (")[0] + ("_up" if label.startswith("upwind") else ""): (n, m) for label, n, m in joins}
+    check(f"no join changed the number of rows (all {len(joins)} joins leave {n_st * n_hours:,} rows)", all(n == n_st * n_hours for _, n, _ in joins))
+    day = t["hour_ist"].dt.normalize()
+    up_first = upwind["ist_date"].min()
+    exp_unmatched = {"pollution": 0, "weather": int((stamp_idx < 0).sum()), "policy": 0, "fire lags": 0,
+                     "upwind, previous day_up": int((day < up_first + DAY).sum())}
+    got_unmatched = {k: n - m for k, (n, m) in jd.items()}
+    check("unmatched rows are exactly the expected ones: " + ", ".join(f"{k.replace('_up', '')} {v:,}" for k, v in exp_unmatched.items()),
+          got_unmatched == exp_unmatched)
 
     print("Checks: policy")
     g_stage = grap["grap_stage"].to_numpy(dtype=float)
