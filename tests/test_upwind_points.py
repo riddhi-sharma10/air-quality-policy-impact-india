@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 from build_upwind_features import grid_hourly, load_wind_table, station_wind  # noqa: E402
 
-GRID_FILES = [ROOT / "data" / "raw" / "era5" / f"era5_window_2025_11-12_{k}.nc" for k in ("instant", "accum")]
+FIXTURE = ROOT / "tests" / "fixtures" / "era5_grid_cells_2025-11-01_2025-12-31.csv"   # gridded Nov-Dec 2025 values of the 11 station cells
 TABLE = ROOT / "data" / "processed" / "era5_station_hourly.csv"
 STATIONS = ROOT / "data" / "processed" / "stations_final.csv"
 FIRMS = [ROOT / "data" / "raw" / "firms" / n for n in ("fire_archive_SV-C2_829739.csv", "fire_nrt_SV-C2_829739.csv")]
@@ -97,16 +97,20 @@ def test_grid_hourly_takes_the_nearest_cell():
     assert list(g.columns) == ["time_utc", "u", "v"]
 
 
-@pytest.mark.skipif(not (all(f.exists() for f in GRID_FILES) and TABLE.exists()), reason="needs the ERA5 files and the station table")
+@pytest.mark.skipif(not TABLE.exists(), reason="needs the station weather table (python src/extract_era5_stations.py)")
 @pytest.mark.parametrize("wind_days", [1, 2])
 def test_table_path_matches_grid_path_for_all_stations(wind_days):
-    """The point-file table and the gridded Nov-Dec 2025 download must give the same daily wind at every station."""
-    ds = xr.open_dataset(GRID_FILES[0])
+    """The point-file table and the gridded Nov-Dec 2025 download (stored as a fixture, so no large file is needed)
+    must give the same daily wind at every station."""
+    fx = pd.read_csv(FIXTURE, parse_dates=["time_utc"])
+    cells = {k: g.sort_values("time_utc").rename(columns={"u10": "u", "v10": "v"})[["time_utc", "u", "v"]].reset_index(drop=True)
+             for k, g in fx.groupby(["latitude", "longitude"])}
     table = load_wind_table(TABLE)
     st = pd.read_csv(STATIONS)
     n_days = 0
     for r in st.itertuples():
-        a = station_wind(grid_hourly(ds, r.latitude, r.longitude), wind_days)
+        key = (round(round(r.latitude / 0.25) * 0.25, 2), round(round(r.longitude / 0.25) * 0.25, 2))
+        a = station_wind(cells[key], wind_days)
         b = station_wind(table[int(r.id)], wind_days)
         days = a.index[a["u_mean"].notna()].intersection(b.index[b["u_mean"].notna()])
         days = days[(days >= "2025-11-03") & (days <= "2025-12-28")]
@@ -119,6 +123,14 @@ def test_table_path_matches_grid_path_for_all_stations(wind_days):
         diff = np.abs((a.loc[steady, "wind_from_deg"] - b.loc[steady, "wind_from_deg"] + 180) % 360 - 180)
         assert (diff < 1.0).all(), r.id
     assert n_days > 54 * 50
+
+
+def test_fixture_covers_the_cells_of_all_stations_and_the_two_months():
+    fx = pd.read_csv(FIXTURE, parse_dates=["time_utc"])
+    assert fx[["latitude", "longitude"]].drop_duplicates().shape[0] == 11
+    assert fx.groupby(["latitude", "longitude"]).size().eq(61 * 24).all()          # 1 Nov to 31 Dec, hourly
+    assert fx["time_utc"].min() == pd.Timestamp("2025-11-01 00:00") and fx["time_utc"].max() == pd.Timestamp("2025-12-31 23:00")
+    assert not fx[["u10", "v10"]].isna().any().any()
 
 
 @pytest.mark.skipif(not (all(f.exists() for f in FIRMS) and TABLE.exists()), reason="needs the FIRMS files and the wind table")
