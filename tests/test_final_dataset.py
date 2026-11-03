@@ -13,6 +13,8 @@ from build_final_dataset import (ERA5_TABLE, FESTIVALS, GRAP_HOURLY, ID_COLS, IS
                                  PM_COLS, POLLUTION, POLLUTION_COLS, SEASONS, STATIONS_FINAL, WEATHER_INSTANT,
                                  add_calendar, align_nonpm, build_spine, join_policy, join_pollution, join_weather,
                                  load_pollution, load_stations, stage_events)
+from build_final_dataset import (FIRE_COLS, FIRE_LAG_COLS, FIRE_RADII, UPWIND_COLS, UPWIND_RADIUS_KM, UPWIND_THETA_DEG,  # noqa: E402
+                                 QC_LIMITS, date_status, fire_lags_wide, join_fire, outside_limits, qc_gases_sensors, upwind_lag1)
 
 
 def stations(ids=(1, 2)):
@@ -190,7 +192,7 @@ def test_stage_events_hours_since_change_and_direction():
     assert out["hours_since_stage_change"].tolist()[2:] == [0.0, 1.0, 2.0, 0.0, 1.0]
     assert out["hours_since_stage_change"].iloc[:2].isna().all()
     assert out["last_change_direction"].iloc[2:].tolist() == ["down", "down", "down", "up", "up"]
-    assert out["last_change_direction"].iloc[:2].isna().all()
+    assert out["last_change_direction"].iloc[:2].tolist() == ["none", "none"]
 
 
 def test_policy_applies_the_stage_to_treated_stations_only():
@@ -211,7 +213,7 @@ def test_calendar_columns_and_festival_windows():
     out = add_calendar(t)
     assert out["festival_day"].tolist() == [False, False, True, False, False, False, True, False]
     assert out["festival_window"].tolist() == [False, True, True, True, False, True, True, True]
-    assert out["festival"].tolist() == ["", "Diwali", "Diwali", "Diwali", "", "Holi", "New Year's Eve", "New Year's Eve"]
+    assert out["festival"].tolist() == ["none", "Diwali", "Diwali", "Diwali", "none", "Holi", "New Year's Eve", "New Year's Eve"]
     assert out.loc[2, "weekday"] == 0 and out.loc[2, "hour"] == 12 and out.loc[2, "month"] == 10   # 20 Oct 2025 is a Monday
     assert out["season"].tolist()[:1] == ["post_monsoon"] and out["season"].iloc[5] == "summer" and out["season"].iloc[7] == "winter"
 
@@ -229,7 +231,103 @@ def test_real_run_passes_all_checks_and_has_the_expected_shape(tmp_path):
     assert r.returncode == 0, r.stdout[-2000:] + r.stderr[-500:]
     assert "0 failed" in r.stdout
     got = pd.read_csv(out, nrows=5)
-    assert got.shape[1] == 54 and "tp_mm" in got.columns and "grap_stage_applied" in got.columns
+    assert got.shape[1] == 70 and "tp_mm" in got.columns and "grap_stage_applied" in got.columns and "n_nh_100km_lag1" in got.columns
+
+
+
+# ---------------------------------------------------------------------------------------------- B3
+DAYS = pd.date_range("2025-07-01", periods=8, freq="D")
+N_NH = [3.0, 4.0, np.nan, 5.0, np.nan, 2.0, 1.0, 6.0]           # day 3 = cloud (zero assumed), day 5 = outage
+STATUS = pd.Series(["observed", "observed", "zero_assumed", "observed", "outage", "observed", "observed", "observed"], index=DAYS)
+
+
+def daily_fire(sid=1):
+    rows = []
+    for r in FIRE_RADII:
+        for d, n in zip(DAYS, N_NH):
+            rows.append({"station_id": sid, "radius_km": r, "ist_date": d, "n_nh": n * r / 50 if n == n else n, "frp_nh": n * 10 if n == n else n})
+    return pd.DataFrame(rows)
+
+
+def test_date_status_from_detections():
+    det = pd.DataFrame({"ist_date": pd.to_datetime(["2025-07-01", "2025-07-01", "2025-07-03", "2025-07-04"])})
+    s = date_status(det)                                    # 2 Jul is empty, a monsoon day between quiet days
+    assert s["2025-07-02"] == "zero_assumed" and (s.drop(pd.Timestamp("2025-07-02")) == "observed").all()
+
+
+def test_fire_lags_apply_the_cloud_rule_and_recompute_lag2():
+    w = fire_lags_wide(daily_fire(), STATUS).set_index("ist_date")
+    assert list(w.columns) == ["station_id"] + FIRE_LAG_COLS
+    n = "n_nh_50km_lag1"
+    # lag1 on date d is the value of d - 1; the cloud day (3 Jul) counts as 0, the outage day (5 Jul) stays empty
+    assert w.loc["2025-07-04", n] == 0.0 and np.isnan(w.loc["2025-07-06", n])
+    assert w.loc["2025-07-03", n] == 4.0 and w.loc["2025-07-05", n] == 5.0
+    l2 = "n_nh_50km_lag2"
+    assert w.loc["2025-07-05", l2] == 5.0 + 0.0                                    # d-1 = 4 Jul (5), d-2 = 3 Jul (cloud, 0)
+    assert np.isnan(w.loc["2025-07-06", l2]) and np.isnan(w.loc["2025-07-07", l2])  # d-1 or d-2 is the outage day
+    assert w.loc["2025-07-08", l2] == 1.0 + 2.0
+    assert w.loc["2025-07-08", "n_nh_200km_lag1"] == 4.0                          # 7 Jul has 1 at 50 km, 4 at 200 km
+
+
+def test_upwind_is_moved_forward_one_day_and_uses_only_the_main_setting():
+    rows = []
+    for r in FIRE_RADII:
+        for th in (30, UPWIND_THETA_DEG, 60):
+            for d, n in zip(DAYS, N_NH):
+                rows.append({"station_id": 1, "ist_date": d, "radius_km": r, "theta_deg": th,
+                             "n_up_nh": n + (100 if (r, th) != (UPWIND_RADIUS_KM, UPWIND_THETA_DEG) else 0) if n == n else n, "frp_up_nh": n * 2 if n == n else n})
+    u = upwind_lag1(pd.DataFrame(rows), STATUS)
+    assert len(u) == len(DAYS) and list(u.columns) == ["station_id", UPWIND_COLS[0], UPWIND_COLS[1], "fire_date"]
+    u = u.set_index("fire_date")
+    assert u.loc["2025-07-02", UPWIND_COLS[0]] == 3.0           # the value of 1 Jul, not of 2 Jul
+    assert u.loc["2025-07-04", UPWIND_COLS[0]] == 0.0 and np.isnan(u.loc["2025-07-06", UPWIND_COLS[0]])
+    assert u.loc["2025-07-04", UPWIND_COLS[1]] == 0.0
+
+
+def test_join_fire_gives_every_hour_of_a_date_the_previous_days_values():
+    sp = build_spine(stations((1,)), "2025-07-03", "2025-07-07")
+    out = join_fire(sp, fire_lags_wide(daily_fire(), STATUS),
+                    upwind_lag1(pd.DataFrame([{"station_id": 1, "ist_date": d, "radius_km": UPWIND_RADIUS_KM, "theta_deg": UPWIND_THETA_DEG,
+                                               "n_up_nh": n, "frp_up_nh": n} for d, n in zip(DAYS, N_NH)]), STATUS),
+                    STATUS, pd.Timestamp("2025-07-06"))
+    assert len(out) == len(sp) and set(FIRE_COLS) <= set(out.columns)
+    by_day = out.groupby(out["hour_ist"].dt.normalize())
+    assert (by_day["n_nh_50km_lag1"].nunique(dropna=False) == 1).all()           # constant within a date
+    status = by_day["fire_day_status"].first()
+    assert status["2025-07-04"] == "zero_assumed" and status["2025-07-06"] == "outage" and status["2025-07-07"] == "observed"
+    nrt = by_day["fire_is_nrt"].first()
+    assert not nrt["2025-07-06"]                                                  # d - 1 = 5 Jul, before the 6 Jul start
+    assert nrt["2025-07-07"]                                                      # d - 1 = 6 Jul
+
+
+def test_fire_column_names_pass_the_hourly_guard():
+    from add_fire_lags import assert_hourly_safe
+    assert_hourly_safe(FIRE_LAG_COLS + UPWIND_COLS)
+    assert len(FIRE_LAG_COLS) == 12 and len(UPWIND_COLS) == 2 and len(FIRE_COLS) == 16
+
+
+
+# ---------------------------------------------------------------------------------------------- B-11
+def test_quality_limits_remove_only_impossible_values():
+    t = pd.DataFrame({c: [1.0] * 5 for c in QC_LIMITS})                          # every limited column, all inside its limits
+    t = t.assign(so2=[10.0, 1000.0, 1000.1, 2.07e16, np.nan], local_rh=[-5.0, 0.0, 100.0, 100.1, 183.0],
+                 local_temp_c=[-61.5, -10.0, 28.0, 55.0, 55.1], pm25=[5000.0] * 5, n_so2=[4] * 5)
+    out, removed = qc_gases_sensors(t)
+    assert out["so2"].isna().tolist() == [False, False, True, True, True]          # the limit itself is kept
+    assert out["local_rh"].isna().tolist() == [True, False, False, True, True]
+    assert out["local_temp_c"].isna().tolist() == [True, False, False, False, True]
+    assert removed["so2"] == 2 and removed["local_rh"] == 3 and removed["local_temp_c"] == 2
+    assert out["pm25"].tolist() == [5000.0] * 5 and out["n_so2"].tolist() == [4] * 5      # PM and counts untouched
+    assert t["so2"].iloc[3] == 2.07e16                                                     # the input is not changed
+
+
+def test_outside_limits_ignores_empty_cells():
+    assert outside_limits([np.nan, 5.0, 150.0, -1.0], 0, 100).tolist() == [False, False, True, True]
+
+
+def test_every_gas_and_sensor_column_has_a_limit_and_the_pm_columns_do_not():
+    assert set(QC_LIMITS) == set(NONPM_COLS) - {f"n_{g}" for g in ("no", "no2", "nox", "so2", "co", "o3")}
+    assert "pm25" not in QC_LIMITS and "pm10" not in QC_LIMITS
 
 
 if __name__ == "__main__":
