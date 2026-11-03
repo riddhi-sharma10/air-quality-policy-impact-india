@@ -66,16 +66,16 @@ Row count: 54 stations × 14,136 hours = 763,344 rows, of which 664,591 have PM2
 
 The CDS queue is the bottleneck. Today it held about 10,000 queued requests, and priority drops if you hold many at once.
 
-## 3. FIRMS (fires): code complete; the final runs wait for the raw files and ERA5
+## 3. FIRMS (fires): all three fire tables built on the final 54 stations (3 Nov 2026)
 
 | Done | Left |
 | --- | --- |
-| Request 829739 downloaded: archive file (857,474 rows, to 30 Jun 2026) and near-real-time file (1,369 rows, from 1 Jul 2026). Quality checks passed: no duplicates, all rows inside the box, plausible seasons | Rerun `build_fire_features.py` and `add_fire_lags.py` on the final 54 stations with `--stations data/processed/stations_final.csv` (commands in the README). The table now on disk used the old 56-station list and still contains the dropped duplicates 10900 and 11607. Needs the raw FIRMS files, which are not on every machine |
-| `build_fire_features.py` written; independent brute-force test matched on 28 of 28 cases; `tests/test_fire_geometry.py` passes | Run `build_upwind_features.py` for the whole window once the ERA5 window files exist (it was tested only on ERA5 Delhi Jan–Jul 2022: 41 stations, 77,859 rows) |
-| Night-detection date check settled: night passes are at about 19:00–22:00 UTC, so they belong to the next IST date and the conversion in the script is right. `src/check_night_dates.py` compares it with an independent calculation | Run `check_night_dates.py` once where the FIRMS files are and keep its output with the provenance log |
-| Rules set: IST dates, near-real-time rows flagged, dates with no detection anywhere in the file stored as missing (NaN), not zero | Optional decision: monsoon days (Jun–Sep) with no detection anywhere are probably cloud, not an outage; they could be set to zero instead (35 of the 67 empty dates in the old table fall in July) |
+| Request 829739 downloaded: archive file (857,474 rows, to 30 Jun 2026) and near-real-time file (1,369 rows, from 1 Jul 2026). Quality checks passed: no duplicates, all rows inside the box, plausible seasons | Nothing. `build_fire_features.py` and `add_fire_lags.py` were rerun on the 54 final stations: `fire_features_daily.csv` 95,742 rows, `fire_features_lags.csv` 95,418 rows, all checks pass (commands in the README). The raw FIRMS files are git-ignored and not on every machine, so copy them rather than re-request |
+| `build_fire_features.py` written; independent brute-force test matched on 28 of 28 cases; `tests/test_fire_geometry.py` passes | Nothing. The upwind step now reads the station wind table (`--wind-source table`; `grid` keeps the 2022 test route). `fire_upwind_daily.csv` is built for the whole window: 285,768 rows (54 stations x 588 dates, 20 Feb 2025 to 30 Sep 2026 x 3 radii x 3 half-angles), 8 of 8 checks pass, output in `docs/upwind_run_output.txt`. It starts on 20 Feb because IST 19 Feb has no full day of wind. 11 tests in `tests/test_upwind_points.py` pass, including table versus grid at all 54 stations (max difference 2e-5 m/s), and a 60-case recount from the raw files matched with 0 mismatches |
+| Night-detection date check settled: night passes are at about 19:00–22:00 UTC, so they belong to the next IST date and the conversion in the script is right. `src/check_night_dates.py` compares it with an independent calculation | Done: `check_night_dates.py` passes (script IST date equals the independent calculation on 11,861 time pairs); output saved in `docs/night_check_output.txt` |
+| Rules set: IST dates, near-real-time rows flagged, dates with no detection anywhere in the file stored as missing (NaN), not zero | Decided (plan, gap G1): of the 22 empty dates in the window, 8 become 0 (June to September, a run of 1 or 2 days, both neighbouring days under 100 detections) and 14 stay missing (outages). Applied in the merge, with `fire_day_status` and `is_nrt` carried into the final table |
 | Lags built in `src/add_fire_lags.py`: `lag0`, `lag1`, `lag2` (a 2-day running sum). Only `lag1` and `lag2` may be used for an hourly reading, because `lag0` contains passes after the hour; `assert_hourly_safe` enforces this | Read the UTC-to-IST conversion (lines 78–83 of `build_fire_features.py`) and the distance query (lines 120–123) yourself and be able to explain them |
-| Upwind feature built in `src/build_upwind_features.py` (radius x half-angle; u and v averaged over the day, never the angles) | |
+| Upwind feature built in `src/build_upwind_features.py` (radius x half-angle; u and v averaged over the day, never the angles). It holds same-day values, so the merge must use the previous IST day. Main setting 100 km and 45 degrees; the other eight combinations stay for sensitivity checks | |
 | The window has only one burning season: stated in the README Limitations | |
 | Fire tables are git-ignored (`data/processed/fire_*.csv`) and no longer tracked; the README gives the regeneration commands and expected row counts | |
 
@@ -108,8 +108,8 @@ The CDS queue is the bottleneck. Today it held about 10,000 queued requests, and
 
 1. Regenerate the key (optional: the archive pipeline does not need it). The night-detection check is settled (section 3); run `check_night_dates.py` where the FIRMS files are to keep its output.
 2. ~~Rebuild the station list on hours covered, then bulk-download OpenAQ.~~ Done (section 1).
-3. Test the ERA5 wide box and submit the window requests in small batches (scripts are ready; see section 2).
-4. While ERA5 queues: ~~compile the GRAP table~~ (done, section 4), rerun the fire features, run the start-versus-end test.
-5. Merge, check, then analyse.
+3. ~~Test the ERA5 wide box and submit the window requests~~ Done another way: point series (section 2).
+4. ~~Compile the GRAP table, rerun the fire features, build the upwind table~~ Done (sections 3 and 4).
+5. Merge (plan in `docs/IMPLEMENTATION_PLAN_upwind_and_final_dataset.md`, Part B), check, then analyse.
 
-The semester ends on 24 Nov, about four weeks away. The merge needs ERA5, so submit those requests as soon as the window is settled.
+The semester ends on 24 Nov. All five inputs of the merge now exist; the merge script and final table are the next work.
