@@ -55,7 +55,7 @@ Flags are in IST dates. Only festivals that plausibly change local emissions are
 | Diwali | 20 Oct 2025 (8 Nov 2026 is after the window); Naraka Chaturdasi is also 20 Oct and Govardhan Puja 22 Oct | official: gazetted holiday |
 | New Year's Eve | 31 Dec 2025 | fixed date |
 
-Left out on purpose: Chhath Puja (28 Oct 2025, a restricted holiday) and Eid (not a clear emissions driver). The window therefore contains **one** Diwali and one Dussehra, so any festival effect rests on a single occurrence; say so in the dictionary. Confirmed on 3 Nov 2026 against the Delhi government notifications: No.F.53/689/GAD/CN/2024-25 (holidays 2025) and No.F.53/812/GAD/CN/2025 dated 04.12.2025 (holidays 2026), General Administration Department, GNCT of Delhi. New Year's Eve is a fixed date and is not in either list. Record these two notification numbers in the provenance log when the flags are built (Phase B2).
+Left out on purpose: Chhath Puja (28 Oct 2025, a restricted holiday) and Eid (not a clear emissions driver). The window therefore contains **one** Diwali and one Dussehra, so any festival effect rests on a single occurrence; say so in the dictionary. Confirmed on 3 Nov 2026 against the Delhi government notifications: No.F.53/689/GAD/CN/2024-25 (holidays 2025) and No.F.53/812/GAD/CN/2025 dated 04.12.2025 (holidays 2026), General Administration Department, GNCT of Delhi. New Year's Eve is a fixed date and is not in either list. Both notification numbers and their links are recorded in `docs/provenance_log.csv` (done in Phase B2).
 
 ## G4: why 100 km and 45°
 
@@ -233,7 +233,10 @@ Plan as written:
 - Join pollution first and drop 8118.
 - Done when: the spine has 763,344 rows and 664,591 of them have PM2.5.
 
-### Phase B2: weather, policy, calendar (1 day)
+### Phase B2: weather, policy, calendar (1 day): DONE 3 Nov 2026
+Result: `src/build_final_dataset.py` now also realigns gases and sensors (`align_nonpm`, setting `NONPM_ALIGN_LAG_ROWS = 1`, B-10), joins weather (`join_weather`, `ERA5_STAMP_OFFSET_HOURS = 0`, rain as the half-and-half average, B-1), the GRAP columns (`stage_events`, `join_policy`, `grap_stage_applied`) and the calendar and festival columns (`add_calendar`, dates from the Delhi government notifications). 54 columns, 763,344 rows. All 23 script checks pass on the real files; each expected value is recomputed by plain index arithmetic, not by the merge code: every instant weather variable and the rain at every row, every one of the 15 realigned columns, and `grap_stage` at every hour. Weather is empty only in the first 5 hours of 19 Feb 2025 (270 rows); the first hour of each station is empty for the 15 realigned columns; GRAP has no missing values; `hours_since_stage_change` is empty for 139 hours per station before the first change; 30 stage changes (14 up, 16 down); festival rows are 5 days x 24 x 54 = 6,480 and 3-day windows 19,440. Tests: 11 new unit tests (21 in `tests/test_final_dataset.py`, including one full run on the real files; the whole suite is 58 passed). Three deliberate faults (weather one hour late, gases not realigned, control stations given the stage) each made the script report FAIL. Three random rows were traced by hand to every source and all matched. The run wrote to a scratch file; the real `final_dataset.csv` is written when B3 adds the fire columns.
+
+Plan as written:
 - Realign the gas and local-sensor columns by one row per B-10 (a test: the value in the row for hour h equals the source value for hour h - 1; the first hour is empty).
 - Weather: parse `time_utc`, apply B-1 (instant variables at the `ceil` stamp plus the offset of 0, rain as the half-and-half rule), join on `station_id` and the aligned stamp; keep the ERA5 columns in the B0 column list.
 - Policy: parse `ts_ist`, join on hour; add `grap_stage_applied`, `post_order`, `days_since_last_order`.
