@@ -94,8 +94,8 @@ The CDS queue is the bottleneck. Today it held about 10,000 queued requests, and
 
 | Step | Status |
 | --- | --- |
-| Join pollution, weather (station to nearest grid cell, aligned hour), fire (station and IST date) and policy (date and area) | Not started |
-| Row count, duplicates, missing-value summary, data dictionary, provenance log | Partly: log started |
+| Join pollution, weather (station to nearest grid cell, aligned hour), fire (station and IST date) and policy (date and area) | **Done 3 Nov 2026:** `src/build_final_dataset.py` writes `final_dataset.csv` and `.parquet` (763,344 rows, 70 columns, 43 checks pass, 76 tests pass in the whole suite). Plan: `docs/IMPLEMENTATION_PLAN_upwind_and_final_dataset.md` |
+| Row count, duplicates, missing-value summary, data dictionary, provenance log | **Done:** checks are in the script, `docs/final_dataset_dictionary.md` written from the real file, provenance row added. Found and handled: impossible gas and sensor values (set to empty) and doubtful `co` and `nox` unit labels (documented, not rescaled) |
 | EDA, difference-in-differences, event study, placebo tests, model, SHAP, MLflow | Not started |
 | Report, slides, public GitHub repository | Not started |
 
