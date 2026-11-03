@@ -132,14 +132,20 @@ Add `tests/test_upwind_points.py` on small made-up frames:
 - **equivalence test:** for Nov–Dec 2025, the table path and the grid path (`data/raw/era5/era5_window_2025_11-12_*.nc`) give the same `u_mean`, `v_mean` for a station. This also guards the :30 timestamp handling.
 - Done when: `pytest tests` passes, including the old tests.
 
-### Phase A3: run (0.5 day)
+### Phase A3: run (0.5 day): DONE 3 Nov 2026
+Result: `data/processed/fire_upwind_daily.csv` written (git-ignored) with `--wind-days 1`: 285,768 rows, 54 stations (all of `stations_final.csv`), 588 IST dates 20 Feb 2025 to 30 Sep 2026, radii 50/100/200, half-angles 30/45/60, 17 columns, no duplicate keys, no missing wind, no 2022 rows left. Exit code 0, 8 of 8 script checks PASS. Fire columns are NaN on exactly the 22 empty dates of G1 (10,692 rows = 22 × 486) and `is_nrt` is true for 44,712 rows from 1 Jul 2026. Full output saved in `docs/upwind_run_output.txt`. The earlier 2022 test table is replaced.
+
+Plan as written:
 ```
 python src/build_upwind_features.py --stations data/processed/stations_final.csv --wind-source table --wind-days 1 --out data/processed/fire_upwind_daily.csv
 ```
 - Expected: 54 stations, 285,768 rows, every built-in check PASS, non-zero exit on any FAIL.
 - Done when: row count matches and the script's own spot check (brute-force recount) passes.
 
-### Phase A4: record (0.25 day)
+### Phase A4: record (0.25 day): DONE 3 Nov 2026
+Result: `README.md` (fire section: wind source, expected 285,768 rows, 20 Feb start, NaN dates, same-day warning, `--wind-source grid` for the 2022 files, new test command), `docs/project_status.md` (section 3 rewritten as done, G1 rule, suggested order updated) and `docs/provenance_log.csv` (row for the upwind run) updated. Full suite still 37 passed. Part A is complete.
+
+Plan as written:
 - Update `README.md` (command, expected rows), `docs/project_status.md` (fires: done), `docs/provenance_log.csv` (the point-file row already exists; add the upwind run date).
 - State in the README: upwind starts 20 Feb 2025; the feature is approximate (0.25° wind, daily mean).
 - Done when: the status table shows fires as complete.
