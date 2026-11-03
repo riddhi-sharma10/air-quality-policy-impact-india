@@ -7,11 +7,15 @@ direction the wind blows FROM, and sums their FRP. Whole-day, day-pass and night
 Wind: u10 and v10 at the station's nearest ERA5 grid cell, averaged over the last --wind-days IST
 calendar days (1 = the same IST day as the detections; 2 = that day and the day before). The
 vectors u and v are averaged, never the angles; direction is then taken from the mean vector.
-Only stations inside the ERA5 box and dates with a full set of wind hours are produced.
+Only stations with wind data and dates with a full set of wind hours are produced.
+
+Wind sources (--wind-source):
+  table (default)  data/processed/era5_station_hourly.csv, one hourly series per station
+  grid             gridded era5_delhi_*_instant.nc files in --era5-dir (the 2022 Delhi test files)
 
 Usage:
-  python src/build_upwind_features.py [--stations CSV] [--start D --end D] [--wind-days 1|2]
-         [--era5-dir DIR] [--out CSV]
+  python src/build_upwind_features.py --stations data/processed/stations_final.csv [--start D --end D]
+         [--wind-days 1|2] [--wind-source table|grid] [--wind-table CSV] [--era5-dir DIR] [--out CSV]
 """
 import argparse
 import sys
@@ -53,12 +57,33 @@ def load_era5(era5_dir):
     return ds
 
 
-def station_wind(ds, lat, lon, wind_days):
-    """Daily mean wind vector at the nearest ERA5 cell, over the last `wind_days` IST days."""
+def load_wind_table(path):
+    """Hourly u10, v10 per station from era5_station_hourly.csv (built by extract_era5_stations.py).
+
+    Returns {station_id: DataFrame(time_utc, u, v)}, one frame per station, sorted by hour.
+    """
+    if not path.exists():
+        sys.exit(f"no wind table at {path} (run src/extract_era5_stations.py first)")
+    t = pd.read_csv(path, usecols=["station_id", "time_utc", "u10", "v10"], parse_dates=["time_utc"])
+    if t.duplicated(["station_id", "time_utc"]).any():
+        sys.exit("duplicate station-hours in the wind table")
+    t = t.rename(columns={"u10": "u", "v10": "v"}).sort_values(["station_id", "time_utc"])
+    print(f"  wind table: {t['station_id'].nunique()} stations, {t['time_utc'].min()} .. {t['time_utc'].max()} UTC")
+    return {int(sid): g[["time_utc", "u", "v"]].reset_index(drop=True) for sid, g in t.groupby("station_id")}
+
+
+def grid_hourly(ds, lat, lon):
+    """Hourly u and v at the nearest cell of a gridded ERA5 dataset, in the same layout as the wind table."""
     cell = ds.sel(latitude=lat, longitude=lon, method="nearest")
+    return pd.DataFrame({"time_utc": pd.DatetimeIndex(cell["valid_time"].values),
+                         "u": cell["u10"].values.astype(float), "v": cell["v10"].values.astype(float)})
+
+
+def station_wind(hourly_uv, wind_days):
+    """Daily mean wind vector from a station's hourly u and v, over the last `wind_days` IST days."""
     # ERA5 stamps are UTC on the hour = IST :30. IST day d therefore holds the 24 stamps 00:30..23:30 IST.
-    ist = pd.DatetimeIndex(cell["valid_time"].values) + IST_OFFSET
-    u, v = cell["u10"].values.astype(float), cell["v10"].values.astype(float)
+    ist = pd.DatetimeIndex(hourly_uv["time_utc"]) + IST_OFFSET
+    u, v = hourly_uv["u"].to_numpy(dtype=float), hourly_uv["v"].to_numpy(dtype=float)
     hourly = pd.DataFrame({"u": u, "v": v, "spd": np.hypot(u, v), "n": 1}, index=ist.floor("D"))
     daily = hourly.groupby(level=0).sum()
     daily = daily.reindex(pd.date_range(daily.index.min(), daily.index.max(), freq="D"), fill_value=0)
@@ -80,6 +105,10 @@ def main():
     ap.add_argument("--start")
     ap.add_argument("--end")
     ap.add_argument("--wind-days", type=int, default=1, choices=[1, 2])
+    ap.add_argument("--wind-source", choices=["table", "grid"], default="table",
+                    help="table = data/processed/era5_station_hourly.csv (the study window); "
+                         "grid = gridded era5_delhi_*_instant.nc files in --era5-dir (the 2022 test files)")
+    ap.add_argument("--wind-table", type=Path, default=ROOT / "data" / "processed" / "era5_station_hourly.csv")
     ap.add_argument("--era5-dir", type=Path, default=ROOT / "data" / "raw" / "era5")
     ap.add_argument("--out", type=Path, default=ROOT / "data" / "processed" / "fire_upwind_daily.csv")
     ap.add_argument("--spot-station", type=int)
@@ -88,16 +117,28 @@ def main():
     print("Reading inputs")
     det, n_raw = load_detections()
     stations = load_stations(args.stations)
-    ds = load_era5(args.era5_dir)
+    if args.wind_source == "grid":
+        ds = load_era5(args.era5_dir)
 
-    # Stations inside the ERA5 box (half a grid cell of tolerance); the rest have no wind data.
-    lat_lo, lat_hi = float(ds["latitude"].min()) - 0.125, float(ds["latitude"].max()) + 0.125
-    lon_lo, lon_hi = float(ds["longitude"].min()) - 0.125, float(ds["longitude"].max()) + 0.125
-    inside = stations["latitude"].between(lat_lo, lat_hi) & stations["longitude"].between(lon_lo, lon_hi)
-    print(f"  stations inside the ERA5 box: {int(inside.sum())} of {len(stations)} (others skipped: no wind)")
+        def hourly_wind(r):
+            return grid_hourly(ds, r.latitude, r.longitude)
+
+        # Stations inside the ERA5 box (half a grid cell of tolerance); the rest have no wind data.
+        lat_lo, lat_hi = float(ds["latitude"].min()) - 0.125, float(ds["latitude"].max()) + 0.125
+        lon_lo, lon_hi = float(ds["longitude"].min()) - 0.125, float(ds["longitude"].max()) + 0.125
+        inside = stations["latitude"].between(lat_lo, lat_hi) & stations["longitude"].between(lon_lo, lon_hi)
+        print(f"  stations inside the ERA5 box: {int(inside.sum())} of {len(stations)} (others skipped: no wind)")
+    else:
+        wind_table = load_wind_table(args.wind_table)
+
+        def hourly_wind(r):
+            return wind_table[int(r.station_id)]
+
+        inside = stations["station_id"].astype(int).isin(wind_table.keys())
+        print(f"  stations with wind in the table: {int(inside.sum())} of {len(stations)} (others skipped: no wind)")
     stations = stations[inside].reset_index(drop=True)
 
-    winds = {int(r.station_id): station_wind(ds, r.latitude, r.longitude, args.wind_days) for r in stations.itertuples()}
+    winds = {int(r.station_id): station_wind(hourly_wind(r), args.wind_days) for r in stations.itertuples()}
     valid = [w["u_mean"].notna() for w in winds.values()]
     dates_ok = valid[0].index[valid[0]]
     assert all(v.index[v].equals(dates_ok) for v in valid), "stations disagree on wind availability"
@@ -201,11 +242,11 @@ def main():
     near = day[day["dist_km"] <= 100].copy()
     near["bearing"] = bearing_via_vectors_deg(srow["latitude"], srow["longitude"], near["latitude"].to_numpy(), near["longitude"].to_numpy())  # second method
     # wind recomputed straight from the ERA5 hours of that IST day, not from the table
-    cell = ds.sel(latitude=srow["latitude"], longitude=srow["longitude"], method="nearest")
-    ist = pd.DatetimeIndex(cell["valid_time"].values) + IST_OFFSET
+    raw = hourly_wind(srow)
+    ist = pd.DatetimeIndex(raw["time_utc"]) + IST_OFFSET
     days_used = [date - pd.Timedelta(days=k) for k in range(args.wind_days)]
     sel = ist.floor("D").isin(days_used)
-    u_chk, v_chk = float(cell["u10"].values[sel].mean()), float(cell["v10"].values[sel].mean())
+    u_chk, v_chk = float(raw["u"].to_numpy()[sel].mean()), float(raw["v"].to_numpy()[sel].mean())
     wf = float(wind_from_deg(u_chk, v_chk))
     near["wind_from"] = wf
     near["diff"] = angular_diff_deg(near["bearing"], wf)
