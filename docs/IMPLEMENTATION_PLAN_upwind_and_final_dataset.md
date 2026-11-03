@@ -207,10 +207,11 @@ All of B-1 to B-9 have a chosen answer, below. They replace the recommendations 
 | B-4 | Fire columns in the table are only lag1 and lag2 (checked by `assert_hourly_safe`). Upwind uses the previous IST day. `lag1` on date d is the value on d-1; `lag2` is d-1 plus d-2 and is NaN if either day is NaN. After the G1 rule the lags are recomputed from the daily counts |
 | B-5 | `group` from `stations_final.csv` (39 treated, 15 control). `grap_stage_applied` = `grap_stage` for treated, 0 for control. Keep the raw `grap_stage` as well |
 | B-6 | Station 8118 is not in the table. Station list comes from `stations_final.csv`, which does not contain it (checked) |
-| B-7 | `hour` (IST), `weekday`, `month`, `season`, and `festival` (name or empty), `festival_day`, `festival_window` as in G3. Season: winter Dec-Feb, summer Mar-May, monsoon Jun-Sep, post-monsoon Oct-Nov |
+| B-7 | `hour` (IST), `weekday`, `month`, `season`, and `festival` (the name, or `none`), `festival_day`, `festival_window` as in G3. Season: winter Dec-Feb, summer Mar-May, monsoon Jun-Sep, post-monsoon Oct-Nov |
 | B-8 | Event-time columns come from the stage changes in `grap_hourly` (30 changes in the window): `hours_since_stage_change` (NaN before the first change on 24 Feb 2025 19:00) and `last_change_direction` (`up` or `down`). Orders that do not change the stage, like 7 Mar 2025, give no event |
 | B-9 | `data/processed/final_dataset.csv` (git-ignored) and `final_dataset.parquet` (`pyarrow` 25.0.1 is installed) |
 | B-10 | **Gases and the stations' own sensors are realigned to the PM2.5 hour.** Their raw stamps are real clock times (temperature matches ERA5 at lag 0 on the raw stamps at 46 stations), but `pollution_hourly.csv` labels every channel with the PM2.5 shift, so in one row these channels describe the hour after the PM2.5. In the merge, `NONPM_ALIGN_LAG_ROWS = 1`: for `no`, `no2`, `nox`, `so2`, `co`, `o3`, their `n_*` counts, `local_temp_c`, `local_rh` and `local_wind_speed`, the value in the row for hour h is taken from the row for hour h - 1. The first hour of each station (19 Feb 2025 00:00) is then empty for these columns. `pm25`, `pm10`, `network_pm25_share` and `network_outage` are not moved. The pollution file itself stays as built. Set the lag to 0 to switch it off |
+| B-11 | **Impossible gas and sensor values are set to empty** (found 3 Nov 2026 while writing the dictionary: `pollution_hourly.csv` cleaned PM only, so SO2 reached 2e16, NO 59,000, relative humidity -90 to 183 and temperature -61). `QC_LIMITS` in `build_final_dataset.py`: no 0 to 2000, no2 0 to 1000, nox 0 to 10, so2 0 to 1000, o3 0 to 1000, co 0 to 100, local_temp_c -10 to 55, local_rh 0 to 100, local_wind_speed 0 to 40 (limits kept). Applied before the realignment; 1,865 values removed in all; `n_*` counts and `pollution_hourly.csv` unchanged. **Unit warning, not rescaled:** the archive labels `co` as ppb but its median is about 1 (probably mg/m³), and `nox` as ppb but it is about 1/1000 of NO + NO2 at every station (probably ppm); both are documented in the dictionary as unit-doubtful and are to be used as relative measures |
 
 Verified before closing B0: every source column named in the list exists in its file (pollution, stations, weather, fire lags, upwind, GRAP); `group` has the values `treated` and `control`; radii are 50, 100 and 200; GRAP has 30 stage changes (14 up, 16 down); weather rows missing at offset 0, 1 and 2 are 270, 216 and 162; gases and local sensors lose the first hour of each station (54 rows) after B-10 (all on 19 Feb 2025 IST).
 
@@ -218,7 +219,7 @@ Verified before closing B0: every source column named in the list exists in its 
 - **Identifiers (9):** `station_id`, `name`, `city`, `sub_area`, `group`, `latitude`, `longitude`, `hour_ist`, `hour_utc`
 - **Pollution (21):** `pm25`, `pm10`, `no`, `no2`, `nox`, `so2`, `co`, `o3`; the eight `n_*` reading counts; `local_temp_c`, `local_rh`, `local_wind_speed` (validation only, not model inputs); `network_pm25_share`, `network_outage` (the shift-helper column `stamp_hour_ist` is dropped). Gases and local sensors are realigned one row (B-10)
 - **Weather (10):** `era5_time_utc`, `u10`, `v10`, `wind_speed`, `wind_from_deg`, `t2m_c`, `d2m_c`, `sp_hpa`, `blh_m`, `tp_mm`
-- **Fire (16):** for radius 50, 100 and 200: `n_nh_lag1`, `frp_nh_lag1`, `n_nh_lag2`, `frp_nh_lag2` (12 columns); upwind at 100 km and 45 degrees: `n_up_nh_lag1`, `frp_up_nh_lag1`; `fire_day_status`, `fire_is_nrt` (true when a day used is on or after 1 Jul 2026)
+- **Fire (16):** for radius 50, 100 and 200: `n_nh_<r>km_lag1`, `frp_nh_<r>km_lag1`, `n_nh_<r>km_lag2`, `frp_nh_<r>km_lag2` (12 columns); upwind at 100 km and 45 degrees: `n_up_nh_100km_45deg_lag1`, `frp_up_nh_100km_45deg_lag1`; `fire_day_status`, `fire_is_nrt` (true when a day used is on or after 1 Jul 2026)
 - **Policy (7):** `grap_stage`, `grap_stage_applied`, `schedule_version`, `grap_uncertain`, `grap_inferred`, `hours_since_stage_change`, `last_change_direction`
 - **Calendar (7):** `hour`, `weekday`, `month`, `season`, `festival`, `festival_day`, `festival_window`
 
@@ -243,14 +244,18 @@ Plan as written:
 - Calendar: hour, weekday, month, season, festival flags.
 - Done when: each join leaves the row count at 763,344 and the report prints how many rows matched.
 
-### Phase B3: fire (1 day)
+### Phase B3: fire (1 day): DONE 3 Nov 2026
+Result: `src/fire_empty_days.py` (the G1 rule: `classify_dates`, `apply_zero_days`) and, in `src/build_final_dataset.py`, `date_status`, `fire_lags_wide`, `upwind_lag1`, `join_fire` and `check_fire`. The rule is applied to the daily counts, lag1 and lag2 are recomputed with the existing `add_lags`, the 12 lag columns are pivoted by radius (`n_nh_50km_lag1` ... `frp_nh_200km_lag2`), the upwind columns at 100 km and 45 degrees are moved forward one IST day (`n_up_nh_100km_45deg_lag1`, `frp_up_nh_100km_45deg_lag1`), and `fire_day_status` (the status of the previous day) and `fire_is_nrt` are added. Names end in `_lag1` or `_lag2` so `assert_hourly_safe` accepts them. Final table: 763,344 rows, 70 columns. All 35 script checks pass on the real files, including the dates classified by the rule (8 cloud days set to 0, 14 outage days kept missing, matching exactly the dates empty in the daily table), lag1 empty exactly after an outage day, lag2 empty exactly when d-1 or d-2 is an outage day, upwind lag1 empty exactly after an outage day or before 20 Feb 2025 (20,736 rows), lag1 equal to 0 after a cloud day, `fire_is_nrt` true for 117,936 rows (from 2 Jul 2026), every fire column constant within an IST date, 40 station-dates recounted from the raw detections (a quarter of them next to empty days) and 30 upwind station-dates traced to the upwind table. Tests: 10 in `tests/test_fire_empty_days.py` (including the real-data check of 8 and 14) and 5 new in `tests/test_final_dataset.py`; the whole suite is 73 passed. Three deliberate faults (upwind not shifted, cloud rule switched off, lag1 holding the same-day value) each made the script report FAIL. The run wrote to a scratch file; the real `final_dataset.csv` is written in B4 after the final checks, or earlier by running the script.
 - **First apply the empty-day rule (G1)** to the daily counts and recompute `lag1` and `lag2` from them (a small function, for example `src/fire_empty_days.py`, with its own test: a 1-day June gap between low days becomes 0, a 4-day March gap stays NaN). Add `fire_day_status` and keep `is_nrt`.
 - Pivot `fire_features_lags.csv` to one row per station and date with columns such as `n_nh_lag1_50`, `n_nh_lag1_100`, `n_nh_lag1_200` and the `lag2` and `frp` versions.
 - Join on station and the IST date of `hour_ist`. Run the `assert_hourly_safe` check on the column list before the join.
 - After Part A: take the chosen upwind setting (A-4), shift it by one IST day (A-3) and join the same way. If Part A is not finished, build the table without these columns and add them in one small step later.
-- Done when: no `lag0` or unshifted columns are in the table, and 19–20 Feb 2025 are the only upwind gaps.
+- Done when: no `lag0` or unshifted columns are in the table. (Written before the empty-day rule: the upwind columns are also empty on the day after each of the 14 outage days, by design, 20,736 rows in all; the checks verify exactly that pattern.)
 
-### Phase B4: checks (0.5 day)
+### Phase B4: checks (0.5 day): DONE 3 Nov 2026
+Result: all of these are built into `src/build_final_dataset.py` and pass on the real files (43 checks): row count, duplicates, 54 stations x 14,136 hours, PM2.5 count 664,591, every join checked against its source for every row, the missing-value summary by column group, range checks (`check_ranges`: PM, temperature, dewpoint, pressure, wind, boundary layer, rain, coordinates, GRAP stage, calendar, counts not negative, fire radius ordering, upwind not above all-direction), the B-11 limits, only lag1/lag2 fire columns, and hand traces of random rows. The script writes `data/processed/final_dataset.csv` and `final_dataset.parquet` (both git-ignored) only when every check passes; the two files hold the same values. The range checks and the dictionary found the B-11 problem, which no earlier check had looked for.
+
+Plan as written:
 The script prints PASS or FAIL for each and exits non-zero on failure:
 - 763,344 rows; no duplicate (`station_id`, `hour_ist`); 54 stations; 14,136 hours each.
 - PM2.5 non-null count equals 664,591 (nothing lost or added by the joins).
@@ -261,7 +266,10 @@ The script prints PASS or FAIL for each and exits non-zero on failure:
 - Spot checks: three random rows traced by hand back to each source file.
 - Done when: all checks pass on the real files.
 
-### Phase B5: tests and documents (0.5 day)
+### Phase B5: tests and documents (0.5 day): DONE 3 Nov 2026 (the README, status and provenance updates are in the commit with the dictionary)
+Result: `tests/test_final_dataset.py` (28 tests besides the full real run), `tests/test_fire_empty_days.py` (10), `docs/final_dataset_dictionary.md` generated from the real file (every figure in it recomputed from the Parquet and matched), a provenance row for the final table, and the README and status updated. The whole suite passes.
+
+Plan as written:
 - `tests/test_final_dataset.py` on small made-up frames: alignment rule (a known `hour_utc` finds the right ERA5 stamp), `grap_stage_applied` for treated and control, fire shift (value on day d is the table value of day d−1), spine row count.
 - `docs/final_dataset_dictionary.md`: every column, unit, source, join rule, missing-value meaning, and the alignment and leakage choices.
 - `docs/provenance_log.csv`: a row for the final table, with the date and the inputs' versions.
