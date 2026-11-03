@@ -28,11 +28,11 @@ One row per station per IST hour for 19 Feb 2025 to 30 Sep 2026: **54 stations �
 | --- | --- | --- | --- | --- |
 | `pm25` | µg/m³ | PM2.5, mean of the readings in the hour. The outcome variable | 98,753 | 0 to 1000 |
 | `pm10` | µg/m³ | PM10 (54 stations kept, but station 5652 has none) | 106,271 | 0 to 2000 |
-| `no` | labelled ppb, probably µg/m³ | Nitric oxide. **Unit doubtful** (see Unit labels). Realigned one hour; values above 2,000 set to empty | 96,826 | 0 to 1991 |
-| `no2` | labelled ppb, probably µg/m³ | Nitrogen dioxide. **Unit doubtful** (see Unit labels). Realigned one hour; values above 1,000 set to empty | 93,186 | 0 to 1000 |
-| `nox` | labelled ppb, probably ppm | Nitrogen oxides. **Unit doubtful** (see Unit labels): about 1/1500 of NO + NO2. Realigned one hour | 358,508 | 0 to 3.614 |
-| `so2` | labelled ppb, probably µg/m³ | Sulphur dioxide. **Unit doubtful** (see Unit labels). Realigned one hour; values above 1,000 set to empty | 177,639 | 0 to 1000 |
-| `co` | labelled ppb, probably mg/m³ | Carbon monoxide. **Unit doubtful** (see Unit labels): the median is about 1. Realigned one hour; values above 100 set to empty | 93,363 | 0 to 58.12 |
+| `no` | µg/m³ (labelled ppb) | Nitric oxide. **The file label is wrong** (see Unit labels): the values are CPCB's native µg/m³. Realigned one hour; values above 2,000 set to empty | 96,826 | 0 to 1991 |
+| `no2` | µg/m³ (labelled ppb) | Nitrogen dioxide. **The file label is wrong**: native µg/m³. Realigned one hour; values above 1,000 set to empty | 93,186 | 0 to 1000 |
+| `nox` | ppm (labelled ppb) | Nitrogen oxides. **The file label is wrong**: CPCB sends ppb and the file holds that divided by 1,000, so ppm. Realigned one hour | 358,508 | 0 to 3.614 |
+| `so2` | probably µg/m³ (labelled ppb) | Sulphur dioxide. CPCB sends µg/m³ and the file is labelled ppb like NO and NO2, so it is most likely unconverted µg/m³ (not testable here). Realigned one hour; values above 1,000 set to empty | 177,639 | 0 to 1000 |
+| `co` | probably mg/m³ (labelled ppb) | Carbon monoxide. CPCB sends mg/m³; the median is about 1. If it was converted to ppm it is 1.145 times smaller (not testable here). Realigned one hour; values above 100 set to empty | 93,363 | 0 to 58.12 |
 | `o3` | µg/m³ | Ozone. Realigned one hour; values above 1,000 set to empty | 93,282 | 0 to 1000 |
 | `n_pm25` | count | Readings averaged into `pm25` (0 = no data) | 0 | 0 to 6 |
 | `n_pm10` | count | Readings averaged into `pm10` | 0 | 0 to 6 |
@@ -114,14 +114,15 @@ One row per station per IST hour for 19 Feb 2025 to 30 Sep 2026: **54 stations �
 - **Gases and the stations' own sensors (decision B-10).** Their raw stamps are real clock times, but the pollution file gives every channel the PM2.5 label, so in the pollution file those columns describe the hour after the PM2.5 in the same row. In this table they are taken from the row one hour earlier (`NONPM_ALIGN_LAG_ROWS = 1`) so that every column in a row describes the same hour. The first hour of each station is empty for them. `pm25`, `pm10`, `network_pm25_share` and `network_outage` stay in their row. `pollution_hourly.csv` itself is unchanged.
 - **Fire and the upwind feature use the previous days only.** Every hour of IST date d gets the fire values of d−1 (`lag1`) or d−1 plus d−2 (`lag2`), so no detection after the hour can explain a reading. The upwind columns are the previous day's same-day values. There are no lag-0 or same-day fire columns; the build refuses them.
 
-## Unit labels in the archive: the gas columns are unit-doubtful
-The archive labels NO, NO2, NOx, SO2 and CO as ppb. Two checks on the data show that this cannot be right for CO and NOx, and probably not for NO, NO2 and SO2 either:
+## Unit labels in the archive: the file labels the gases ppb, which is wrong
+`pollution_hourly.csv` (from the OpenAQ archive) labels NO, NO2, NOx, SO2 and CO as ppb. The CPCB's own data-transmission protocol for its continuous stations (Protocol_CAAQM, table of standard parameters, https://cpcb.gov.in/upload/caaqm/Protocol_CAAQM.pdf) sends: CO in mg/m³ (1 ppm = 1.145 mg/m³), SO2, NO, NO2 and O3 in µg/m³, **NOx in ppb**, PM10 and PM2.5 in µg/m³, temperature in °C, relative humidity in %, wind speed in m/s. What the file holds follows from a test on the data:
 
-- **CO:** the median is 0.88 and the 99th percentile 4.74 in file units. About 1 ppb is impossible for urban air (even clean background air holds about 100 ppb), while about 1 is normal in mg/m³, the unit Indian pollution control boards use for CO.
-- **NOx against NO + NO2:** row by row, NOx = 0.00066 × (NO + NO2) (correlation 0.88; per-station slope 0.00046 to 0.00102, median 0.00066). If NO and NO2 were in ppb and NOx in ppm, the slope would be 0.001. If NO and NO2 are in µg/m³ and NOx in ppm it should be about 0.0006 to 0.0007, because 1 ppb of NO2 is 1.88 µg/m³ and 1 ppb of NO is 1.23 µg/m³. The data fit the second case.
-- **Conclusion (inferred, not confirmed):** `co` is probably mg/m³, `nox` probably ppm, and `no`, `no2` and `so2` probably µg/m³, the units the Indian boards report. `o3` is labelled µg/m³ and agrees with that. Confirming it needs the original CPCB files or OpenAQ's notes on how it ingests them; I found neither.
-- **What it affects:** a unit is a fixed multiplier, so changes, ratios within one column, logs and standardised values are not affected. It does matter when a gas is compared with a standard or with another gas, so do not do that with these columns. No column is rescaled in this table.
-- **Where the usual Indian units come from:** the UPPCB report to the National Green Tribunal in OA 725 of 2022 (CAAQMS CO in mg/m³, other gases and PM in µg/m³) and CPCB-derived public sites that state 'µg/m³, CO in mg/m³'.
+- **NO, NO2 and NOx (confirmed by a fit).** If the file's NO and NO2 are CPCB's native µg/m³ and its NOx is CPCB's ppb divided by 1,000 (ppm), then NOx = 0.001 × (NO/1.23 + NO2/1.88), using CPCB's conversion factors. The data give a slope of 0.00099 (per-station median 0.00100, middle half 0.00100 to 0.00101; correlation 0.89; median residual 2% of the median NOx). Reading NO and NO2 as the labelled ppb instead gives a slope of 0.00066 and a median residual of 15%, which does not fit. So `no` and `no2` are µg/m³, `nox` is ppm, and the ppb label is wrong for all three.
+- **CO (probable).** The median is 0.88 and the 99th percentile 4.74, which is normal for mg/m³ and impossible for ppb. It is most likely CPCB's native mg/m³ (the file left NO and NO2 unconverted). If it had been converted to ppm it would be 1.145 times smaller; the data cannot tell the two apart.
+- **SO2 (probable).** CPCB sends µg/m³ and the file labels it ppb exactly as NO and NO2, so it is most likely unconverted µg/m³. Nothing in the data can test it.
+- **O3.** Labelled µg/m³, which is CPCB's native unit.
+- **What it affects:** a unit is a fixed multiplier, so changes, ratios within one column, logs and standardised values are not affected. It does matter when a gas is compared with a standard (for example the NO2 limit is in µg/m³) or with another gas. For that, use the units in the table above, not the file's label. No column is rescaled in this table, so `pollution_hourly.csv` and this table keep the file's values.
+- **Still open:** the OpenAQ ingestion code was not found, so the exact conversion it applied to CO and SO2 is not verified; the NOx result shows it divided CPCB's ppb by 1,000 and left NO and NO2 alone.
 
 ## Cleaning done in this table (decision B-11)
 `pollution_hourly.csv` cleaned PM only (negatives, PM2.5 above 1,000, PM10 above 2,000, flat runs). The gas and sensor columns still held instrument glitches, for example SO2 of 2×10¹⁶ ppb, NO of 59,000 ppb, relative humidity from −90 % to 183 % and temperatures down to −61 °C. In this table, values outside these limits are set to empty before anything else is done to them (the limit itself is kept):
