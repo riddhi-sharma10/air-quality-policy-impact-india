@@ -1,4 +1,10 @@
-"""Turn the ERA5 grid files into one hourly table per station (nearest grid cell).
+"""Turn the ERA5 files into one hourly table per station (nearest 0.25 degree grid cell).
+
+Two sources, same output:
+  --source points (default)  data/raw/era5_points/era5_point_<lat>_<lon>_*.nc, one single-point file per
+                             grid cell that holds a station (CDS time-series dataset; no expver flag, so
+                             expver is written as "NA" and era5_preliminary is left empty)
+  --source grid              the gridded era5_window_<period>_instant/accum.nc files in data/raw/era5/
 
 Output columns (UTC hours; see docs for the time-alignment decision, which is made at merge time):
   station_id, time_utc, cell_lat, cell_lon,
@@ -8,8 +14,10 @@ Output columns (UTC hours; see docs for the time-alignment decision, which is ma
   expver, era5_preliminary   (ERA5T, expver 5, is preliminary and may be revised)
 
 Run:  python src/extract_era5_stations.py
+Gridded files:
+      python src/extract_era5_stations.py --source grid
 Test on the 2022 Delhi files:
-      python src/extract_era5_stations.py --pattern "era5_delhi_2022_*" --out <file>
+      python src/extract_era5_stations.py --source grid --pattern "era5_delhi_2022_*" --out <file>
 """
 import argparse
 import sys
@@ -20,10 +28,14 @@ import pandas as pd
 import xarray as xr
 
 from era5_window import ERA5_DIR, KINDS, STUDY_END, STUDY_START
+
+POINTS_DIR = ERA5_DIR.parent / "era5_points"
+POINT_VARS = sorted(KINDS["instant"] | KINDS["accum"])
 from fire_geometry import wind_from_deg
 
 ROOT = Path(__file__).resolve().parent.parent
 STATIONS = ROOT / "data" / "processed" / "stations.csv"
+STATIONS_FINAL = ROOT / "data" / "processed" / "stations_final.csv"
 DEFAULT_OUT = ROOT / "data" / "processed" / "era5_station_hourly.csv"
 GRID_STEP = 0.25
 MAX_OFFSET_DEG = GRID_STEP  # a station farther than one cell from the nearest grid point is outside the box
@@ -93,15 +105,47 @@ def extract(pattern, stations):
     return out
 
 
+def extract_points(stations):
+    """One hourly frame per station from the single-point files (nearest grid cell, as in extract)."""
+    cells = {}
+    for f in sorted(POINTS_DIR.glob("era5_point_*.nc")):
+        with xr.open_dataset(f) as d:
+            cells[(round(float(d["latitude"]), 2), round(float(d["longitude"]), 2))] = d[POINT_VARS].load()
+    if not cells:
+        sys.exit(f"no era5_point_*.nc files in {POINTS_DIR}")
+    frames = []
+    for sid, lat, lon in zip(stations["id"], stations["latitude"], stations["longitude"]):
+        key = (round(round(lat / GRID_STEP) * GRID_STEP, 2), round(round(lon / GRID_STEP) * GRID_STEP, 2))
+        if key not in cells:
+            print(f"skipping station {sid}: no point file for cell {key}")
+            continue
+        d = cells[key]
+        df = pd.DataFrame({k: d[k].values for k in POINT_VARS})
+        df.insert(0, "time_utc", pd.DatetimeIndex(d["valid_time"].values))
+        df.insert(0, "station_id", sid)
+        df.insert(2, "cell_lat", key[0])
+        df.insert(3, "cell_lon", key[1])
+        df["expver"] = "NA"
+        frames.append(df)
+    out = convert(pd.concat(frames, ignore_index=True))
+    out["era5_preliminary"] = pd.NA
+    return out
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--source", choices=["points", "grid"], default="points")
     ap.add_argument("--pattern", default="era5_window_*", help="file prefix before _instant/_accum.nc")
     ap.add_argument("--out", default=str(DEFAULT_OUT))
     ap.add_argument("--no-trim", action="store_true", help="keep hours outside the study window")
     args = ap.parse_args()
 
-    stations = pd.read_csv(STATIONS, encoding="utf-8-sig")
-    result = extract(args.pattern, stations)
+    if args.source == "points":
+        stations = pd.read_csv(STATIONS_FINAL, encoding="utf-8-sig")
+        result = extract_points(stations)
+    else:
+        stations = pd.read_csv(STATIONS, encoding="utf-8-sig")
+        result = extract(args.pattern, stations)
     if not args.no_trim:
         lo, hi = pd.Timestamp(STUDY_START), pd.Timestamp(STUDY_END) + pd.Timedelta(hours=23)
         result = result[(result["time_utc"] >= lo) & (result["time_utc"] <= hi)]
@@ -112,4 +156,6 @@ if __name__ == "__main__":
     result.to_csv(args.out, index=False, float_format="%.5g")
     print(f"wrote {len(result)} rows, {result['station_id'].nunique()} stations, "
           f"{result['time_utc'].min()} to {result['time_utc'].max()} -> {args.out}")
-    print(f"preliminary (ERA5T) rows: {int(result['era5_preliminary'].sum())}")
+    print(f"preliminary (ERA5T) rows: {int(result['era5_preliminary'].fillna(False).astype(bool).sum())}"
+          f" (unknown for point files)" if args.source == "points" else
+          f"preliminary (ERA5T) rows: {int(result['era5_preliminary'].sum())}")

@@ -16,3 +16,11 @@ data/processed/pollution_hourly.csv
 
 # CAQM GRAP order PDFs: 116 MB, source addresses are in data/processed/grap_orders.csv (see README)
 data/raw/caqm_grap_pdfs/
+
+# raw ERA5 single-point time-series files (re-requestable from CDS)
+data/raw/era5_points/
+
+# stray CDS downloads and request logs (move into data/raw/era5_points/ instead)
+reanalysis-era5-*.nc
+era5_download*.log
+era5_points_share.zip

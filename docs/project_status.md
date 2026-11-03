@@ -62,6 +62,7 @@ Row count: 54 stations × 14,136 hours = 763,344 rows, of which 664,591 have PM2
 | **New:** `tests/test_extract_era5_stations.py` (5 tests pass): units, rain clipping, wind speed and direction, nearest cell, request periods | |
 | **New:** extraction tested on the 2022 Jan–Apr file: 118,080 rows, 41 stations, no NaNs, plausible ranges; Lucknow, Kanpur and Patna stations correctly skipped (Delhi-only box) | |
 | **New:** `.gitignore` now excludes `data/processed/era5_station_*.csv` (regenerate with `extract_era5_stations.py`) | |
+| **New (3 Nov 2026):** ERA5 obtained as 11 single-point series (`data/raw/era5_points/`, git-ignored, 5.9 MB) because the CDS gridded queue allows one request at a time and the web form rejects a box wider than 2 degrees of longitude. The 54 final stations fall in 11 grid cells, so this equals the nearest-cell extraction. Each file is 14,136 hours with all 7 variables and no gaps; Nov-Dec 2025 matches the gridded files to float precision. `extract_era5_stations.py` now reads them by default (`--source points`; `--source grid` keeps the old route) and wrote `era5_station_hourly.csv`: 763,344 rows, 54 stations, no NaNs | The point files carry no `expver`, so `expver` is "NA" and `era5_preliminary` is empty; the ERA5T share of the last months is unknown. The gridded `download_era5.py` route is no longer needed. Wide-box test and the 14 gridded files are dropped |
 
 The CDS queue is the bottleneck. Today it held about 10,000 queued requests, and priority drops if you hold many at once.
 
