@@ -37,26 +37,26 @@ Scripts go in `src/analysis/`, tables in `outputs/tables/`, figures in `outputs/
 
 ## B2 H2 interrupted time series (14 to 19 Nov)
 
-- [ ] **B2.1 Build the analysis series.** Daily mean PM2.5 for the treated group and for each control city, from valid hours only (a day needs at least 18 of 24 valid hours; if RS's `analysis_station_day.parquet` is not ready, compute it yourself from the Parquet file and tell RS so the two match). Also the daily weather means and the fire columns (`n_up_nh_100km_45deg_lag1`).
-- [ ] **B2.2 Pre-set the rules (write them in the pre-task note before running):** effect windows (days 1 to 3 and days 4 to 7 after activation), buffer of 12 hours around the change, pre-period length (60 days before, excluding days within 7 days of another change), what counts as valid.
-- [ ] **B2.3 Choose the primary method (DECISION, reviewer MK).** Options:
+- [x] **B2.1 Build the analysis series.** Daily mean PM2.5 for the treated group and for each control city, from valid hours only (a day needs at least 18 of 24 valid hours; if RS's `analysis_station_day.parquet` is not ready, compute it yourself from the Parquet file and tell RS so the two match). Also the daily weather means and the fire columns (`n_up_nh_100km_45deg_lag1`).
+- [x] **B2.2 Pre-set the rules (write them in the pre-task note before running):** effect windows (days 1 to 3 and days 4 to 7 after activation), buffer of 12 hours around the change, pre-period length (60 days before, excluding days within 7 days of another change), what counts as valid.
+- [ ] **B2.3 Choose the primary method (DECISION, reviewer MK). PROVISIONAL: option B applied, MK confirmation pending.** Options:
   - (A) segmented regression on the daily series (level and slope change at activation), with weather and fire controls;
   - (B) counterfactual: fit a weather-and-fire model on the pre-period, predict the post-period, compare actual with predicted;
   - (C) treated minus control, before and after (only if the handout covers it).
   Recommended: B primary (it matches H2's wording), A cross-check, C sensitivity.
-- [ ] **B2.4 Fit the weather-and-fire model** (method B). `log(pm25) ~ wind speed + wind direction terms + temperature + humidity (from t2m and d2m) + blh + rain + pressure + fire (upwind lag1) + day-of-week`. Check the pre-period fit (R2, residual plot, residual autocorrelation) before using it to predict. State the minimum pre-period fit you will accept (for example R2 of at least 0.4 on the held-out last 14 pre-days).
-- [ ] **B2.5 Predict and compare per event.** For each usable event: actual minus predicted for days 1 to 3 and 4 to 7, with a 95% interval from the prediction error (for example residual bootstrap by blocks of days, so autocorrelation is respected).
-- [ ] **B2.6 Pool the events.** Options: (A) median of event effects with a bootstrap over events; (B) a random-effects mean. With 5 to 8 events say plainly that the interval is wide. Do not pool events that overlap each other.
-- [ ] **B2.7 Cross-check with segmented regression** (method A) on the same events. Report whether the sign and size agree.
-- [ ] **B2.8 Placebo events (the mean-reversion check).**
+- [x] **B2.4 Fit the weather-and-fire model** (method B). `log(pm25) ~ wind speed + wind direction terms + temperature + humidity (from t2m and d2m) + blh + rain + pressure + fire (upwind lag1) + day-of-week`. Check the pre-period fit (R2, residual plot, residual autocorrelation) before using it to predict. State the minimum pre-period fit you will accept (for example R2 of at least 0.4 on the held-out last 14 pre-days).
+- [x] **B2.5 Predict and compare per event.** For each usable event: actual minus predicted for days 1 to 3 and 4 to 7, with a 95% interval from the prediction error (for example residual bootstrap by blocks of days, so autocorrelation is respected).
+- [x] **B2.6 Pool the events. (Not possible: only one primary event passed the counterfactual-quality rule, so no pooled estimate.)** Options: (A) median of event effects with a bootstrap over events; (B) a random-effects mean. With 5 to 8 events say plainly that the interval is wide. Do not pool events that overlap each other.
+- [x] **B2.7 Cross-check with segmented regression** (method A) on the same events. Report whether the sign and size agree.
+- [x] **B2.8 Placebo events (the mean-reversion check).**
   - [ ] Treated stations: dates with a 7-day pre-level as high as the real events but no stage change within 7 days, picked by a fixed rule before looking at outcomes.
   - [ ] Control cities: the real event dates, same method. (Patna, Lucknow and Kanpur had no GRAP stage changes, so any "effect" there shows how much falls after a spike anyway.)
   - [ ] Compare each real event with the placebo distribution (share of placebos with a larger fall).
-- [ ] **B2.9 Figures.**
+- [x] **B2.9 Figures.**
   - [ ] **F12** one panel per event: actual (line), counterfactual (dashed) with 95% band, activation as a vertical line, 7 days before and after, outage hours shaded, same y-axis for all panels, ug/m3 and IST on the axes.
   - [ ] **F13** forest plot of effects per event and pooled, ug/m3 and %, ordered by date, zero line.
   - [ ] **F14** placebo distribution with the real events marked and the share of placebos below each.
-- [ ] **B2.10 Tables.** T6a: per-event results (dates, n valid days, pre-fit R2, effect days 1 to 3 and 4 to 7 with CI).
+- [x] **B2.10 Tables.** T6a: per-event results (dates, n valid days, pre-fit R2, effect days 1 to 3 and 4 to 7 with CI).
 - *Output:* `src/analysis/11_h2_its.py`, `outputs/tables/T06a_h2_events.csv`, F12 to F14.
 - *Done when:* MK re-runs the script from the Parquet file and gets the same effects (3 significant figures), every figure passes the checklist, and the plot numbers match the table.
 
