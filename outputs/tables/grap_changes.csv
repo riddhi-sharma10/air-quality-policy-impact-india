@@ -1,0 +1,31 @@
+ts_ist,change_date,stage_before,stage_after,direction,time_uncertain,uncertain_reason,stage_inferred,order_date,time_source,verification,order_serial,episode_id
+2025-02-24 19:00:00,2025-02-24,2,1,down,True,order time not known (PIB posting time or assumed),False,2025-02-24,pib_posted,pib_text,,1
+2025-03-15 23:00:00,2025-03-15,1,0,down,True,order time not known (PIB posting time or assumed),False,2025-03-15,pib_posted,pib_text,,2
+2025-03-24 20:00:00,2025-03-24,0,1,up,True,order time not known (PIB posting time or assumed),False,2025-03-24,pib_posted,pib_text,,3
+2025-03-29 19:00:00,2025-03-29,1,0,down,True,order time not known (PIB posting time or assumed),False,2025-03-29,pib_posted,pib_text,,4
+2025-04-02 19:00:00,2025-04-02,0,1,up,True,order time not known (PIB posting time or assumed),False,2025-04-02,pib_posted,order_pdf+pib,1279,5
+2025-05-01 19:00:00,2025-05-01,1,0,down,True,order time not known (PIB posting time or assumed),False,2025-05-01,pib_posted,order_pdf+pib,1292,6
+2025-05-16 21:00:00,2025-05-16,0,1,up,True,order time not known (PIB posting time or assumed),False,2025-05-16,pib_posted,order_pdf+pib,1330,7
+2025-05-18 19:00:00,2025-05-18,1,0,down,True,order time not known (PIB posting time or assumed),False,2025-05-18,pib_posted,order_pdf+pib,,8
+2025-05-21 12:00:00,2025-05-21,0,1,up,True,order time not known (PIB posting time or assumed),False,2025-05-21,assumed,order_pdf,1342,9
+2025-05-23 12:00:00,2025-05-23,1,0,down,True,order time not known (PIB posting time or assumed),False,2025-05-23,assumed,order_pdf,1348,10
+2025-06-07 12:00:00,2025-06-07,0,1,up,True,order time not known (PIB posting time or assumed),False,2025-06-07,assumed,order_pdf,,11
+2025-06-15 20:00:00,2025-06-15,1,0,down,True,order time not known (PIB posting time or assumed),False,2025-06-15,pib_posted,order_pdf+pib,,12
+2025-10-14 12:00:00,2025-10-14,0,1,up,True,order time not known (PIB posting time or assumed),False,2025-10-14,assumed,order_pdf,1421,13
+2025-10-19 12:00:00,2025-10-19,1,2,up,True,order time not known (PIB posting time or assumed),False,2025-10-19,assumed,order_pdf,,14
+2025-11-11 18:00:00,2025-11-11,2,3,up,True,order time not known (PIB posting time or assumed),False,2025-11-11,pib_posted,order_pdf+pib,1444,15
+2025-11-26 12:00:00,2025-11-26,3,2,down,True,order time not known (PIB posting time or assumed),False,2025-11-26,assumed,order_pdf,1466,16
+2025-12-13 10:00:00,2025-12-13,2,3,up,False,,False,2025-12-13,meeting,order_pdf,,17
+2025-12-13 19:00:00,2025-12-13,3,4,up,False,,False,2025-12-13,meeting,order_pdf,,17
+2025-12-24 12:00:00,2025-12-24,4,3,down,True,order time not known (PIB posting time or assumed),False,2025-12-24,assumed,order_pdf,1523,18
+2026-01-02 12:00:00,2026-01-02,3,2,down,True,order time not known (PIB posting time or assumed),False,2026-01-02,assumed,order_pdf,1528,19
+2026-01-16 21:00:00,2026-01-16,2,3,up,True,order time not known (PIB posting time or assumed),False,2026-01-16,pib_posted,order_pdf+pib,1542,20
+2026-01-17 21:00:00,2026-01-17,3,4,up,False,,False,2026-01-17,meeting,order_pdf,,20
+2026-01-20 12:00:00,2026-01-20,4,3,down,True,order time not known (PIB posting time or assumed),False,2026-01-20,assumed,order_pdf,1544,21
+2026-01-22 12:00:00,2026-01-22,3,2,down,True,order time not known (PIB posting time or assumed),False,2026-01-22,assumed,order_pdf,1545,22
+2026-02-18 19:00:00,2026-02-18,2,1,down,True,order time not known (PIB posting time or assumed),False,2026-02-18,pib_posted,order_pdf+pib,1560,23
+2026-03-16 20:00:00,2026-03-16,1,0,down,True,order time not known (PIB posting time or assumed),False,2026-03-16,pib_posted,order_pdf+pib,1574,24
+2026-04-16 12:00:00,2026-04-16,0,1,up,True,order time not known (PIB posting time or assumed),False,2026-04-16,assumed,order_pdf,1605,25
+2026-05-04 21:00:00,2026-05-04,1,0,down,True,order time not known (PIB posting time or assumed),False,2026-05-04,pib_posted,order_pdf+pib,1607,26
+2026-05-19 20:00:00,2026-05-19,0,1,up,True,order time not known (PIB posting time or assumed),False,2026-05-19,pib_posted,order_pdf+pib,1616,27
+2026-05-29 20:00:00,2026-05-29,1,0,down,True,order time not known (PIB posting time or assumed),False,2026-05-29,pib_posted,order_pdf+pib,1620,28

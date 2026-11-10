@@ -20,18 +20,18 @@ Scripts go in `src/analysis/`, tables in `outputs/tables/`, figures in `outputs/
 
 ## B1 GRAP event table (12 to 14 Nov)
 
-- [ ] **B1.1 Review the stage history.** Read `grap_hourly.csv` and the `grap_orders.csv` rows. Confirm you can list all 30 changes (14 up, 16 down) and that they match the run output.
-- [ ] **B1.2 Build the event list script** `src/analysis/10_grap_events.py`. One row per stage change with: `event_id`, `ts_ist`, `direction`, `stage_before`, `stage_after`, `order_date`, `time_source` (meeting, pib_posted, assumed), `grap_uncertain` at that hour, `grap_inferred`.
-- [ ] **B1.3 Add context columns.**
+- [x] **B1.1 Review the stage history.** Read `grap_hourly.csv` and the `grap_orders.csv` rows. Confirm you can list all 30 changes (14 up, 16 down) and that they match the run output.
+- [x] **B1.2 Build the event list script** `src/analysis/10_grap_events.py`. One row per stage change with: `event_id`, `ts_ist`, `direction`, `stage_before`, `stage_after`, `order_date`, `time_source` (meeting, pib_posted, assumed), `grap_uncertain` at that hour, `grap_inferred`.
+- [x] **B1.3 Add context columns.**
   - [ ] Mean PM2.5 of the Delhi-NCR (treated) stations for the 7 days before, after dropping `network_outage` hours.
   - [ ] Share of valid PM2.5 hours in the 7 days before and the 7 days after.
   - [ ] Number of outage hours inside the window `[-7 d, +7 d]`.
   - [ ] Distance in days to the previous and the next stage change.
   - [ ] Weather summary of the 7 days before (mean wind speed, boundary layer height, rain).
-- [ ] **B1.4 Choose the primary event set (DECISION, reviewer MK).** Options: (A) all 30 changes; (B) invocations to Stage II or higher with at least 7 clean days either side; (C) grouped by stage. Recommended: B for the main result, A and C descriptive. Write the rule in the pre-task note *before* you see results.
-- [ ] **B1.5 Flag exclusions.** `overlaps_other_change` (another change within 7 days), `overlaps_outage` (any outage hours in the window), `usable_primary` (true/false) with a reason column.
-- [ ] **B1.6 Spot check.** Open 10 events in the order PDFs (`data/raw/caqm_grap_pdfs/`) or the PIB text from `grap_orders.csv` and check date, stage and time source. Record the checks in `docs/work_log/`.
-- [ ] **B1.7 Figure F3** (with MA): daily mean PM2.5 for treated and control stations with the GRAP stage as a strip below and the outage periods shaded. Follow the checklist in plan section 6.1.
+- [ ] **B1.4 Choose the primary event set (DECISION, reviewer MK). PROVISIONAL: option B applied, MK confirmation pending.** Options: (A) all 30 changes; (B) invocations to Stage II or higher with at least 7 clean days either side; (C) grouped by stage. Recommended: B for the main result, A and C descriptive. Write the rule in the pre-task note *before* you see results.
+- [x] **B1.5 Flag exclusions.** `overlaps_other_change` (another change within 7 days), `overlaps_outage` (any outage hours in the window), `usable_primary` (true/false) with a reason column.
+- [x] **B1.6 Spot check.** Open 10 events in the order PDFs (`data/raw/caqm_grap_pdfs/`) or the PIB text from `grap_orders.csv` and check date, stage and time source. Record the checks in `docs/work_log/`.
+- [x] **B1.7 Figure F3** (with MA): daily mean PM2.5 for treated and control stations with the GRAP stage as a strip below and the outage periods shaded. Follow the checklist in plan section 6.1.
 - *Output:* `outputs/tables/grap_events.csv`, F3.
 - *Done when:* every event reconciles with the orders, the number of usable events is stated with the reason for each exclusion, and MK has signed off.
 
