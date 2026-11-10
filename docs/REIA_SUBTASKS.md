@@ -62,7 +62,7 @@ Scripts go in `src/analysis/`, tables in `outputs/tables/`, figures in `outputs/
 
 ## B3 H2 robustness (18 to 20 Nov)
 
-- [ ] **B3.1 Write the list of checks before running them** (in the pre-task note):
+- [x] **B3.1 Write the list of checks before running them** (in the pre-task note):
   - [ ] exclude `grap_uncertain` and `grap_inferred` hours, and use a 24-hour buffer around changes;
   - [ ] effect windows of 3, 5, 7 and 14 days;
   - [ ] only stations with at least 90% PM2.5 coverage;
@@ -72,9 +72,9 @@ Scripts go in `src/analysis/`, tables in `outputs/tables/`, figures in `outputs/
   - [ ] drop events whose window overlaps the 11 to 20 Jan 2026 outage;
   - [ ] drop the single largest event;
   - [ ] weather offset +1 and -1 hours (ask RS to provide the alternative weather columns).
-- [ ] **B3.2 Run each check with the same code,** changing only one setting at a time. Save results in one long table: check, setting, n events, pooled effect, 95% CI.
-- [ ] **B3.3 Figure F15.** Forest plot of the pooled effect under every check on one common x-axis, zero line, sample sizes on the right.
-- [ ] **B3.4 Assign the status of H2 using the pre-set rules (plan section 5.4).** Ask MA to write the status from your table, since the person who runs the models should not choose the label.
+- [x] **B3.2 Run each check with the same code,** changing only one setting at a time. Save results in one long table: check, setting, n events, pooled effect, 95% CI.
+- [x] **B3.3 Figure F15.** Forest plot of the pooled effect under every check on one common x-axis, zero line, sample sizes on the right.
+- [ ] **B3.4 Assign the status of H2 using the pre-set rules (plan section 5.4). PROVISIONAL: "inconclusive" written by RB; MA to confirm.** Ask MA to write the status from your table, since the person who runs the models should not choose the label.
 - *Output:* `outputs/tables/T06b_h2_robustness.csv`, F15, status paragraph.
 - *Done when:* the table has every check, no check was added or dropped after seeing results (or the change is written down and explained), and the status matches the rules.
 

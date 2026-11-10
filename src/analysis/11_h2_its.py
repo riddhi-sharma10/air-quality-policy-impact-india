@@ -70,10 +70,13 @@ def block_cv(X, y, m):
     return np.array(errs_blocks), r2, errs_days
 
 
-def fit_window(series, d0, other_change_dates):
-    """Valid fit days: the 60 days before day 0, with PM2.5 and all covariates present, and not within 3 days after another change."""
+def fit_window(series, d0, other_change_dates, drop_flagged=False):
+    """Valid fit days: the 60 days before day 0, with PM2.5 and all covariates present, and not within 3 days after another change.
+    drop_flagged (robustness check): also drop days flagged grap_uncertain or grap_inferred."""
     w = series.loc[d0 - pd.Timedelta(days=FIT_DAYS): d0 - pd.Timedelta(days=1)]
     ok = w["log_pm25"].notna() & w[COVARS].notna().all(axis=1)
+    if drop_flagged:
+        ok &= ~(w["uncertain_day"].fillna(False).astype(bool) | w["inferred_day"].fillna(False).astype(bool))
     for oc in other_change_dates:
         ok &= ~((w.index >= oc) & (w.index <= oc + pd.Timedelta(days=SKIP_AFTER_OTHER_CHANGE)))
     return w[ok]
@@ -100,8 +103,10 @@ def window_effect(series, dl, win, X_mu_sd, beta, smear, cv_blocks, cv_t):
             "ug_hi": act_level - pred_level + (pred_level * (np.exp(crit * se) - 1))}
 
 
-def run_event(series, d0, dl, other_change_dates, want_detail=False):
-    fit = fit_window(series, d0, other_change_dates)
+def run_event(series, d0, dl, other_change_dates, want_detail=False, windows=None, drop_flagged=False):
+    """windows: list of (name, (first_day, last_day)) after the last change; the default is the two primary windows."""
+    windows = windows or [("w1_3", WIN1), ("w4_7", WIN2)]
+    fit = fit_window(series, d0, other_change_dates, drop_flagged)
     res = {"n_fit_days": len(fit)}
     if len(fit) < MIN_FIT_DAYS:
         res["status"] = f"fewer than {MIN_FIT_DAYS} valid fit days"
@@ -112,12 +117,13 @@ def run_event(series, d0, dl, other_change_dates, want_detail=False):
     smear = float(np.mean(np.exp(y - X @ beta)))
     res["fit_r2_in_sample"] = float(1 - np.sum((y - X @ beta) ** 2) / np.sum((y - y.mean()) ** 2))
     cvb = {}
-    for m in (1, 3, 4):
+    for m in {1, 3} | {min(b - a + 1, 7) for _, (a, b) in windows}:
         cvb[m] = block_cv(X, y, m)
     res["cv_r2"] = float(cvb[3][1])
     res["weak_counterfactual"] = bool(res["cv_r2"] < CV_R2_MIN)
     res["status"] = "ok"
-    for name, win, m in (("w1_3", WIN1, 3), ("w4_7", WIN2, 4)):
+    for name, win in windows:
+        m = min(win[1] - win[0] + 1, 7)       # block length = window length, at most 7 days
         e = window_effect(series, dl, win, (mu, sd), beta, smear, cvb[m][0], None)
         if e is not None:
             res.update({f"{name}_{k}": v for k, v in e.items()})
