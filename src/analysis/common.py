@@ -13,6 +13,7 @@ Rules (see docs/work_log/RB_2026-11-10_B1.md):
 """
 from pathlib import Path
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
@@ -109,8 +110,9 @@ def load_changes():
 def finish_figure(fig, name, title_note=""):
     """Save a figure as PNG (300 dpi) and SVG in outputs/figures."""
     OUT_FIGS.mkdir(parents=True, exist_ok=True)
-    fig.savefig(OUT_FIGS / f"{name}.png", dpi=300, bbox_inches="tight")
-    fig.savefig(OUT_FIGS / f"{name}.svg", bbox_inches="tight")
+    plt.rcParams["svg.hashsalt"] = "h2-analysis"            # fixed, so a rerun writes an identical SVG
+    fig.savefig(OUT_FIGS / f"{name}.png", dpi=300, bbox_inches="tight", metadata={"Software": None})
+    fig.savefig(OUT_FIGS / f"{name}.svg", bbox_inches="tight", metadata={"Date": None, "Creator": None})
 
 
 def register_figure(fig_id, name, script, inputs, author="RB", status="draft, not yet peer reviewed"):

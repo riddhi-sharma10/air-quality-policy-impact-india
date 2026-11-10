@@ -123,3 +123,28 @@ Scripts go in `src/analysis/`, tables in `outputs/tables/`, figures in `outputs/
 - [ ] Every figure ticked on the checklist, then reviewed by MK
 - [ ] Rules and windows frozen before results are viewed
 - [ ] Wording checked for causal over-claiming
+
+---
+
+## Status after the verification pass (10 Nov 2026)
+
+**Done and committed:** T0.1 (draft note), B1, B2, B3, power simulation (T06g, F17), 13 tests (`tests/test_h2_analysis.py`), outputs dictionary (`docs/h2_outputs_dictionary.md`), README section.
+
+**Checked and correct:** dataset matches its dictionary; daily series recomputed by hand; method unbiased with about 90 to 94% interval coverage in simulation; tables reproduce on a clean rerun; 70 tests pass in the repo (3 skipped, 2 files need `xarray`).
+
+**Still open (not mine to finish alone):**
+- [ ] T0.1.3: teammates review the deviation note, send it, save the reply as `docs/instructor_reply.md`.
+- [ ] B1.4 and B2.3: MK confirms the event set and the primary method (work proceeded on the recommended options).
+- [ ] B3.4: MA confirms the H2 status label ("inconclusive" written provisionally by RB).
+- [ ] B3 weather offset +1 and -1 hours: needs RS to provide the alternative weather columns.
+- [ ] Peer review: MK re-runs scripts 10 to 13 and ticks `reviewer` in `outputs/figure_registry.csv`; MA co-reviews F3.
+- [ ] B4: recommendations and roadmap, Stage 3 slides 2 to 4 (needs the confirmed H2 status and MA's limitations text).
+- [ ] S1: review MK's H1 work (when it exists). S2 backup, S3 refinement session, S4 report sections 5, 7, 10 and 11, S5 viva preparation.
+
+**Known gaps and limits in the work so far:**
+- Only 2 primary events (3 with the relaxed set); no pooled estimate. Power is low (F17): a 30% fall is detected about 18% of the time.
+- Revocations (16 stage-downs) and Stage I invocations are not analysed. Optional extension: a mirror test on revocations (PM2.5 should rise after a revocation if the policy works), descriptive only.
+- The 11 Nov 2025 event rests on the PIB release and the clarification order (original order no. 1444 not found).
+- The model is daily and weather-only plus fire; it explains about half of the day-to-day variation (CV R² 0.5 to 0.56 at best) and 0.02 for the December event.
+- Placebo dates in a row are not independent; the control-city comparison (T06d) is descriptive only.
+- Block cross-validation blocks are consecutive valid days, which can span a gap of a day or two.
