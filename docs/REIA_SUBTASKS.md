@@ -13,8 +13,8 @@ Scripts go in `src/analysis/`, tables in `outputs/tables/`, figures in `outputs/
 
 ## T0.1 Deviation note to the instructor (10 to 11 Nov)
 
-- [ ] **T0.1.1 Collect the facts.** Window and why (no OpenAQ data for 2023 and 2024; one burning season), hourly instead of daily, rows and variables (763,344 and 70), time-blocked validation instead of by-year, the H1 lag range (lag1 and lag2 only, unless RS builds lag3), control cities, optional methods. *Review first:* the Stage 1 summary PDF, README Limitations, plan section 0.
-- [ ] **T0.1.2 Write `docs/deviation_note.md`**, one page, one table: proposal said / we did / why / what we ask the instructor to approve. Options: (A) email text only; (B) a short document attached to the email. Recommended: B.
+- [x] **T0.1.1 Collect the facts.** Window and why (no OpenAQ data for 2023 and 2024; one burning season), hourly instead of daily, rows and variables (763,344 and 70), time-blocked validation instead of by-year, the H1 lag range (lag1 and lag2 only, unless RS builds lag3), control cities, optional methods. *Review first:* the Stage 1 summary PDF, README Limitations, plan section 0.
+- [x] **T0.1.2 Write `docs/deviation_note.md`**, one page, one table: proposal said / we did / why / what we ask the instructor to approve. Options: (A) email text only; (B) a short document attached to the email. Recommended: B.
 - [ ] **T0.1.3 Get review** from all three teammates, send it, save the instructor's reply in the repo (`docs/instructor_reply.md` or a PDF).
 - *Done when:* the reply is saved, or a follow-up date is set. Until then, use regression and ITS only.
 
