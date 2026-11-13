@@ -1,0 +1,10 @@
+input,comparison,n_train,n_test,psi,ks_d,mean_train,mean_test,status
+n_up_nh_100km_45deg_lag1,all train vs all test (season mix differs),389340,303426,0.039,0.049,3.363,2.645,stable
+wind_speed,all train vs all test (season mix differs),392904,320058,0.004,0.022,2.502,2.554,stable
+u10,all train vs all test (season mix differs),392904,320058,0.008,0.02,-0.048,0.067,stable
+v10,all train vs all test (season mix differs),392904,320058,0.011,0.041,-0.217,-0.348,stable
+t2m_c,all train vs all test (season mix differs),392904,320058,0.023,0.065,26.318,27.111,stable
+d2m_c,all train vs all test (season mix differs),392904,320058,0.1,0.079,19.426,19.948,moderate
+blh_m,all train vs all test (season mix differs),392904,320058,0.022,0.039,497.102,523.394,stable
+tp_mm,all train vs all test (season mix differs),392904,320058,0.002,0.013,0.126,0.143,stable
+sp_hpa,all train vs all test (season mix differs),392904,320058,0.086,0.08,985.917,985.142,stable

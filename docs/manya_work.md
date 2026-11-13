@@ -2,7 +2,7 @@
 
 Role: problem definition, data quality, MLOps. Reviewer for all my work: RS. Backup: RS.
 Plan this follows: `docs/FINAL_DELIVERABLE_PLAN.md` (task cards in section 4.2). Last updated 13 Nov 2026.
-Branch: `ma/validation-and-stakeholders` (nothing committed yet at the time of writing).
+Branch: `manya_work`. MK's H1 results are on `origin/mehak/h2-review` (built on RB's `reia/h2-work`); that branch is not merged into mine yet.
 
 ## 1. Status at a glance
 
@@ -13,7 +13,8 @@ Branch: `ma/validation-and-stakeholders` (nothing committed yet at the time of w
 | T0.3 | `docs/work_log/`, template, branch | Done | Pending RS |
 | M2 | Data validation script, tests, saved run output | Done | Pending RS |
 | M1 | Stakeholder and KPI page, KPI baseline script | Done | Pending RS |
-| M4 | Monitoring and drift (F16) | Not started, waits for MK's model | n/a |
+| M4 | Monitoring and drift (F16) | Done on MK's T04e (input drift and model error, thresholds fixed first) | Pending RS |
+| G4 | Formal H1 and H2 status from the section 5.4 rules | Done: H1 INCONCLUSIVE, H2 INCONCLUSIVE | Pending RS |
 | Report sections 1, 3, 4 (my half), 8 (my part) | Drafting | Not started | n/a |
 | Stage 2 slides 1 and 2 | Data preparation, EDA | Not started | n/a |
 | G4, Stage 3 slide 4, review of RS, viva | Later phases | Not started | n/a |
@@ -52,6 +53,19 @@ KPI baselines (winter sample 1 Oct 2025 to 28 Feb 2026; descriptions, not effect
 | Valid PM2.5 station-hours, full window | 87.0% | 86.1% |
 | Network outage hours, full window | 928 of 14,136 (6.6%) | same |
 
+### M4: monitoring and drift (done after MK's tables arrived)
+- Thresholds were written in `docs/work_log/ma_2026-11-13_M4.md` before any result: PSI >= 0.25 or KS D >= 0.20 flags an input-month; a model-error month is flagged above 1.5 x the reference RMSE.
+- `src/analysis/05a_input_drift.py` (T09a month-matched, T09b overall) and `src/analysis/05b_model_monitoring.py` (T09c, figure F16 as PNG and SVG), `tests/test_input_drift.py` (5 tests).
+- Result: no month is flagged on error (the written reference, the first three test months, includes the burning season, so this rule has little power; a post-hoc relative-error panel is labelled as such).
+  Inputs drift year on year: a weather input passes PSI 0.25 in 7 of 8 comparable months (mostly dewpoint) and the fire input in 2. Drift does not by itself show the model got worse.
+- `outputs/figure_registry.csv` started with F16.
+
+### G4: formal hypothesis status (done)
+- `src/analysis/20_g4_status.py` reads MK's and RB's tables, re-evaluates every plan 5.4 criterion and writes `outputs/tables/T07_hypothesis_status.csv` and `report/09_hypothesis_status.md` (text generated, no typed numbers). Note: `docs/work_log/ma_2026-11-13_G4.md`.
+- **H1 = INCONCLUSIVE.** Primary +11.8% per +10 upwind detections, CI [-3.0, +28.9]; 14 of 15 checks same sign; fire model beats weather-only by 0.59% RMSE. The CI includes 0, so "supported" fails; it is far from ruling out an effect, so "not supported" fails.
+- **H2 = INCONCLUSIVE.** Only one primary event (11 Nov 2025) has an adequate counterfactual: +23% [-48, +190]; placebo share 0.52; 1 of 15 checks below zero. Simulated power to see a 30% fall is 18%.
+- Recomputed numbers match MK's and RB's provisional ones.
+
 ### Corrections made to the shared plan
 - `docs/FINAL_DELIVERABLE_PLAN.md`, Known facts table: Stage III/IV hours inside outages are **112** (94 in the January outage, 18 in shorter ones), not "about 99".
   The January outage is 10 Jan 18:00 to 20 Jan 18:00 IST (241 hours), not "11 to 20 Jan".
@@ -59,6 +73,7 @@ KPI baselines (winter sample 1 Oct 2025 to 28 Feb 2026; descriptions, not effect
 ## 3. What is left for me
 
 ### Can do now (needs no one else)
+0. **Merge or rebase onto `origin/mehak/h2-review`** (or main once it is merged) so `20_g4_status.py` and `05b_model_monitoring.py` find T04d, T04e, T04g, T06a/e/f/g and T07a in `outputs/tables/` without `--tables-dir`.
 1. **Get the EDA into the repo.** Commit the code as `src/analysis/01_eda_pollution.py` and F1 to F6 plus table T2 (missingness by station and month) in `outputs/`.
    Create `outputs/figure_registry.csv` (figure id, script, input, date, author, reviewer, status).
 2. **Run the figure checklist (plan section 6.1) on F1 to F6**: title, axis units, legend, n, uncertainty, outages as grey gaps, IST, caption in the 9.2 template.
@@ -74,9 +89,8 @@ KPI baselines (winter sample 1 Oct 2025 to 28 Feb 2026; descriptions, not effect
 | --- | --- |
 | M2, M1 sign-off, work-log notes | RS review |
 | Missing-data choice for the EDA (drop outage hours as primary, interpolate gaps of 3 hours or less as sensitivity) | RS yes (marked DECISION in the plan) |
-| M4 monitoring: monthly RMSE and drift, figure F16 | MK's prediction model (K3). The input-drift half (PSI or KS, train Feb to Dec 2025 vs test Jan to Sep 2026) can be prepared earlier |
+| Reviews of M4, G4, F16 | RS |
 | F3 (PM2.5 and GRAP timeline) | RB for the stage shading and event list (B1); the data part can be built now |
-| G4: assign H1/H2 status using the pre-set rules (plan 5.4) | MK and RB robustness results (end of P4, about 20 Nov) |
 | Stage 3 slide 4 (roadmap) | RB's recommendations (B4) |
 
 ### Later
@@ -94,12 +108,15 @@ KPI baselines (winter sample 1 Oct 2025 to 28 Feb 2026; descriptions, not effect
 ## 5. What I need from other members
 - **RS:** review M2, M1 and the work log; confirm the missing-data choice; align R4's station-day rule with mine (at least 18 of 24 valid hours; a group-day counts when at least half of the group's stations are valid);
   add `xarray` (and any other missing package) to `requirements.txt`, since `tests/test_extract_era5_stations.py` and `tests/test_upwind_points.py` fail to load without it.
-- **MK:** the F9 scaling above; the model outputs for M4 once K3 is reviewed.
-- **RB:** event list and stage shading for F3; use the corrected outage window.
+- **MK:** nothing blocking. MK already used "per +10". Please confirm that treated = blue (`h1_common.py`) is meant; RB's `common.py` uses treated = vermillion, control = blue, so the two sets of figures disagree.
+- **RB:** event list and stage shading for F3 are on your branch (T06a, grap_events.csv); use the corrected outage window. Fix the treated/control colour clash with MK (see above).
 
 ## 6. How to rerun everything I made
 ```
 python src/validate_final_dataset.py > docs/validation_run_output.txt   # 51 checks, needs data/processed/final_dataset.parquet
 python src/analysis/01b_kpi_baselines.py                                # writes outputs/tables/T00_kpi_baselines.csv
-python -m pytest tests/test_validate_final_dataset.py tests/test_kpi_baselines.py -q
+python src/analysis/05a_input_drift.py                                  # T09a, T09b
+python src/analysis/05b_model_monitoring.py                             # T09c and F16 (needs MK's T04e)
+python src/analysis/20_g4_status.py                                     # T07 and report/09_hypothesis_status.md (needs MK's and RB's tables)
+python -m pytest tests/test_validate_final_dataset.py tests/test_kpi_baselines.py tests/test_input_drift.py -q
 ```

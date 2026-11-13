@@ -1,0 +1,2 @@
+figure_id,title,script,input_files,date_made,author,reviewer,status
+F16,Monthly model error and input drift with thresholds,src/analysis/05b_model_monitoring.py (and 05a_input_drift.py),"T04e (MK, branch mehak/h2-review); T09a; final_dataset.parquet",2026-11-13,MA,RS,made; checklist ticked by author; reviewer re-run pending
