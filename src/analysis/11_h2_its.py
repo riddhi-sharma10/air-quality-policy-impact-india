@@ -31,6 +31,11 @@ MIN_FIT_DAYS = 30
 CV_R2_MIN = 0.40
 WIN1, WIN2 = (1, 3), (4, 7)
 PLACEBO_BAND = (0.75, 1.33)
+# sentences that must sit next to every H2 result (MK review of 13 Nov, requests 1 and 2)
+FORECAST_NOTE = ("A positive value is not evidence that GRAP raises PM2.5: stages are raised on a forecast of worsening air, "
+                 "which the model cannot see.")
+POWER_NOTE = ("Low power: in simulation (F17) this method detects a true 30% fall about 18% of the time and needs about a 65% fall "
+              "for 80% power, so an inconclusive result is not evidence of no effect.")
 # festival dates in the study window (copied from build_final_dataset.FESTIVALS), used only to annotate figures
 FESTIVAL_DATES = [("Holi", pd.Timestamp("2025-03-14")), ("Dussehra", pd.Timestamp("2025-10-02")), ("Diwali", pd.Timestamp("2025-10-20")),
                   ("New Year's Eve", pd.Timestamp("2025-12-31")), ("Holi", pd.Timestamp("2026-03-04"))]
@@ -200,7 +205,9 @@ def figure_f12(items, series, fname="F12_h2_actual_vs_counterfactual"):
         ax.fill_between(wv.index, pred * np.exp(-band), pred * np.exp(band), color="0.5", alpha=0.18, lw=0, label="95% band (cross-validated daily error)")
         ax.plot(w.index, w["pm25"], color=c.TREATED_COLOR, lw=1.6, marker="o", ms=3, label="Actual (treated stations)")
         ax.axvline(d0, color="k", lw=1.0)
-        weak = "\nWEAK counterfactual (CV R² < 0.40): not pooled" if r["weak_counterfactual"] else ""
+        inside = [o for o in it["others"] if d0 - pd.Timedelta(days=FIT_DAYS) <= o < d0]
+        weak = ("\nWEAK counterfactual (CV R² < 0.40): not pooled" +
+                (f"\nFit window contains the stage changes of {', '.join(f'{o:%d %b}' for o in inside)}" if inside else "")) if r["weak_counterfactual"] else ""
         fest = [f"{n} {f:%d %b}" for n, f in FESTIVAL_DATES if d0 - pd.Timedelta(days=1) <= f <= dl + pd.Timedelta(days=7)]
         fest_txt = ("\nFestival in the window: " + ", ".join(fest) + " (confound)") if fest else ""
         ax.set_title(f"Stage {it['sb']}→{it['sa']} on {d0:%d %b %Y}\nfit on {r['n_fit_days']} days, CV R² = {r['cv_r2']:.2f}{weak}{fest_txt}", fontsize=9)
@@ -223,8 +230,9 @@ def figure_f12(items, series, fname="F12_h2_actual_vs_counterfactual"):
     h, l = axes[0].get_legend_handles_labels()
     fig.legend(h, l, loc="lower center", ncol=3, fontsize=8, bbox_to_anchor=(0.5, -0.2))
     fig.suptitle("Actual versus weather-and-fire counterfactual PM2.5 around GRAP escalations (treated stations, 14 days before to 7 days after)", fontsize=10.5, y=1.07)
-    fig.text(0.01, -0.3, "Effect = mean of log(actual) − log(predicted) over the window, shown as % change with the 95% interval from leave-block-out cross-validation in the fit window. "
-             "n = 2 primary (+1 relaxed) events. Gaps = invalid days. Source: final_dataset.parquet; script src/analysis/11_h2_its.py.", fontsize=7)
+    fig.text(0.01, -0.36, "Effect = mean of log(actual) − log(predicted) over the window, shown as % change with the 95% interval from leave-block-out cross-validation in the fit window. "
+             "n = 2 primary (+1 relaxed) events. Gaps = invalid days.\n" + FORECAST_NOTE + " " + POWER_NOTE +
+             "\nSource: final_dataset.parquet; script src/analysis/11_h2_its.py.", fontsize=7)
     c.finish_figure(fig, fname)
     plt.close(fig)
 
@@ -254,8 +262,8 @@ def figure_f13(rows, pooled, fname="F13_h2_effect_per_event"):
     if not pooled:
         ax.text(0.99, 0.02, "No pooled estimate: fewer than 2 primary events with an adequate counterfactual", transform=ax.transAxes,
                 ha="right", fontsize=8, bbox=dict(boxstyle="round", fc="w", ec="0.7"))
-    fig.text(0.01, -0.04, "Intervals from leave-block-out cross-validation in the 60-day fit window; they do not include the uncertainty from having only a few events. "
-             "Source: final_dataset.parquet; script src/analysis/11_h2_its.py.", fontsize=7)
+    fig.text(0.01, -0.12, "Intervals from leave-block-out cross-validation in the 60-day fit window; they do not include the uncertainty from having only a few events. "
+             "Source: final_dataset.parquet; script src/analysis/11_h2_its.py.\n" + FORECAST_NOTE + "\n" + POWER_NOTE, fontsize=7)
     c.finish_figure(fig, fname)
     plt.close(fig)
 
@@ -277,8 +285,8 @@ def figure_f14(placebos, items, fname="F14_h2_placebo_distribution"):
         ax.grid(alpha=0.25)
     axes[0].set_ylabel("Number of placebo dates")
     fig.suptitle("Placebo check: same method on high-pollution dates with no stage escalation (treated stations)", fontsize=10.5, y=1.03)
-    fig.text(0.01, -0.06, "Placebo dates: no upward stage change from 3 days before to 8 days after and a 7-day pre-mean PM2.5 within 0.75 to 1.33 times the real event's. Consecutive dates are not independent. "
-             "Source: final_dataset.parquet; script src/analysis/11_h2_its.py.", fontsize=7)
+    fig.text(0.01, -0.14, "Placebo dates: no upward stage change from 3 days before to 8 days after and a 7-day pre-mean PM2.5 within 0.75 to 1.33 times the real event's. Consecutive dates are not independent. "
+             "Source: final_dataset.parquet; script src/analysis/11_h2_its.py.\n" + FORECAST_NOTE, fontsize=7)
     c.finish_figure(fig, fname)
     plt.close(fig)
 
@@ -317,7 +325,7 @@ def main():
         cross = crosscheck_segmented(treated, d0, dl)
         res.update({f"segmented_{k}": v for k, v in cross.items()})
         rows.append(res)
-        items.append({"res": res, "det": det, "d0": d0, "dl": dl, "sb": res["sb"], "sa": res["sa"]})
+        items.append({"res": res, "det": det, "d0": d0, "dl": dl, "sb": res["sb"], "sa": res["sa"], "others": others})
         placebos.append({"effects": eff, "share_below": share})
         print(f"{d0:%Y-%m-%d} stage {res['sb']}->{res['sa']} primary={res['primary']}: fit days {res['n_fit_days']}, CV R2 {res['cv_r2']:.2f}, "
               f"days1-3 {res.get('w1_3_pct', np.nan):+.1f}% [{res.get('w1_3_pct_lo', np.nan):+.1f}, {res.get('w1_3_pct_hi', np.nan):+.1f}], "

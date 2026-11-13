@@ -69,7 +69,7 @@ Scripts go in `src/analysis/`, tables in `outputs/tables/`, figures in `outputs/
   - [ ] leave out each sub-area in turn (Delhi, Ghaziabad, Noida, Gurugram);
   - [ ] counterfactual model with and without fire terms;
   - [ ] Stage I only versus Stage III/IV;
-  - [ ] drop events whose window overlaps the 11 to 20 Jan 2026 outage;
+  - [ ] drop events whose window overlaps the 10 to 20 Jan 2026 outage (10 Jan 17:00 to 20 Jan 18:00 IST);
   - [ ] drop the single largest event;
   - [ ] weather offset +1 and -1 hours (ask RS to provide the alternative weather columns).
 - [x] **B3.2 Run each check with the same code,** changing only one setting at a time. Save results in one long table: check, setting, n events, pooled effect, 95% CI.

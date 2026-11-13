@@ -93,6 +93,28 @@ def group_daily(d, group, stations=None, cities=None, min_valid_hours=MIN_VALID_
     return res
 
 
+LONG_OUTAGE_HOURS = 24   # a network-wide PM2.5 outage run of at least this many hours counts as a "long outage"
+
+
+def outage_runs(d):
+    """Runs of consecutive network-wide outage hours (the flag is the same for every station).
+
+    Returns one row per run: start (first outage hour, IST), end (last outage hour), hours, and `long` (>= LONG_OUTAGE_HOURS).
+    This is the corrected outage window: the long run in January 2026 is 10 Jan 17:00 to 20 Jan 18:00 IST (242 hours),
+    not '11 to 20 Jan' as an earlier note said."""
+    h = d.groupby("hour_ist")["network_outage"].agg(["min", "max"]).sort_index()
+    if (h["min"] != h["max"]).any():
+        raise ValueError("network_outage differs between stations in some hour; it should be network-wide")
+    flag = h["max"].astype(bool)
+    run_id = (flag != flag.shift(fill_value=False)).cumsum()
+    runs = []
+    for _, g in flag[flag].groupby(run_id[flag]):
+        runs.append({"start": g.index[0], "end": g.index[-1], "hours": len(g)})
+    out = pd.DataFrame(runs, columns=["start", "end", "hours"])
+    out["long"] = out["hours"] >= LONG_OUTAGE_HOURS
+    return out
+
+
 def load_changes():
     """The 30 stage changes from grap_hourly.csv with the order information (date, time source)."""
     g = pd.read_csv(GRAP_HOURLY, parse_dates=["ts_ist"])

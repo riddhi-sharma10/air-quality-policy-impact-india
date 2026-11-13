@@ -25,7 +25,7 @@ The research questions and hypotheses are unchanged (RQ1/H1: upwind fires and PM
 - **GRAP is triggered by pollution**, so a fall after activation is partly regression to the mean. We report H2 event by event, with placebo events, and word results as "consistent with" or "associated with", not as causal effects.
 - **Few events**: almost all Stage III and IV hours fall between Nov 2025 and Jan 2026, so H2 rests on a small number of episodes.
 - **Order times:** most GRAP orders say "with immediate effect" and give no time of day, so about 7% of hours are flagged uncertain and one order (a Stage-I revocation between 24 Feb and 7 Mar 2025) could not be found. We repeat the analysis without these hours.
-- **A monitor outage** on 11 to 20 Jan 2026 (no PM2.5 at any station) overlaps part of the Stage III and IV period. These hours are excluded and the overlap is reported.
+- **A monitor outage** from 10 Jan 17:00 to 20 Jan 18:00 IST 2026 (242 hours, no PM2.5 at any station) covers 94 of the 971 Stage III and IV hours (112 fall inside some outage). These hours are excluded and the overlap is reported.
 - **Control cities** are far from Delhi and differ in weather and fire exposure; they are a comparison, not a perfect counterfactual.
 - **Stakeholders:** we have no stations in Punjab or Haryana, so we cannot make state-specific claims for those boards. Fires there enter only as upwind inputs.
 

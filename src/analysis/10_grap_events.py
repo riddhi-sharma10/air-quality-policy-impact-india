@@ -64,8 +64,15 @@ def make_episodes(ch):
     return ch, pd.DataFrame(rows)
 
 
-def context_and_flags(ep, treated, control, gap_before=GAP_BEFORE):
-    """Context columns and the primary / relaxed flags for every episode."""
+def long_outage_text(runs, start, end):
+    """Long outage runs (>= 24 h) that overlap [start, end): text for the table, empty when none."""
+    hit = runs[runs["long"] & (runs["start"] < end) & (runs["end"] + pd.Timedelta(hours=1) > start)]
+    return "; ".join(f"{r.start:%Y-%m-%d %H:%M} to {r.end:%Y-%m-%d %H:%M} ({r.hours} h)" for r in hit.itertuples())
+
+
+def context_and_flags(ep, treated, control, gap_before=GAP_BEFORE, runs=None):
+    """Context columns and the primary / relaxed flags for every episode.
+    `runs` (common.outage_runs) adds the long-outage columns."""
     out = []
     ts_list = ep["ts_first"].tolist()
     for i, r in ep.iterrows():
@@ -86,6 +93,8 @@ def context_and_flags(ep, treated, control, gap_before=GAP_BEFORE):
                "valid_days_pre60": int(pre60["pm25"].notna().sum()), "valid_days_post1_3": int(post3["pm25"].notna().sum()),
                "valid_days_post4_7": int(post47["pm25"].notna().sum()),
                "outage_hours_window": int(win["outage_hours"].sum()),
+               "long_outage_in_window": (long_outage_text(runs, d0 - pd.Timedelta(days=OUTAGE_BEFORE), dl + pd.Timedelta(days=OUTAGE_AFTER + 1))
+                                         if runs is not None else ""),
                "days_since_previous_episode": days_prev, "days_to_next_episode": days_next,
                "pre7_wind_speed": pre7["wind_speed"].mean(), "pre7_blh_m": pre7["blh_m"].mean(),
                "pre7_rain_mm": pre7["tp_mm"].mean(), "control_pm25_post1_3_mean": ctl3["pm25"].mean(),
@@ -178,7 +187,9 @@ def main():
     treated, control = c.group_daily(d, "treated"), c.group_daily(d, "control")
     ch = attach_orders(c.load_changes())
     ch, ep = make_episodes(ch)
-    ev = context_and_flags(ep, treated, control, a.min_gap_before)
+    runs = c.outage_runs(d)
+    ev = context_and_flags(ep, treated, control, a.min_gap_before, runs)
+    ev["overlaps_long_outage"] = ev["long_outage_in_window"].astype(str).str.len() > 0
 
     print(f"stage changes: {len(ch)} (up {(ch.direction == 'up').sum()}, down {(ch.direction == 'down').sum()}); episodes: {len(ev)}")
     checks = []
@@ -188,6 +199,15 @@ def main():
     checks.append(("episode count equals changes minus merged changes", len(ev) == 30 - int((ev["n_changes"] - 1).sum())))
     n_out = int(d.loc[d["station_id"] == d["station_id"].iloc[0], "network_outage"].sum())
     checks.append((f"outage hours in the table = 928 (found {n_out})", n_out == 928))
+    checks.append(("outage runs add up to the 928 outage hours", int(runs["hours"].sum()) == 928))
+    jan = runs[(runs["start"] >= "2026-01-01") & (runs["start"] < "2026-02-01") & runs["long"]]
+    checks.append(("the January 2026 long outage is 10 Jan 17:00 to 20 Jan 18:00 IST (242 h)",
+                   len(jan) == 1 and jan.iloc[0]["start"] == pd.Timestamp("2026-01-10 17:00") and jan.iloc[0]["end"] == pd.Timestamp("2026-01-20 18:00")
+                   and jan.iloc[0]["hours"] == 242))
+    hr = d.loc[d["station_id"] == d["station_id"].iloc[0], ["hour_ist", "grap_stage", "network_outage"]]
+    stage3_hours = int((hr["grap_stage"] >= 3).sum())
+    stage3_out = int(((hr["grap_stage"] >= 3) & hr["network_outage"]).sum())
+    print(f"stage 3 or 4 hours: {stage3_hours}; of these inside a network outage: {stage3_out} ({100 * stage3_out / stage3_hours:.1f}%)")
     for lab, ok in checks:
         print(f"  [{'PASS' if ok else 'FAIL'}] {lab}")
     if not all(ok for _, ok in checks):
@@ -195,6 +215,8 @@ def main():
 
     ch.to_csv(c.OUT_TABLES / "grap_changes.csv", index=False)
     ev.to_csv(c.OUT_TABLES / "grap_events.csv", index=False)
+    runs.assign(start=runs["start"].dt.strftime("%Y-%m-%d %H:%M"), end=runs["end"].dt.strftime("%Y-%m-%d %H:%M")).to_csv(
+        c.OUT_TABLES / "outage_runs.csv", index=False)
     print(f"primary events (provisional until MK confirms B1.4): {int(ev['usable_primary'].sum())}; relaxed: {int(ev['usable_relaxed'].sum())}")
     show = ev[["episode_id", "date_first", "stage_before", "stage_after", "direction", "usable_primary", "usable_relaxed",
                "exclusion_reason_primary"]]

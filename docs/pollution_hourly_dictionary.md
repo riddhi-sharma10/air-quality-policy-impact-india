@@ -14,7 +14,7 @@ One row per station per hour for 19 Feb 2025 to 30 Sep 2026 (IST): 14,136 hours 
 | local_temp_c, local_rh, local_wind_speed | The station's own sensors, where present (46 of 55 stations; wind from 8 Oct 2025). For the ERA5 comparison | °C, %, m/s |
 | n_pm25 … n_o3 | Number of readings averaged into that hour (0 = no data) | count |
 | network_pm25_share | Share of the 54 kept stations with PM2.5 in that hour (same value on every row of the hour) | 0 to 1 |
-| network_outage | True when `network_pm25_share` < 0.5: a network-wide outage, not clean air. 928 of 14,136 hours (6.6%); longest 11 to 20 Jan 2026 | |
+| network_outage | True when `network_pm25_share` < 0.5: a network-wide outage, not clean air. 928 of 14,136 hours (6.6%); longest 10 Jan 17:00 to 20 Jan 18:00 2026 IST (242 h) | |
 
 ## Rules
 - **Outages are flagged, not removed.** Default for analysis: drop `network_outage` hours (leaves 662,378 PM2.5 rows from 54 stations). Other options (keep them, or fill) are a modelling choice.

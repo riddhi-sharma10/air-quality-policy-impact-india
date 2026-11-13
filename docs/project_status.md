@@ -40,7 +40,7 @@ Row count: 54 stations × 14,136 hours = 763,344 rows, of which 664,591 have PM2
 
 **Findings**
 - Of the 54 kept stations, PM2.5 is present in 87% of hours (664,591 of 763,344 rows); PM2.5 and PM10 together in 648,525 rows. This is well above the 100,000-row minimum.
-- Missing hours are not random. All stations are empty from 11 to 20 Jan 2026 (about 35% of that month), and there are shorter outages on 9 to 11 Apr 2025, 24 to 25 Jun 2026 and 28 to 29 Aug 2026. These are now flagged in `network_outage`; any model should treat them as outages and not as clean air.
+- Missing hours are not random. All stations are empty from 10 Jan 17:00 to 20 Jan 18:00 IST 2026 (242 hours, about a third of that month), and there are shorter outages on 9 to 11 Apr 2025 (61 h), 23 to 25 Jun 2026 (53 h) and 27 to 30 Aug 2026 (54 h in two runs); 928 outage hours in 170 runs in all. These are now flagged in `network_outage`; any model should treat them as outages and not as clean air.
 - The earlier "8.5% of hours hold more than one value" is real: about 8% of Delhi PM hours change mid-hour. Averaging covers it. Gas readings change every 15 minutes, so most gas hours hold several values.
 - Hour 00 IST in CPCB files has only the :45 stamp, since 00:00 to 00:30 never appear.
 - PM flat-lines (24 hours or more) are rare, with the largest at stations 5626 (541 PM10 hours) and 5613 (283). The 5613 and 5626 PM10 flatlines are removed.

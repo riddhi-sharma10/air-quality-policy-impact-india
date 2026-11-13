@@ -24,7 +24,7 @@ This plan covers the final report (10 marks), the final presentation (20 marks) 
 | One burning season only (Oct to Nov 2025) and one winter | H1 has low power. "Inconclusive" is a legitimate result. State it, do not hide it. |
 | GRAP is invoked because pollution is high | Reverse causation and regression to the mean. A fall after activation is not automatically an effect. Use the weather-and-fire counterfactual and the control cities. |
 | Stage III and IV hours: 971 in total, almost all Nov 2025 to Jan 2026 | H2 rests on a handful of episodes. Report per event, not only pooled. |
-| Network-wide PM2.5 outage 11 to 20 Jan 2026 (and shorter ones); 928 outage hours in all | About 99 of the 971 Stage III/IV hours fall inside it. Missing data is correlated with treatment. Report it and run a sensitivity check. |
+| Network-wide PM2.5 outage 10 Jan 17:00 to 20 Jan 18:00 IST 2026 (242 h; 5 runs of 24 h or more, 170 runs in all); 928 outage hours | 94 of the 971 Stage III/IV hours fall inside the January outage (112 inside any outage). Missing data is correlated with treatment. Report it and run a sensitivity check. |
 | 6.8% of hours `grap_uncertain`, 21% `grap_inferred` | Primary run keeps them, a robustness run drops them, and event windows get a buffer around the change. |
 | Control cities (Patna, Lucknow, Kanpur) have different weather and fire exposure and their own local action plans | Controls are a comparison, not a clean counterfactual. Say so. |
 | Gas columns are mislabelled "ppb" in the archive | Use the units in the dictionary (NO, NO2 in ug/m3, NOx in ppm). Gases are secondary variables. |
@@ -146,7 +146,7 @@ Each card: **Review first**, **Options** (pick one, record it in the pre-task no
 **M3. Pollution EDA and data-quality section** (D, A)
 - *Review first:* quality report `data/processed/pollution_quality_report.csv`, dictionary "Cleaning" and "Missing values" sections.
 - *Options for missing data:* (A) drop outage hours (default in the dictionary); (B) keep all hours and add the outage flag as a model term; (C) short-gap interpolation, as the proposal said (only for gaps up to 3 hours). **Recommended: A as primary, C as a sensitivity run. Never interpolate across a network outage.** **(DECISION: reviewer RS)**
-- *Steps:* figures F1 to F5 (section 6); a table of missingness by station and month; description of the 11 to 20 Jan 2026 outage and its overlap with Stage III/IV.
+- *Steps:* figures F1 to F5 (section 6); a table of missingness by station and month; description of the 10 to 20 Jan 2026 outage (10 Jan 17:00 to 20 Jan 18:00 IST) and its overlap with Stage III/IV.
 - *Output:* `src/analysis/01_eda_pollution.py`, figures and tables in `outputs/`, report section "Data quality and preparation".
 - *Acceptance:* figure checklist passed; the overlap of outage and stage hours is stated with the exact count from the data.
 
@@ -395,7 +395,7 @@ Table with columns: action, finding it rests on and its status, responsible stak
 - Why is the H1 sample only one season, and what does that do to the confidence intervals?
 - GRAP is triggered by pollution. How does your design deal with that? What does it **not** deal with?
 - How many events does H2 rest on? What happens if the biggest one is dropped?
-- What is in the outage window (11 to 20 Jan 2026) and how did you handle it?
+- What is in the outage window (10 Jan 17:00 to 20 Jan 18:00 IST 2026) and how did you handle it?
 - What is wrong with the gas unit labels and how did you find it?
 - Why did you choose each method, which course topic is it from, and what did you leave out?
 - What would you recommend to CAQM, how sure are you, and what would change your mind?

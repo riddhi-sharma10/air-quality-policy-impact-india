@@ -90,10 +90,11 @@ def figure_f15(out, fname="F15_h2_robustness"):
     axes[0].set_yticklabels(list(ypos.keys()), fontsize=7.5)
     fig.suptitle("H2 robustness: effect of GRAP escalation under each check (primary events; hollow marker = weak counterfactual, CV R² < 0.40)",
                  fontsize=10.5, y=0.995)
-    fig.tight_layout(rect=[0, 0.05, 1, 0.97])
+    fig.tight_layout(rect=[0, 0.08, 1, 0.97])
     fig.text(0.01, 0.01, "Each row changes one setting of the main specification (top row). Effect window is days 1 to 3 unless the row says otherwise. "
              "Rows are not independent; intervals cut at the axis edge are marked with an arrow.\n"
-             "The 19 Oct 2025 event (Diwali) is in T06e only. Weather-offset check pending (needs RS). Source: final_dataset.parquet; script src/analysis/12_h2_robustness.py.", fontsize=7)
+             "The 19 Oct 2025 event (Diwali) is in T06e only. Weather-offset check pending (needs RS). Source: final_dataset.parquet; script src/analysis/12_h2_robustness.py.\n"
+             + m.FORECAST_NOTE + " " + m.POWER_NOTE, fontsize=7)
     c.finish_figure(fig, fname)
     plt.close(fig)
 
