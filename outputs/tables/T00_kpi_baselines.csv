@@ -1,0 +1,35 @@
+kpi,group,period,statistic,value,n,unit,columns
+KPI1 daily mean PM2.5,treated,winter Oct 2025-Feb 2026,mean of group-day means,163.36,129,ug/m3 (days),pm25
+KPI1 daily mean PM2.5,treated,winter Oct 2025-Feb 2026,median of group-day means,157.59,129,ug/m3 (days),pm25
+KPI1 daily mean PM2.5,treated,winter Oct 2025-Feb 2026,95th percentile of group-day means,278.28,129,ug/m3 (days),pm25
+KPI2 days above 60 ug/m3,treated,winter Oct 2025-Feb 2026,share of valid days above 60,94.57,129,% of days,pm25
+KPI2 days above 60 ug/m3,treated,winter Oct 2025-Feb 2026,number of days above 60,122.0,129,days,pm25
+KPI2 days above 60 ug/m3,treated,winter Oct 2025-Feb 2026,share of valid station-days above 60,92.55,4794,% of station-days,pm25
+KPI1 daily mean PM2.5,control,winter Oct 2025-Feb 2026,mean of group-day means,65.11,130,ug/m3 (days),pm25
+KPI1 daily mean PM2.5,control,winter Oct 2025-Feb 2026,median of group-day means,66.59,130,ug/m3 (days),pm25
+KPI1 daily mean PM2.5,control,winter Oct 2025-Feb 2026,95th percentile of group-day means,90.69,130,ug/m3 (days),pm25
+KPI2 days above 60 ug/m3,control,winter Oct 2025-Feb 2026,share of valid days above 60,66.92,130,% of days,pm25
+KPI2 days above 60 ug/m3,control,winter Oct 2025-Feb 2026,number of days above 60,87.0,130,days,pm25
+KPI2 days above 60 ug/m3,control,winter Oct 2025-Feb 2026,share of valid station-days above 60,55.55,1829,% of station-days,pm25
+KPI1 daily mean PM2.5,treated,full window,mean of group-day means,78.92,542,ug/m3 (days),pm25
+KPI1 daily mean PM2.5,treated,full window,median of group-day means,56.95,542,ug/m3 (days),pm25
+KPI1 daily mean PM2.5,treated,full window,95th percentile of group-day means,231.98,542,ug/m3 (days),pm25
+KPI2 days above 60 ug/m3,treated,full window,share of valid days above 60,47.6,542,% of days,pm25
+KPI2 days above 60 ug/m3,treated,full window,number of days above 60,258.0,542,days,pm25
+KPI2 days above 60 ug/m3,treated,full window,share of valid station-days above 60,47.39,19379,% of station-days,pm25
+KPI1 daily mean PM2.5,control,full window,mean of group-day means,47.29,544,ug/m3 (days),pm25
+KPI1 daily mean PM2.5,control,full window,median of group-day means,45.0,544,ug/m3 (days),pm25
+KPI1 daily mean PM2.5,control,full window,95th percentile of group-day means,81.26,544,ug/m3 (days),pm25
+KPI2 days above 60 ug/m3,control,full window,share of valid days above 60,27.39,544,% of days,pm25
+KPI2 days above 60 ug/m3,control,full window,number of days above 60,149.0,544,days,pm25
+KPI2 days above 60 ug/m3,control,full window,share of valid station-days above 60,28.66,7346,% of station-days,pm25
+KPI4 fire exposure (context),treated,Oct-Nov 2025,"mean upwind detections per station-day (100 km, 45 deg, previous day)",4.73,2340,detections,n_up_nh_100km_45deg_lag1
+KPI4 fire exposure (context),treated,Oct-Nov 2025,max upwind detections in a station-day,28.0,2340,detections,n_up_nh_100km_45deg_lag1
+KPI4 fire exposure (context),treated,Oct-Nov 2025,share of station-days with at least one upwind detection,71.71,2340,% of station-days,n_up_nh_100km_45deg_lag1
+KPI4 fire exposure (context),treated,Oct-Nov 2025,"mean detections within 100 km, all directions (previous day)",11.91,2340,detections,n_nh_100km_lag1
+KPI5 data coverage,all,full window,station-hours with valid PM2.5 (present and not outage),86.77,763344,% of station-hours,"pm25, network_outage"
+KPI5 data coverage,all,full window,network outage hours,928.0,14136,hours,network_outage
+KPI5 data coverage,all,full window,share of hours that are network outage,6.56,14136,% of hours,network_outage
+KPI5 data coverage,treated,full window,station-hours with valid PM2.5,87.02,551304,% of station-hours,"pm25, network_outage"
+KPI5 data coverage,control,full window,station-hours with valid PM2.5,86.13,212040,% of station-hours,"pm25, network_outage"
+KPI5 data coverage,all,full window,"valid station-days (at least 18 valid hours), share of all station-days",84.03,31806,% of station-days,"pm25, network_outage"

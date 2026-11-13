@@ -24,7 +24,7 @@ This plan covers the final report (10 marks), the final presentation (20 marks) 
 | One burning season only (Oct to Nov 2025) and one winter | H1 has low power. "Inconclusive" is a legitimate result. State it, do not hide it. |
 | GRAP is invoked because pollution is high | Reverse causation and regression to the mean. A fall after activation is not automatically an effect. Use the weather-and-fire counterfactual and the control cities. |
 | Stage III and IV hours: 971 in total, almost all Nov 2025 to Jan 2026 | H2 rests on a handful of episodes. Report per event, not only pooled. |
-| Network-wide PM2.5 outage 11 to 20 Jan 2026 (and shorter ones); 928 outage hours in all | About 99 of the 971 Stage III/IV hours fall inside it. Missing data is correlated with treatment. Report it and run a sensitivity check. |
+| Network-wide PM2.5 outage 10 Jan 18:00 to 20 Jan 18:00 IST 2026 (241 hours, called "11 to 20 Jan" elsewhere) and shorter ones; 928 outage hours in all | 112 of the 971 Stage III/IV hours fall inside an outage: 94 in the January one, 18 in shorter ones (counted by `src/validate_final_dataset.py`). Missing data is correlated with treatment. Report it and run a sensitivity check. |
 | 6.8% of hours `grap_uncertain`, 21% `grap_inferred` | Primary run keeps them, a robustness run drops them, and event windows get a buffer around the change. |
 | Control cities (Patna, Lucknow, Kanpur) have different weather and fire exposure and their own local action plans | Controls are a comparison, not a clean counterfactual. Say so. |
 | Gas columns are mislabelled "ppb" in the archive | Use the units in the dictionary (NO, NO2 in ug/m3, NOx in ppm). Gases are secondary variables. |

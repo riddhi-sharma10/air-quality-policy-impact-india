@@ -1,0 +1,59 @@
+Validating C:\Users\awast\OneDrive\Desktop\projects\air-quality-policy-impact-india\data\processed\final_dataset.parquet
+[PASS] row count is 763,344 (54 stations x 14,136 hours) -- got 763,344
+[PASS] 70 columns, names and order as in the dictionary -- missing [], extra []
+[PASS] time columns are datetimes, flags are booleans
+[PASS] (station_id, hour_ist) is unique -- 0 duplicates
+[PASS] 54 stations, each with exactly 14,136 hours -- 54 stations, hours per station [np.int64(14136)]
+[PASS] every hour has all 54 stations (no hole in the grid)
+[PASS] hour_ist runs 19 Feb 2025 00:00 to 30 Sep 2026 23:00, on the hour -- 2025-02-19 00:00:00 to 2026-09-30 23:00:00
+[PASS] hour_utc = hour_ist - 5:30 in every row
+[PASS] hour, weekday, month, season agree with hour_ist
+[PASS] 39 treated and 15 control stations, attributes constant per station -- {'treated': 39, 'control': 15}, one set of attributes per station: True
+[PASS] treated = Delhi/Ghaziabad/Noida/Gurugram, control = Patna/Lucknow/Kanpur
+[PASS] group: only allowed values -- unexpected []
+[PASS] city: only allowed values -- unexpected []
+[PASS] sub_area: only allowed values -- unexpected []
+[PASS] fire_day_status: only allowed values -- unexpected []
+[PASS] schedule_version: only allowed values -- unexpected []
+[PASS] last_change_direction: only allowed values -- unexpected []
+[PASS] season: only allowed values -- unexpected []
+[PASS] festival: only allowed values -- unexpected []
+[PASS] empty cells per column match the dictionary; every other column has none
+[PASS] values of 37 numeric columns stay inside their limits
+[PASS] no negative fire counts or fire radiative power
+[PASS] pm25 present in 664,591 rows -- got 664,591
+[PASS] every pm25 value has at least one reading behind it (n_pm25 > 0)
+[PASS] n_pm25 = 0 only where pm25 is empty
+[INFO] rows with readings (n_pm25 > 0) but pm25 emptied by the quality rules (above 1,000 or flat runs) -- 2,994 rows; n_pm25 counts raw readings, so it is not 0 there
+[PASS] network_pm25_share equals the share of stations with PM2.5 in that hour (stored with 3 decimals)
+[PASS] network_outage is exactly 'share < 0.5'
+[PASS] network_outage is the same for all stations in an hour
+[PASS] 928 outage hours (50,112 rows) -- 928 hours, 50,112 rows
+[PASS] 662,378 PM2.5 rows remain outside outage hours -- got 662,378
+[PASS] 10 Jan 18:00 to 20 Jan 18:00 IST 2026 (241 hours): PM2.5 empty at every station and flagged as outage -- 0 PM2.5 values, 241 hours in the window
+[PASS] weather is empty only in the first 5 hours of 19 Feb 2025
+[PASS] wind_speed = sqrt(u10^2 + v10^2) (within the rounding of the stored u10 and v10) -- u10 and v10 are stored rounded
+[PASS] dewpoint never above air temperature (small tolerance)
+[PASS] ERA5 stamp is hour_utc rounded up to the hour
+[PASS] no lag0 or same-day fire column exists (every fire column ends in lag1 or lag2) -- fire columns: ['n_nh_50km_lag1', 'n_nh_50km_lag2', 'frp_nh_50km_lag1', 'frp_nh_50km_lag2', 'n_nh_100km_lag1', 'n_nh_100km_lag2', 'frp_nh_100km_lag1', 'frp_nh_100km_lag2', 'n_nh_200km_lag1', 'n_nh_200km_lag2', 'frp_nh_200km_lag1', 'frp_nh_200km_lag2', 'n_up_nh_100km_45deg_lag1', 'frp_up_nh_100km_45deg_lag1']
+[PASS] fire values are constant within each station and IST date (previous day applied to all 24 hours)
+[PASS] fire_day_status counts: outage 18,144 rows, zero_assumed 10,368 rows -- {'observed': 734832, 'outage': 18144, 'zero_assumed': 10368}
+[PASS] lag1 is empty on outage days and only then (apart from the first two dates)
+[PASS] zero_assumed days have lag1 = 0
+[PASS] counts grow with radius (50 <= 100 <= 200 km) and upwind <= all-direction 100 km
+[PASS] the 2-day sum (lag2) is never below the 1-day value (lag1)
+[PASS] fire_is_nrt is true only from 2 Jul 2026 (117,936 rows) -- 117,936
+[PASS] grap_stage is the same at every station in an hour
+[PASS] grap_stage_applied = grap_stage for treated, 0 for control
+[PASS] hours per stage 0..4 are 8,067 / 2,995 / 2,103 / 651 / 320 -- {0: 8067, 1: 2995, 2: 2103, 3: 651, 4: 320}
+[PASS] 30 stage changes in the window -- 30 changes
+[PASS] hours_since_stage_change is 0 at each change and empty only before the first one
+[PASS] flag counts: grap_uncertain 51,840 rows, grap_inferred 162,000 rows
+[PASS] festival_day is inside festival_window; counts 6,480 and 19,440 rows
+[INFO] Stage III/IV hours in the window -- 971 hours
+[INFO] Stage III/IV hours that fall inside a network outage -- 112 hours
+[INFO]   of which in the January 2026 outage (10 Jan 18:00 to 20 Jan 18:00 IST) / in shorter outages -- 94 / 18
+[PASS] Stage III/IV hours: 971 in total, 112 of them inside a network outage (the number quoted in the report) -- 971 total, 112 in outage
+
+51 passed, 0 failed
+RESULT: PASS
