@@ -148,3 +148,22 @@ Scripts go in `src/analysis/`, tables in `outputs/tables/`, figures in `outputs/
 - The model is daily and weather-only plus fire; it explains about half of the day-to-day variation (CV R² 0.5 to 0.56 at best) and 0.02 for the December event.
 - Placebo dates in a row are not independent; the control-city comparison (T06d) is descriptive only.
 - Block cross-validation blocks are consecutive valid days, which can span a gap of a day or two.
+
+---
+
+## Update 14 Nov 2026 (after MK's review of 13 Nov and MA's list)
+
+**Done:**
+- [x] MK confirmed B1.4 and B2.3 (see `docs/work_log/MK_2026-11-13_H2-review.md` on her branch); MK re-ran scripts 10 to 12 and the 13 tests: identical.
+- [x] MK request 1: forecast sentence on F12, F13, F14 and F15 (and in the report drafts); request 2: power result next to the H2 status (F12, F13, F15 footers, report 7.1, 10.1); request 3: 13 Dec 2025 has no usable counterfactual and its fit window contains earlier stage changes, 19 Oct 2025 is the day before Diwali (F12 panel titles, report 7.2); A1 stated in the limitations (`report/11_limitations_h2.md`).
+- [x] MA request: corrected outage window (10 Jan 17:00 to 20 Jan 18:00 IST, 242 h), `outage_runs.csv`, long-outage flags in `grap_events.csv`; wording fixed in the plan, deviation note, work logs and dictionaries; event list and F3 hand-off in `docs/handoff_F3_for_MA.md`.
+- [x] Review of MK's H1 work: `docs/work_log/RB_2026-11-14_H1-review.md` (all 10 tables reproduce; K1 DECISION confirmed with three conditions; 11 findings; F7 to F11 checklist).
+- [x] Report drafts: `report/05_methods_h2.md`, `report/07_results_h2.md`, `report/10_recommendations_roadmap.md` (B4), `report/11_limitations_h2.md`.
+
+**Still open:**
+- [ ] T0.1.3: team review of the deviation note, send it, save the instructor's reply.
+- [ ] MK: fixes listed in the H1 review (station-only row, two empty checks, K3 framing, F10 labels, source captions, rain extrapolation); then I tick F7 to F11 in `outputs/figure_registry.csv`.
+- [ ] MA: formal H1 and H2 status labels (gate G4); co-review of F3.
+- [ ] RS: weather offset +1 and -1 hours (needs alternative ERA5 columns, for H1 and for my B3); `requirements.txt` with `scipy`, `statsmodels`, `matplotlib`, `pyarrow`, `xarray`.
+- [ ] B4 and report sections go through MA and MK for over-claiming before they count as final; Stage 3 slides 2 to 4 still to be built from `report/10_recommendations_roadmap.md` section 10.4.
+- [ ] S3 hypothesis refinement session; S5 viva preparation.
