@@ -9,7 +9,7 @@ Branch: `manya_work`. MK's H1 results are on `origin/mehak/h2-review` (built on 
 | Task | What | Status | Reviewer sign-off |
 | --- | --- | --- | --- |
 | Final dataset | Built and merged (763,344 rows, 70 columns, 54 stations) | Done (before this branch) | n/a |
-| M3 | Pollution EDA, figures F1 to F6, data-quality section | EDA done (reported by me); **code and figures not yet in the repo** | Not started |
+| M3 | Pollution EDA, figures F1 to F6, T2 | **Done by RS** (not by me); RS still has to commit the code and figures to the repo | I review it (RS is the author, so the cross-review pair flips) |
 | T0.3 | `docs/work_log/`, template, branch | Done | Pending RS |
 | M2 | Data validation script, tests, saved run output | Done | Pending RS |
 | M1 | Stakeholder and KPI page, KPI baseline script | Done | Pending RS |
@@ -74,10 +74,9 @@ KPI baselines (winter sample 1 Oct 2025 to 28 Feb 2026; descriptions, not effect
 
 ### Can do now (needs no one else)
 0. **Merge or rebase onto `origin/mehak/h2-review`** (or main once it is merged) so `20_g4_status.py` and `05b_model_monitoring.py` find T04d, T04e, T04g, T06a/e/f/g and T07a in `outputs/tables/` without `--tables-dir`.
-1. **Get the EDA into the repo.** Commit the code as `src/analysis/01_eda_pollution.py` and F1 to F6 plus table T2 (missingness by station and month) in `outputs/`.
-   Create `outputs/figure_registry.csv` (figure id, script, input, date, author, reviewer, status).
-2. **Run the figure checklist (plan section 6.1) on F1 to F6**: title, axis units, legend, n, uncertainty, outages as grey gaps, IST, caption in the 9.2 template.
-3. **Add to the EDA output:** the missingness table T2, and the outage/Stage III-IV overlap (112 hours: 94 + 18; `validate_final_dataset.py` already prints it).
+1. **Review RS's EDA** once it is committed: re-run it from a clean state, tick the figure checklist (plan 6.1) on F1 to F6, check T2 and the outage/Stage III-IV overlap (112 hours: 94 + 18).
+2. **Ask RS to commit the EDA** as `src/analysis/01_eda_pollution.py` with F1 to F6 and T2 in `outputs/` and register them in `outputs/figure_registry.csv`.
+3. **Write report section 3 (data quality)** from the dictionary, `docs/validation_run_output.txt` and RS's EDA outputs, citing RS's figures.
 4. **Draft report section 1** (problem, KPIs, hypotheses; most of it is in `report/01_stakeholder_and_kpis.md`) **and section 3** (data quality: cleaning, outliers, missing values, validation).
    Write my half of section 4 (EDA).
 5. **Stage 2 slides 1 and 2:** slide 1 data preparation, slide 2 EDA (F3, F4, F6, F7).
@@ -88,7 +87,7 @@ KPI baselines (winter sample 1 Oct 2025 to 28 Feb 2026; descriptions, not effect
 | Item | Waits for |
 | --- | --- |
 | M2, M1 sign-off, work-log notes | RS review |
-| Missing-data choice for the EDA (drop outage hours as primary, interpolate gaps of 3 hours or less as sensitivity) | RS yes (marked DECISION in the plan) |
+| Review of F1 to F6 and T2 (G2) | RS commits the EDA to the repo |
 | Reviews of M4, G4, F16 | RS |
 | F3 (PM2.5 and GRAP timeline) | RB for the stage shading and event list (B1); the data part can be built now |
 | Stage 3 slide 4 (roadmap) | RB's recommendations (B4) |
