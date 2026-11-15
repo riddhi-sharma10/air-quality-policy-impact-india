@@ -14,15 +14,15 @@
 
 ## 1.2 KPIs
 
-Every KPI is computed from `data/processed/final_dataset.parquet` by `src/analysis/01b_kpi_baselines.py` (table `outputs/tables/T00_kpi_baselines.csv`). A valid hour has `pm25` present and `network_outage` False; a valid station-day has at least 18 valid hours; a group-day averages the valid station-days and counts when at least half of the group's stations are valid. Winter sample: 1 Oct 2025 to 28 Feb 2026 (IST). Baselines are descriptions of the period, not effects.
+Every KPI is computed from `data/processed/final_dataset.parquet` in notebook Part 1 (table T00, written when the notebook is run; see `docs/Final_Notebook_Plan.md`). The baseline numbers from the earlier script were removed on 15 Nov 2026 because the analysis after the final dataset is being redone from scratch. A valid hour has `pm25` present and `network_outage` False; a valid station-day has at least 18 valid hours; a group-day averages the valid station-days and counts when at least half of the group's stations are valid. Winter sample: 1 Oct 2025 to 28 Feb 2026 (IST). Baselines are descriptions of the period, not effects.
 
 | # | KPI | Definition and columns | Baseline, winter sample | Feeds |
 | --- | --- | --- | --- | --- |
-| 1 | Daily mean PM2.5 | Mean of valid station-days per group and day. `pm25`, `network_outage`, `group` | Treated 163.4 ug/m3 (129 valid days); control 65.1 ug/m3 (130 days) | Context for H1, H2 |
-| 2 | Days above the 24-hour standard | Share of valid group-days above 60 ug/m3 (India NAAQS). `pm25` | Treated 122 of 129 days (94.6%); control 87 of 130 days (66.9%) | Health and GRAP decisions |
-| 3 | PM2.5 response in days 1 to 3 after a stage change | Actual minus the weather-and-fire prediction, in ug/m3 and %, per event and pooled. `grap_stage_applied`, `hours_since_stage_change`, `last_change_direction`, `pm25`, weather and fire columns | Not computed yet: the value comes from the H2 analysis (RB, B2) | H2 |
-| 4 | PM2.5 change per additional upwind fire detection the day before | Coefficient with 95% CI from the H1 regression. `n_up_nh_100km_45deg_lag1`, `pm25`, weather columns | Not computed yet (MK, K2). Context: in Oct to Nov 2025 treated stations had on average 4.7 upwind detections per station-day (max 28, at least one on 71.7% of station-days) | H1 |
-| 5 | Monitoring completeness | Share of station-hours with valid PM2.5; network outage hours. `pm25`, `network_outage` | 86.8% of station-hours valid; 928 of 14,136 hours (6.6%) are network outages; 84.0% of station-days valid | Data quality, monitoring (F16) |
+| 1 | Daily mean PM2.5 | Mean of valid station-days per group and day. `pm25`, `network_outage`, `group` | To be computed in notebook Part 1 | Context for H1, H2 |
+| 2 | Days above the 24-hour standard | Share of valid group-days above 60 ug/m3 (India NAAQS). `pm25` | To be computed in notebook Part 1 | Health and GRAP decisions |
+| 3 | PM2.5 response in days 1 to 3 after a stage change | Actual minus the weather-and-fire prediction, in ug/m3 and %, per event and pooled. `grap_stage_applied`, `hours_since_stage_change`, `last_change_direction`, `pm25`, weather and fire columns | Not computed yet: the value comes from the H2 analysis (RB, notebook Part 5) | H2 |
+| 4 | PM2.5 change per additional upwind fire detection the day before | Coefficient with 95% CI from the H1 regression. `n_up_nh_100km_45deg_lag1`, `pm25`, weather columns | Not computed yet (MK, notebook Part 4). The unit ("per +n detections") is chosen from the fire distribution in the EDA (notebook 3.8) | H1 |
+| 5 | Monitoring completeness | Share of station-hours with valid PM2.5; network outage hours. `pm25`, `network_outage` | To be computed in notebook Part 1 (the outage hour count is also checked by `src/validate_final_dataset.py`) | Data quality, monitoring (F16) |
 
 ## 1.3 Constraints that limit what we claim
 
@@ -37,4 +37,4 @@ Every KPI is computed from `data/processed/final_dataset.parquet` by `src/analys
 **Title:** Who acts on air-quality evidence, and what can our data support?
 Text (4 lines): CAQM decides GRAP stages (H2) · State boards and health departments use the monitoring and exceedance KPIs (data quality, KPI 2) · Source-state stubble policy is outside the data · All findings are associations from one burning season.
 
-*Sources: final_dataset.parquet; script `src/analysis/01b_kpi_baselines.py`; outage counts from `src/validate_final_dataset.py`. Unchecked: the descriptions of what each agency decides are general knowledge of CAQM and GRAP and need a source citation before the report.*
+*Sources: final_dataset.parquet; notebook Part 1 (to be written); outage counts from `src/validate_final_dataset.py`. Unchecked: the descriptions of what each agency decides are general knowledge of CAQM and GRAP and need a source citation before the report.*
