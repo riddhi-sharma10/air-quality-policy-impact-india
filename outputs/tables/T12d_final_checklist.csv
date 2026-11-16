@@ -1,15 +1,19 @@
 Item,Status,Detail
-Restart and run all passes top to bottom; the run time is printed,needs your check,"every cell up to this one ran without error in this session, in 6.0 min; the run on your laptop with a restarted kernel is yours to confirm"
-Every figure is saved as PNG and SVG with its ID and a caption cell,pass,48 figures (12.1)
+Restart and run all passes top to bottom; the run time is printed,needs your check,"every cell up to this one ran without error in this session, in 8.0 min; the run on your laptop with a restarted kernel is yours to confirm"
+Every figure is saved as PNG and SVG with its ID and a caption cell,pass,21 figures (12.1)
 "Every figure is followed by an explanation: what it shows, what it does not show",pass,47 of 47 captions are followed by both parts
-No code cell longer than 25 lines; every code cell starts with a header comment,pass,329 code cells; longer than 25 lines: []; without header comment: []
+No code cell longer than 25 lines; every code cell starts with a header comment,pass,340 code cells; longer than 25 lines: []; without header comment: []
 "Treated #D55E00, control #0072B2, outages grey",pass,the colour constants of Phase 0 have the planned values; the use in each figure was checked by viewing
 The decision rules were written before the models and are unchanged,pass,the 17 frozen constants of Phase 7 equal the values in use now; changed: []
-The number of specifications tried is stated,pass,41 planned runs and 28 extension analyses (10.6)
+The number of specifications tried is stated,pass,"41 planned runs (T07d) and 24 logged extension analyses of H1 and H2 (T07d2, Appendix A); H3 and H4 report their checks in T04r and T14f"
 The wording search finds no causal wording without a qualifier,pass,"sentences with 'caused', 'reduced by' or 'proved' and no negation or condition: 0"
-No typed numbers: every number in the text comes from a variable or a saved table,needs your check,"the results texts are generated from variables; 25 sentences of the fixed explanation texts contain a signed, percent or unit number; read during the build: thresholds (60 ug/m3, 300 ug/m3), definitions and quoted earlier values only; a second read is yours"
+No typed numbers: every number in the text comes from a variable or a saved table,needs your check,"the results texts are generated from variables; 20 sentences of the fixed explanation texts contain a signed, percent or unit number; read during the build: thresholds (60 ug/m3, 300 ug/m3), definitions and quoted earlier values only; a second read is yours"
 Time is IST in every axis; units match the dictionary,pass,no axis label or title uses UTC (cells with UTC: []); units were checked against the dictionary during the build
-"The honest limitations appear in the interpretation cells, not only at the end",pass,"mentions before Phase 10: {'one season': 31, 'reverse causation': 12, 'outage overlap': 70, 'control cities': 40}"
-"Every analysis of Phases 8B and 9B is labelled, listed in T07d2, and none changes the frozen status",pass,"28 cells log an extension, unlabelled: []; status from the frozen tables alone: {'H1': 'SUPPORTED', 'H2': 'INCONCLUSIVE'}; the counterfactual carried forward is the one with the lowest hold-out error"
-Each of the key questions Q1 to Q4 has a plain-words answer,pass,"answers in 10.3, with the number, the caveat and the source tables"
+"The honest limitations appear in the interpretation cells, not only at the end",pass,"mentions before Phase 10: {'one season': 22, 'reverse causation': 7, 'outage overlap': 63, 'control cities': 18}"
+"Every analysis of Phases 8B and 9B is labelled, listed in T07d2, and none changes the frozen status",pass,"24 cells log an extension, unlabelled: []; status from the frozen tables alone: {'H1': 'SUPPORTED', 'H2': 'INCONCLUSIVE'}; the counterfactual carried forward is the one with the lowest hold-out error"
+Each of the key questions Q1 to Q4 has a plain-words answer,pass,"answers in 8B.10 and 9B.9, with the number, the caveat and the source tables"
 The proposal's research questions are mapped and the methods not run are listed,pass,4 questions in T12b and 13 methods in T12c
+The main flow has at most 160 visible code cells; the rest is in collapsed sections and Appendix A,needs your check,"184 visible code cells, 156 in collapsed sections and Appendix A, 586 cells in all"
+Headline numbers in the text equal the computed values (assert) and no signed percent is typed in a markdown cell,pass,26 headline numbers of H1 to H4 checked against the shown texts; missing: []; markdown sentences with a typed signed percent: []
+The requirement items of the notebook are present,pass,"dfSummary via summarytools: yes; ETL, data quality and outliers (T02c, T05h): yes; bias table (T11d): yes; boosting with tuning: yes; SHAP and permutation importance: yes; equity and fairness (T11c): yes; 5 to 10 recommendations: yes; production and Responsible AI (11.5): yes; Drive setup cell: yes; final checklist: yes"
+Step 12.1 points to the final notebook file,pass,notebook file read in 12.1: air_quality_policy_impact_final.ipynb

@@ -1,0 +1,8 @@
+Check,Estimate,Interval low or null mean,Interval high or null 95th pct,Passes
+"Early-late correlation, ISO-week blocks (frozen interval)",0.8047148409707843,0.6547147537260386,0.8815471886656366,True
+"Early-late correlation, 7-day blocks",0.8047148409707843,0.6656945724265849,0.8776908781971184,True
+"Early-late correlation, 14-day blocks",0.8047148409707843,0.6285573581690207,0.8682420136331708,True
+"Median share, ISO-week blocks",0.8301483703568954,0.7893086990040669,0.8698621140365361,True
+"Median share, 7-day blocks",0.8301483703568954,0.7876511560716383,0.8710275677315625,True
+"Median share, 14-day blocks",0.8301483703568954,0.7887450237379137,0.8689456244426146,True
+Placebo: station labels shuffled within each day (null 95th percentile 0.26),0.8047148409707843,0.006322690276422056,0.2613633133723358,True
