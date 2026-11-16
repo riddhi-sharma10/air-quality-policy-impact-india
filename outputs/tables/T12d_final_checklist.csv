@@ -1,8 +1,8 @@
 Item,Status,Detail
-Restart and run all passes top to bottom; the run time is printed,needs your check,"every cell up to this one ran without error in this session, in 5.5 min; the run on your laptop with a restarted kernel is yours to confirm"
+Restart and run all passes top to bottom; the run time is printed,needs your check,"every cell up to this one ran without error in this session, in 6.3 min; the run on your laptop with a restarted kernel is yours to confirm"
 Every figure is saved as PNG and SVG with its ID and a caption cell,pass,43 figures (12.1)
 "Every figure is followed by an explanation: what it shows, what it does not show",pass,42 of 42 captions are followed by both parts
-No code cell longer than 25 lines; every code cell starts with a header comment,pass,295 code cells; longer than 25 lines: []; without header comment: []
+No code cell longer than 25 lines; every code cell starts with a header comment,pass,297 code cells; longer than 25 lines: []; without header comment: []
 "Treated #D55E00, control #0072B2, outages grey",pass,the colour constants of Phase 0 have the planned values; the use in each figure was checked by viewing
 The decision rules were written before the models and are unchanged,pass,the 17 frozen constants of Phase 7 equal the values in use now; changed: []
 The number of specifications tried is stated,pass,41 planned runs and 24 extension analyses (10.6)
