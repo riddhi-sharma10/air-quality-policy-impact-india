@@ -1,0 +1,40 @@
+station_id,Station,Sub-area,Days,"Share explained, levels","Share explained, day-to-day"
+5622,"NSIT Dwarka, Delhi - CPCB",Delhi,126,0.6726,0.1622
+5630,"Shadipur, Delhi - CPCB",Delhi,124,0.5856,0.3098
+6359,"IHBAS, Dilshad Garden,New Delhi - CPCB",Delhi,127,0.4403,0.4252
+7005,"Loni, Ghaziabad - UPPCB",Ghaziabad,104,0.7359,0.5697
+10921,"NISE Gwal Pahari, Gurugram - IMD",Gurugram,123,0.888,0.6681
+11603,"Chandni Chowk, Delhi - IITM",Delhi,115,0.857,0.7108
+10484,"Sri Aurobindo Marg, Delhi - DPCC",Delhi,124,0.8841,0.7214
+5665,"Vasundhara, Ghaziabad - UPPCB",Ghaziabad,107,0.8805,0.7372
+5613,"ITO, New Delhi - CPCB",Delhi,126,0.9271,0.7537
+6986,"Knowledge Park - V, Greater Noida - UPPCB",Noida,126,0.8949,0.7568
+5541,"Burari Crossing, New Delhi - IMD",Delhi,127,0.8889,0.7767
+8472,"Bawana, Delhi - DPCC",Delhi,128,0.8456,0.7803
+6924,"Indirapuram, Ghaziabad - UPPCB",Ghaziabad,115,0.7352,0.7918
+5626,"DTU, New Delhi - CPCB",Delhi,129,0.769,0.7972
+6932,"Alipur, Delhi - DPCC",Delhi,123,0.9243,0.8024
+6358,"Mandir Marg, New Delhi - DPCC",Delhi,118,0.8234,0.816
+5634,"Lodhi Road, New Delhi - IMD",Delhi,126,0.8904,0.8172
+8235,"Jahangirpuri, Delhi - DPCC",Delhi,126,0.9406,0.8263
+5570,"Aya Nagar, New Delhi - IMD",Delhi,123,0.926,0.8284
+5404,"Pusa, Delhi - IMD",Delhi,107,0.9262,0.8301
+17,"R K Puram, Delhi - DPCC",Delhi,124,0.9657,0.8399
+6931,"Dwarka-Sector 8, Delhi - DPCC",Delhi,126,0.9515,0.8411
+10486,"Mundka, Delhi - DPCC",Delhi,122,0.948,0.845
+6938,"Vivek Vihar, Delhi - DPCC",Delhi,125,0.9604,0.8459
+8365,"Nehru Nagar, Delhi - DPCC",Delhi,127,0.9564,0.8546
+6980,"Sector-1, Noida - UPPCB",Noida,113,0.931,0.8577
+235,"Anand Vihar, New Delhi - DPCC",Delhi,126,0.967,0.8743
+8475,"Sonia Vihar, Delhi - DPCC",Delhi,129,0.9685,0.8763
+6934,"Dr. Karni Singh Shooting Range, Delhi - DPCC",Delhi,127,0.9654,0.8777
+6929,"Major Dhyan Chand National Stadium, Delhi - DPCC",Delhi,129,0.9366,0.8806
+8239,"Okhla Phase-2, Delhi - DPCC",Delhi,123,0.9629,0.8841
+5610,"North Campus, DU, Delhi - IMD",Delhi,121,0.9625,0.8931
+6957,"Jawaharlal Nehru Stadium, Delhi - DPCC",Delhi,129,0.9683,0.9036
+5627,"CRRI Mathura Road, New Delhi - IMD",Delhi,122,0.9429,0.9043
+8915,"Wazirpur, Delhi - DPCC",Delhi,127,0.9718,0.9189
+10831,"Rohini, Delhi - DPCC",Delhi,124,0.9795,0.9254
+6960,"Patparganj, Delhi - DPCC",Delhi,128,0.9821,0.9331
+8917,"Ashok Vihar, Delhi - DPCC",Delhi,127,0.9794,0.942
+50,"Punjabi Bagh, Delhi - DPCC",Delhi,121,0.9846,0.9491

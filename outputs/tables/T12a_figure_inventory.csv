@@ -33,6 +33,10 @@ F31,F31_roadmap.png,True,True
 F32,F32_station_fire_map.png,True,True
 F33,F33_equity_by_area.png,True,True
 F34,F34_h3_ventilation.png,True,True
+F35,F35_regional_share_by_station.png,True,True
+F36,F36_station_ranking.png,True,True
+F37,F37_ranking_stability.png,True,True
+F38,F38_station_excess_map.png,True,True
 F3,F3_pm25_and_grap_timeline.png,True,True
 F3b,F3b_stage_changes_timeline.png,True,True
 F4,F4_seasonal_profile.png,True,True

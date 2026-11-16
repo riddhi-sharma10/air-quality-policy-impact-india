@@ -5,5 +5,5 @@ Weather only,43.912,28.288,-0.127
 Weather and fire,43.007,27.883,-0.081
 Persistence + weather,23.397,15.395,0.68
 Persistence + weather + fire,23.488,15.423,0.678
-Boosted: weather only,38.334,24.768,0.141
-Boosted: weather and fire,36.678,23.997,0.214
+Boosted: weather only,38.342,24.834,0.141
+Boosted: weather and fire,36.989,24.143,0.201

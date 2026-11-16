@@ -21,6 +21,19 @@ Project: *Do burning and emission restrictions reduce air pollution in Northern 
 * **Named in the summary and not run:** propensity score matching, regression discontinuity (no numeric trigger in the data), LIME, a fairness check across station types (no station-type field; a geographic equity check by sub-area was done instead, 11.5), Spark, and a model API. A small MLflow logging script (`scripts/log_mlflow.py`) and a Streamlit app (`app/streamlit_app.py`) are provided.
 * **The ADS course handout was not available when this note was written**, so whether each method above is on its topic list is not confirmed. **Please confirm which of the methods in this section are inside the course scope**; the extension cells (Phases 8B and 9B) are labelled "ADDED AFTER SEEING RESULTS" and can be removed without changing the frozen results.
 
+## 2a. Analyses added after the frozen results (exploratory)
+
+The proposal has four hypotheses: H1 and H2 of the notebook are the proposal's fire and GRAP questions (RQ2 and RQ1 in 12.3). After the frozen results, four further analyses were run. All were chosen after seeing results, none changes the frozen H1 or H2 status, and Phase 10C of the notebook puts all of them in one table (`T14e`).
+
+| Analysis | Where | Result by its own rule | Note |
+| --- | --- | --- | --- |
+| **H3** ventilation index (boundary-layer height and wind speed) and PM2.5; answers the proposal's H3 directly | notebook, Phase 8C (`T04q`, `T08j`, F34) | SUPPORTED: -19.1% PM2.5 per +1 SD of ventilation [-22.8, -15.3] | falls to -1.9% when temperature is added, so weather terms cannot be separated |
+| **E1** regional PM2.5 level and persistent differences between stations | notebook, Phase 10B (`T14a` to `T14d`, F35 to F38) | SUPPORTED for this winter: median 83% of day-to-day variance shared with other stations; early-late correlation of station excesses 0.80 [0.65, 0.88] | 42% of the spread between stations lies between network owners (possible calibration differences); the rule was written after a first look at the data; to be confirmed on the next winter |
+| **X1** fires in April and May | `docs/exploratory_analyses_not_in_notebook.md` | inconclusive (an informative null) | kept out of the notebook |
+| **X2** traffic and dust tracers on Stage III and IV days | `docs/exploratory_analyses_not_in_notebook.md` | inconclusive | kept out of the notebook |
+
+**H4 of the proposal** (do effects differ between traffic, industrial and residential stations?) **cannot be tested**: the stations table has no station-type field. The notebook reports the nearest results (sub-areas in 8B.2, station differences in 10B) and says so in 12.3. **Please confirm** that reporting H3 and E1 as extensions, and X1 and X2 in a separate document, is acceptable.
+
 ## 3. What does not change
 
 The dataset meets the stated minimums (763,344 rows, 70 columns, four independent sources, no Kaggle data), the hypotheses and decision rules were frozen in Phase 7 before the models were fitted, and the statuses are reported as the rules give them (H1 met by the frozen rule but weak, H2 inconclusive).

@@ -25,3 +25,5 @@ Cell,Added after seeing results,Description
 9B.6,True,"mean-reversion regression of the 3-day change on deviation and trend (treated and control; winter and all days), excess fall of each real event"
 9B.7,True,chosen weather-only counterfactual run on the control cities at all rising dates without a stage change (null distribution of the method's effects)
 9B.8,True,power curves from empirical noise (spike-day raw changes and control-city placebo effects) for 1 to 40 events
+10B.1,True,ADDED AFTER SEEING RESULTS: exploratory analysis E1 (regional level and persistent station differences); decision rule fixed before the computation; does not change the frozen H1 or H2 status
+10B.6,True,ADDED AFTER SEEING RESULTS: E1 result and status from the rule of 10B.1 (T14d); the frozen H1 and H2 statuses are unchanged

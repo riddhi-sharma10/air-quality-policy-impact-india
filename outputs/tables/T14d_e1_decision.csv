@@ -1,0 +1,3 @@
+Criterion,Rule,Observed,Met
+(a) median share of day-to-day variance explained by the other stations,at least 70%,"83% [79%, 87%]",True
+(b) early-late correlation of the station excesses,at least 0.60 with the interval above zero; below 0.30 is not supported,"0.80 [0.65, 0.88]",True
