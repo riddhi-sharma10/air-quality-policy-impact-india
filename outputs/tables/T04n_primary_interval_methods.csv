@@ -1,0 +1,10 @@
+Interval,Effect per +5 (%),CI low,CI high,Includes zero
+Date clusters (frozen run),9.53,1.4,18.32,False
+Station clusters (frozen run),9.53,8.38,10.69,False
+Wider of the two (frozen decision interval),9.53,1.4,18.32,False
+Two-way clusters (station and date),9.53,1.47,18.24,False
+ISO-week clusters,9.53,-0.22,20.23,True
+"Date-block bootstrap, 7-day blocks",9.53,-0.08,20.55,True
+"Date-block bootstrap, 14-day blocks",9.53,1.25,19.53,False
+Month effects (date clusters),5.47,-0.92,12.26,True
+Date effects (date clusters),1.7,-1.22,4.72,True

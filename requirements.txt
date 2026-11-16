@@ -1,0 +1,8 @@
+# Requirements of the Streamlit app (app/streamlit_app.py) and the MLflow script (scripts/log_mlflow.py).
+# The analysis notebook additionally needs: statsmodels, patsy, scikit-learn, seaborn, pyarrow, nbformat, ipython, summarytools; shap is optional.
+streamlit>=1.30
+pandas>=2.0
+numpy>=1.24
+matplotlib>=3.7
+pyarrow>=14
+mlflow>=2.10

@@ -3,11 +3,16 @@ Cell,Added after seeing results,Description
 8B.2,True,heterogeneity: fire effect in 10 subgroups (5 dimensions) with interaction tests
 8B.3,True,"season ladder: fire effect with month, week and date effects"
 8B.3,True,within-between split of the fire count (month mean and deviation)
+8B.3b,True,"primary fire interval under two-way, week-cluster and date-block bootstrap inference"
+8B.3c,True,primary model with festival indicators (Diwali period) added
 8B.4,True,timing: separate effects of yesterday's and the day before yesterday's all-direction 100 km count
+8B.4b,True,"three separate daily lags (day 1, 2, 3) of the all-direction 100 km count"
 8B.5,True,"association-based scenarios for the fire count (observed, capped at the median, halved, zero)"
 8B.6,True,"variance decomposition: R-squared of station and weekday effects, plus weather, plus fire, with block-bootstrap interval for the fire increment"
 8B.7,True,leave-one-month-out check of the fire gain with and without yesterday's PM2.5
 8B.8,True,"persistence plus weather, and persistence plus weather plus fire, under the frozen train and test periods"
+8B.8b,True,fire gain for a fire x winter interaction and for winter-only training and testing
+8B.8c,True,persistence-plus-weather advisory model without station effects (coefficients saved for the app)
 8B.9,True,"boosted model (HistGradientBoostingRegressor), settings tuned by blocked cross-validation inside the training period"
 8B.9,True,"permutation importance of each single input of the boosted model (boundary-layer height, wind speed and the others)"
 9B.1,True,"diagnosis of the frozen counterfactual: days per parameter, condition number, hold-out error by day"

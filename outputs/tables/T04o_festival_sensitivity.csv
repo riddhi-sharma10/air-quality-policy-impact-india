@@ -1,0 +1,3 @@
+Specification,Effect per +5 (%),CI low,CI high,Station-days
+Primary (station and weekday effects),9.53,1.4,18.32,4757
+Plus festival indicators,8.96,1.09,17.45,4757

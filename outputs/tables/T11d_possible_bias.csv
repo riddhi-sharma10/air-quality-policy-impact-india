@@ -1,0 +1,7 @@
+Source of bias,Measured as,Value,What was done about it
+Station imbalance,share of treated winter station-days from Delhi,"86% (4,106 of 4,794)",reported by sub-area in 8B.2 and the equity table; leave-one-sub-area-out runs in 8.7
+Missing not at random,"share of Stage III and IV station-hours inside a network outage, against all station-hours",12% against 7%,"outage hours are grey gaps, never interpolated; counted in the KPI table and in recommendation 4"
+Control cities differ,"winter mean PM2.5 and temperature, treated against control",163 against 65 ug/m3; 18.0 against 19.5 deg C,"used as a comparison, not a twin; difference-in-differences and placebo checks (9B.3, 9B.7)"
+Satellite gaps and assumed zeros,share of station-hours whose fire value is from an outage or an assumed zero,3.7%,"run without those days in 8.7; clouds hide fires, so counts are a lower bound"
+Fire count is a proxy,effect per SD of the all-direction 200 km count against the upwind 100 km count,+24.2% against +9.5%,wording is association only; fire radiative power run in 8.7
+Events follow high pollution,PM2.5 trend in the week before the primary event,+18% per day,"placebo dates, spike-day benchmark and mean-reversion regression (9.7, 9B.5, 9B.6)"

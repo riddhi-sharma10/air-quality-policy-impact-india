@@ -1,0 +1,3 @@
+Variable,Values,Q1,Q3,Upper IQR fence,Share above the fence (%),Share above 300 ug/m3 (%),Maximum,Jumps above 300 (counted),Decision
+"pm25 (hourly, ug/m3)",664591,28.5,85.0,169.75,8.23,2.14,1000.0,819,"kept: high values are real episodes; only 2,994 impossible hourly values were removed (T02c)"
+"pm25_day (station-day mean, ug/m3)",26725,32.92,84.2,161.12,8.39,1.24,570.89,0,"kept: a daily mean above the fence is a smog day, not an error"

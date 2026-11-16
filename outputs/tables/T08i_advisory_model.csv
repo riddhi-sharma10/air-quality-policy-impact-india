@@ -1,0 +1,16 @@
+,Coefficient
+Intercept,-0.542151
+log_yday,0.71819
+wind_speed,-0.14918
+wind_dir_sin,0.037789
+wind_dir_cos,0.024927
+t2m_c,-0.022598
+rh_pct,-0.005517
+blh_m,7.5e-05
+tp_mm,-0.009828
+sp_hpa,0.003105
+smearing factor,1.051193
+test RMSE (ug/m3),22.877022
+test MAE (ug/m3),15.139215
+test R-squared,0.694223
+training rows,9715.0

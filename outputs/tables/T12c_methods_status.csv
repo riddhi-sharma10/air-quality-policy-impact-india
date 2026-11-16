@@ -4,11 +4,11 @@ Placebo dates and alternative fire radii,run,"9.7 and 9B.3; radii of 50, 100 and
 Alternative control groups,partly,only the three control cities; no second control group
 Propensity score matching,not run,"the comparison group is three whole cities with 15 stations, so matching would leave few comparable units; time"
 Regression discontinuity,not run,needs a numeric trigger; GRAP stages follow AQI forecasts that are not in the data (Phase 1)
-Gradient boosting with tuning,run (optional extension),8B.9 with blocked tuning; no calibration step
+Gradient boosting with tuning,run,8B.9 with blocked tuning; no calibration step
 SHAP,run,"8B.9, on a twin model because SHAP mishandles categorical splits"
 LIME,not run,SHAP and permutation importance were used; time
 Fairness check across station types,not run,no station-type field in the data
 Comparison of CPCB PM2.5 with US AirNow,done in the data pipeline,data/processed/stations_validation_airnow.csv; not repeated in this notebook
 Drift monitoring,run,10.4
-MLflow tracking and a model API,not run,no deployment in scope; the monitor of 10.4 is the only MLOps element
+MLflow tracking and a model API,partly,scripts/log_mlflow.py logs the persistence-plus-weather model to MLflow and app/streamlit_app.py serves an advisory page; there is no model API and no deployment
 Spark ETL,not used,"763,344 rows fit in memory"

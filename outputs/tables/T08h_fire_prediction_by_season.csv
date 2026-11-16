@@ -1,0 +1,4 @@
+Run,Test station-days,RMSE without fire,RMSE with fire,Gain from fire (ug/m3),CI low,CI high
+"Frozen run: all seasons, no interaction (Phase 8)",7412,43.912,43.007,0.905,0.368,1.396
+"Fire x winter interaction, all seasons",7412,39.746,38.429,1.317,-0.697,3.147
+Winter-only training and testing (Oct to Dec 2025 to Jan to Feb 2026),1341,104.523,99.092,5.431,0.836,10.099

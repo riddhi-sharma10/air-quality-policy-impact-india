@@ -1,0 +1,5 @@
+Term,Effect per +5 (%),CI low,CI high,Includes zero
+Day 1 before,6.57,2.21,11.12,False
+Day 2 before,-1.05,-5.43,3.53,True
+Day 3 before,2.96,-1.06,7.15,True
+All three days together (+5 on each),8.58,2.92,14.54,False

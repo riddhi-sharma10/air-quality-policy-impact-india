@@ -1,0 +1,8 @@
+Sub-area,Group,Stations,Test station-days,Mean PM2.5 (ug/m3),RMSE (ug/m3),RMSE as % of mean PM2.5
+Delhi,treated,33,6384,64.67,23.61,36.51
+Ghaziabad,treated,3,495,74.12,22.91,30.9
+Gurugram,treated,1,183,55.99,18.02,32.19
+Noida,treated,2,350,68.43,22.65,33.1
+Kanpur,control,3,591,38.12,12.11,31.77
+Lucknow,control,5,974,45.58,15.99,35.08
+Patna,control,7,1208,45.67,12.33,26.99

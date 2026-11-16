@@ -6,3 +6,5 @@ H2,"Pooled effect below 0 with the 95% interval excluding 0 (usable events, days
 H2,Real events in the lowest 10% of their placebo distribution,0% of 2 placebo dates are below the primary event,True,False,T06c
 H2,Same sign in at least 75% of robustness runs,16 of 17 (94%); no run has a usable fit,True,False,T06e
 H2,At least 3 usable events,0 usable of 5 events,False,True,T06a
+H1 (informative only),Fire model has a lower test error than persistence plus weather,RMSE 43.0 against 23.4 ug/m3,False,False,T08f
+H1 (informative only),Fire model has a lower test error than climatology,RMSE 43.0 against 32.4 ug/m3,False,False,T08f

@@ -1,15 +1,15 @@
 Item,Status,Detail
-Restart and run all passes top to bottom; the run time is printed,needs your check,"every cell up to this one ran without error in this session, in 4.5 min; the run on your laptop with a restarted kernel is yours to confirm"
-Every figure is saved as PNG and SVG with its ID and a caption cell,pass,41 figures (12.1)
-"Every figure is followed by an explanation: what it shows, what it does not show",pass,40 of 40 captions are followed by both parts
-No code cell longer than 25 lines; every code cell starts with a header comment,pass,274 code cells; longer than 25 lines: []; without header comment: []
+Restart and run all passes top to bottom; the run time is printed,needs your check,"every cell up to this one ran without error in this session, in 5.5 min; the run on your laptop with a restarted kernel is yours to confirm"
+Every figure is saved as PNG and SVG with its ID and a caption cell,pass,43 figures (12.1)
+"Every figure is followed by an explanation: what it shows, what it does not show",pass,42 of 42 captions are followed by both parts
+No code cell longer than 25 lines; every code cell starts with a header comment,pass,295 code cells; longer than 25 lines: []; without header comment: []
 "Treated #D55E00, control #0072B2, outages grey",pass,the colour constants of Phase 0 have the planned values; the use in each figure was checked by viewing
 The decision rules were written before the models and are unchanged,pass,the 17 frozen constants of Phase 7 equal the values in use now; changed: []
-The number of specifications tried is stated,pass,41 planned runs and 19 extension analyses (10.6)
+The number of specifications tried is stated,pass,41 planned runs and 24 extension analyses (10.6)
 The wording search finds no causal wording without a qualifier,pass,"sentences with 'caused', 'reduced by' or 'proved' and no negation or condition: 0"
-No typed numbers: every number in the text comes from a variable or a saved table,needs your check,"the results texts are generated from variables; 22 sentences of the fixed explanation texts contain a signed, percent or unit number; read during the build: thresholds (60 ug/m3, 300 ug/m3), definitions and quoted earlier values only; a second read is yours"
+No typed numbers: every number in the text comes from a variable or a saved table,needs your check,"the results texts are generated from variables; 25 sentences of the fixed explanation texts contain a signed, percent or unit number; read during the build: thresholds (60 ug/m3, 300 ug/m3), definitions and quoted earlier values only; a second read is yours"
 Time is IST in every axis; units match the dictionary,pass,no axis label or title uses UTC (cells with UTC: []); units were checked against the dictionary during the build
-"The honest limitations appear in the interpretation cells, not only at the end",pass,"mentions before Phase 10: {'one season': 29, 'reverse causation': 12, 'outage overlap': 70, 'control cities': 40}"
-"Every analysis of Phases 8B and 9B is labelled, listed in T07d2, and none changes the frozen status",pass,"19 cells log an extension, unlabelled: []; status from the frozen tables alone: {'H1': 'SUPPORTED', 'H2': 'not supported or inconclusive'}; the counterfactual carried forward is the one with the lowest hold-out error"
+"The honest limitations appear in the interpretation cells, not only at the end",pass,"mentions before Phase 10: {'one season': 30, 'reverse causation': 12, 'outage overlap': 70, 'control cities': 40}"
+"Every analysis of Phases 8B and 9B is labelled, listed in T07d2, and none changes the frozen status",pass,"24 cells log an extension, unlabelled: []; status from the frozen tables alone: {'H1': 'SUPPORTED', 'H2': 'INCONCLUSIVE'}; the counterfactual carried forward is the one with the lowest hold-out error"
 Each of the key questions Q1 to Q4 has a plain-words answer,pass,"answers in 10.3, with the number, the caveat and the source tables"
 The proposal's research questions are mapped and the methods not run are listed,pass,4 questions in T12b and 13 methods in T12c

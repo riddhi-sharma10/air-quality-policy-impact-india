@@ -20,8 +20,9 @@ The guidelines say to apply the methods **prescribed in the ADS course handout**
 | Permutation importance | not named | 8B.9 | not confirmed (an alternative to SHAP) |
 | Ridge shrinkage, segmented regression, spike-day and mean-reversion benchmarks | not named | 9.9, 9B.2, 9B.5, 9B.6 | not confirmed; all are regression-based |
 | Drift monitoring (PSI, KS) | yes ("drift monitoring") | 10.4 | not confirmed |
+| Data summary with `summarytools` (dfSummary) | not named | 5.0 | not confirmed (an external package) |
 
-**Methods named in the summary that were not run:** propensity score matching, regression discontinuity, LIME, a fairness check across station types, MLflow tracking and a model API, Spark. Reasons are in `T12c_methods_status` (notebook cell 12.3b). If the instructor requires any of them, they would still have to be added; if the handout does not list the extension methods above, the extension cells (Phases 8B and 9B, marked "ADDED AFTER SEEING RESULTS") can be removed without changing the frozen results.
+**Methods named in the summary that were not run:** propensity score matching, regression discontinuity, LIME, a fairness check across station types (a geographic equity check by sub-area was done instead, notebook 11.5), a model API and Spark. MLflow logging exists as `scripts/log_mlflow.py`, and a Streamlit app as `app/streamlit_app.py`. Reasons are in `T12c_methods_status` (notebook cell 12.3b). If the instructor requires any of them, they would still have to be added; if the handout does not list the extension methods above, the extension cells (Phases 8B and 9B, marked "ADDED AFTER SEEING RESULTS") can be removed without changing the frozen results.
 
 ## 3. Requirements of the guidelines against the project
 
