@@ -1,0 +1,43 @@
+Run,Outcome,Effect (%),Decision CI low,Decision CI high,p (date),Station-days,Stage III/IV station-days
+"PRIMARY: 18 valid hours, Stage III/IV",NO2 / PM2.5 (traffic),-17.05,-28.75,-3.42,0.0002,6459,1350
+"PRIMARY: 18 valid hours, Stage III/IV",CO / PM2.5 (traffic),-8.99,-17.4,0.29,0.0405,6419,1343
+"PRIMARY: 18 valid hours, Stage III/IV",PM10 / PM2.5 (coarse dust share),-9.81,-17.69,-1.16,0.0,6482,1395
+"PRIMARY: 18 valid hours, Stage III/IV",PM2.5 (reference),41.09,25.39,58.76,0.0,6620,1400
+"PRIMARY: 18 valid hours, Stage III/IV",NO2 (reference),16.85,1.38,34.68,0.0,6533,1377
+"PRIMARY: 18 valid hours, Stage III/IV",CO (reference),28.75,15.99,42.91,0.0,6489,1367
+12 valid hours,NO2 / PM2.5 (traffic),-17.51,-29.26,-3.81,0.0001,7133,1446
+12 valid hours,CO / PM2.5 (traffic),-8.5,-16.8,0.63,0.0473,7106,1443
+12 valid hours,PM10 / PM2.5 (coarse dust share),-9.33,-17.25,-0.66,0.0,7057,1453
+12 valid hours,PM2.5 (reference),41.05,25.43,58.62,0.0,7198,1454
+12 valid hours,NO2 (reference),16.02,0.69,33.67,0.0,7172,1458
+12 valid hours,CO (reference),29.08,16.47,43.06,0.0,7142,1455
+20 valid hours,NO2 / PM2.5 (traffic),-16.74,-28.35,-3.24,0.0003,6244,1306
+20 valid hours,CO / PM2.5 (traffic),-8.93,-17.58,0.63,0.0433,6187,1290
+20 valid hours,PM10 / PM2.5 (coarse dust share),-9.85,-17.57,-1.4,0.0,6255,1331
+20 valid hours,PM2.5 (reference),40.86,24.94,58.81,0.0,6390,1334
+20 valid hours,NO2 (reference),17.5,2.07,35.27,0.0,6360,1341
+20 valid hours,CO (reference),29.51,16.38,44.12,0.0,6302,1326
+Drop the 10 to 20 Jan 2026 outage,NO2 / PM2.5 (traffic),-17.05,-28.75,-3.42,0.0002,6459,1350
+Drop the 10 to 20 Jan 2026 outage,CO / PM2.5 (traffic),-8.99,-17.4,0.29,0.0405,6419,1343
+Drop the 10 to 20 Jan 2026 outage,PM10 / PM2.5 (coarse dust share),-9.81,-17.69,-1.16,0.0,6482,1395
+Drop the 10 to 20 Jan 2026 outage,PM2.5 (reference),41.09,25.39,58.76,0.0,6620,1400
+Drop the 10 to 20 Jan 2026 outage,NO2 (reference),16.85,1.38,34.68,0.0,6533,1377
+Drop the 10 to 20 Jan 2026 outage,CO (reference),28.75,15.99,42.91,0.0,6489,1367
+Delhi stations vs control cities,NO2 / PM2.5 (traffic),-17.04,-28.56,-3.67,0.0003,5807,1169
+Delhi stations vs control cities,CO / PM2.5 (traffic),-8.56,-17.28,1.08,0.0595,5762,1163
+Delhi stations vs control cities,PM10 / PM2.5 (coarse dust share),-10.54,-18.35,-1.99,0.0,5800,1202
+Delhi stations vs control cities,PM2.5 (reference),42.26,26.21,60.35,0.0,5932,1205
+Delhi stations vs control cities,NO2 (reference),17.5,2.28,34.99,0.0,5857,1180
+Delhi stations vs control cities,CO (reference),30.51,17.03,45.55,0.0,5808,1171
+Exposure: Stage II or higher,NO2 / PM2.5 (traffic),-23.96,-36.81,-8.49,0.0003,6459,3683
+Exposure: Stage II or higher,CO / PM2.5 (traffic),-20.53,-31.18,-8.23,0.0016,6419,3660
+Exposure: Stage II or higher,PM10 / PM2.5 (coarse dust share),-21.79,-30.04,-12.58,0.0,6482,3774
+Exposure: Stage II or higher,PM2.5 (reference),63.6,41.47,89.19,0.0,6620,3797
+Exposure: Stage II or higher,NO2 (reference),24.29,5.34,46.65,0.0,6533,3740
+Exposure: Stage II or higher,CO (reference),29.9,11.49,51.36,0.0,6489,3713
+"STRESS TEST (added after seeing results): treated stations, days with mean PM2.5 of 150 or more, no control cities",NO2 / PM2.5 (traffic),-17.03,-25.23,-7.92,0.0004,2395,1279
+"STRESS TEST (added after seeing results): treated stations, days with mean PM2.5 of 150 or more, no control cities",CO / PM2.5 (traffic),-3.54,-12.91,6.85,0.4898,2389,1277
+"STRESS TEST (added after seeing results): treated stations, days with mean PM2.5 of 150 or more, no control cities",PM10 / PM2.5 (coarse dust share),-6.48,-9.72,-3.13,0.0002,2485,1323
+"STRESS TEST (added after seeing results): treated stations, days with mean PM2.5 of 150 or more, no control cities",PM2.5 (reference),23.83,13.59,34.99,0.0,2498,1328
+"STRESS TEST (added after seeing results): treated stations, days with mean PM2.5 of 150 or more, no control cities",NO2 (reference),2.78,-6.43,12.9,0.5673,2437,1306
+"STRESS TEST (added after seeing results): treated stations, days with mean PM2.5 of 150 or more, no control cities",CO (reference),19.44,7.71,32.45,0.0008,2428,1301

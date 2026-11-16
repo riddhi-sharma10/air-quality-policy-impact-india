@@ -1,0 +1,11 @@
+Run,Unit,Effect (%),CI low,CI high,p,Station-days,Dates,Primary,Placebo,Same sign as primary
+"PRIMARY: Apr-May, treated, upwind count",per +5,-0.48,-1.37,0.42,0.2942,3838,109,True,False,True
+Reference: frozen winter sample (Oct to Feb),per +5,9.53,1.4,18.32,0.0208,4757,129,False,False,False
+Treated and control stations together,per +5,-0.48,-1.28,0.33,0.2489,5322,109,False,False,True
+Year effect added,per +5,-0.62,-1.57,0.34,0.2071,3838,109,False,False,True
+Week effects added,per +5,-1.31,-2.29,-0.32,0.0097,3838,109,False,False,True
+Apr-May 2025 only,per +5,-2.68,-4.33,-1.02,0.0017,1851,53,False,False,True
+Apr-May 2026 only,per +5,-0.07,-1.24,1.12,0.9102,1987,56,False,False,True
+"Fire radiative power (upwind), per +1 SD",per +1 SD,-1.05,-4.5,2.52,0.5585,3838,109,False,False,True
+"All-direction count within 200 km, per +1 SD",per +1 SD,-2.14,-6.65,2.58,0.3671,3838,109,False,False,True
+Placebo: next day's upwind count,per +5,0.26,-0.5,1.03,0.5038,3415,103,False,True,False

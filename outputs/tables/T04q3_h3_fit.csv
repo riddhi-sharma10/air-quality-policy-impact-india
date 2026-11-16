@@ -1,0 +1,5 @@
+Model,Adjusted R-squared
+Wind speed only,0.14605915327285257
+Boundary-layer height only,0.19688035966285333
+Ventilation index V,0.1913294598827836
+Wind and height separately,0.19899313722659207

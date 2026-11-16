@@ -1,12 +1,12 @@
 Input,RMSE increase when shuffled (ug/m3),SD over 20 shuffles,Rank
-sp_hpa,3.8698,0.3135,1
-station_code,3.3121,0.2459,2
-rh_pct,2.1746,0.1892,3
-wind_speed,0.6739,0.2093,4
-wind_dir_cos,0.2685,0.0425,5
-wind_dir_sin,0.2254,0.0805,6
-weekday,-0.3465,0.0532,7
-n_up_nh_100km_45deg_lag1,-0.4779,0.0755,8
-blh_m,-0.9338,0.2998,9
-tp_mm,-2.5302,0.2696,10
-t2m_c,-5.6672,0.1169,11
+sp_hpa,4.3184,0.3177,1
+station_code,3.3373,0.2418,2
+rh_pct,2.9976,0.1848,3
+wind_speed,0.7631,0.2357,4
+wind_dir_sin,0.2619,0.0978,5
+wind_dir_cos,0.1057,0.0411,6
+weekday,-0.2683,0.0708,7
+n_up_nh_100km_45deg_lag1,-0.5646,0.0643,8
+blh_m,-0.7275,0.2767,9
+tp_mm,-2.5308,0.2686,10
+t2m_c,-5.8457,0.1261,11

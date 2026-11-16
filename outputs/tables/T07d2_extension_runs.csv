@@ -15,6 +15,8 @@ Cell,Added after seeing results,Description
 8B.8c,True,persistence-plus-weather advisory model without station effects (coefficients saved for the app)
 8B.9,True,"boosted model (HistGradientBoostingRegressor), settings tuned by blocked cross-validation inside the training period"
 8B.9,True,"permutation importance of each single input of the boosted model (boundary-layer height, wind speed and the others)"
+8C.1,True,H3: ventilation index (boundary-layer height and wind speed) and PM2.5: primary run and six sensitivity runs
+8C.4,True,H3: out-of-sample check of the ventilation index on the frozen time split (four models)
 9B.1,True,"diagnosis of the frozen counterfactual: days per parameter, condition number, hold-out error by day"
 9B.2,True,four alternative counterfactuals compared on hold-out accuracy for events and placebo dates (method chosen on accuracy only)
 9B.3,True,"difference-in-differences event study with the control cities, placebo-date bands and a pre-trend check"
