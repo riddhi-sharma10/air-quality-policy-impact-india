@@ -23,16 +23,16 @@ Project: *Do burning and emission restrictions reduce air pollution in Northern 
 
 ## 2a. Analyses added after the frozen results (exploratory)
 
-The proposal has four hypotheses: H1 and H2 of the notebook are the proposal's fire and GRAP questions (RQ2 and RQ1 in 12.3). After the frozen results, four further analyses were run. All were chosen after seeing results, none changes the frozen H1 or H2 status, and Phase 10C of the notebook puts all of them in one table (`T14e`).
+H1 and H2 are the frozen hypotheses (the proposal's fire and GRAP questions, RQ2 and RQ1 in 12.3). After the frozen results, two further hypotheses were added to the notebook and two analyses were kept out of it. All were chosen after seeing results, none changes the frozen H1 or H2 status, and Phase 10C of the notebook puts H1 to H4 in one table (`T14e`).
 
-| Analysis | Where | Result by its own rule | Note |
-| --- | --- | --- | --- |
-| **H3** ventilation index (boundary-layer height and wind speed) and PM2.5; answers the proposal's H3 directly | notebook, Phase 8C (`T04q`, `T08j`, F34) | SUPPORTED: -19.1% PM2.5 per +1 SD of ventilation [-22.8, -15.3] | falls to -1.9% when temperature is added, so weather terms cannot be separated |
-| **E1** regional PM2.5 level and persistent differences between stations | notebook, Phase 10B (`T14a` to `T14d`, F35 to F38) | SUPPORTED for this winter: median 83% of day-to-day variance shared with other stations; early-late correlation of station excesses 0.80 [0.65, 0.88] | 42% of the spread between stations lies between network owners (possible calibration differences); the rule was written after a first look at the data; to be confirmed on the next winter |
-| **X1** fires in April and May | `docs/exploratory_analyses_not_in_notebook.md` | inconclusive (an informative null) | kept out of the notebook |
-| **X2** traffic and dust tracers on Stage III and IV days | `docs/exploratory_analyses_not_in_notebook.md` | inconclusive | kept out of the notebook |
+| Name | Kind | Where | Result by its own rule | Note |
+| --- | --- | --- | --- | --- |
+| **H3** ventilation index (boundary-layer height and wind speed) and PM2.5; answers the proposal's H3 directly | extension, post-hoc | notebook, Phase 8C (`T04q`, `T08j`, F34) | SUPPORTED: -19.1% PM2.5 per +1 SD of ventilation [-22.8, -15.3] | falls to -1.9% when temperature is added, so weather terms cannot be separated |
+| **H4** (formerly E1): regional PM2.5 level and persistent differences between stations | exploratory hypothesis, post-hoc | notebook, Phase 10B (`T14a` to `T14e`, F35 to F38) | SUPPORTED (post-hoc rule): H4a median 83% of day-to-day variance shared with other stations; H4b early-late correlation of station excesses 0.80 [0.65, 0.88] | the rule was written after a first look at the data; 42% of the spread between stations lies between network owners, so differences may be instrument calibration rather than local pollution; says nothing about traffic, industrial or residential stations; to be confirmed on the next winter |
+| **X1** fires in April and May | exploratory, outside the notebook | `docs/exploratory_analyses_not_in_notebook.md` | inconclusive (an informative null) | kept out of the notebook |
+| **X2** traffic and dust tracers on Stage III and IV days | exploratory, outside the notebook | `docs/exploratory_analyses_not_in_notebook.md` | inconclusive | kept out of the notebook |
 
-**H4 of the proposal** (do effects differ between traffic, industrial and residential stations?) **cannot be tested**: the stations table has no station-type field. The notebook reports the nearest results (sub-areas in 8B.2, station differences in 10B) and says so in 12.3. **Please confirm** that reporting H3 and E1 as extensions, and X1 and X2 in a separate document, is acceptable.
+**Change to the proposal's hypotheses (approval asked).** The proposal's H4 (do effects differ between traffic, industrial and residential stations?) was dropped because the stations table has no station-type field. It is replaced by H4 (formerly E1): regional level and persistent station differences, exploratory, post-hoc, rule written after a first look at the data. Please confirm.
 
 ## 3. What does not change
 
