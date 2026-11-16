@@ -1,0 +1,4 @@
+Criterion (frozen in Phase 7),Observed,Met
+Primary effect above 0 with the decision interval excluding 0,"+9.5% [+1.4, +18.3]",True
+Same sign in at least 75% of robustness runs,20 of 20 (100%),True
+Fire model has a lower test error than the weather-only model,"RMSE gain +0.91 ug/m3 [+0.37, +1.40]; both models are less accurate than Persistence (yesterday)",True

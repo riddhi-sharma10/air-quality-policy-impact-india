@@ -1,0 +1,7 @@
+Group,Columns,Empty cells (%),Examples
+Identifiers,9,0.0,"station_id, name, city, sub_area, ..."
+Pollution,21,11.9,"pm25, pm10, no, no2, ..."
+Weather,10,0.0,"era5_time_utc, u10, v10, wind_speed, ..."
+Fire,16,2.4,"n_nh_50km_lag1, n_nh_50km_lag2, frp_nh_50km_lag1, frp_nh_50km_lag2, ..."
+Policy,7,0.1,"grap_stage, grap_stage_applied, schedule_version, grap_uncertain, ..."
+Calendar,7,0.0,"hour, weekday, month, season, ..."

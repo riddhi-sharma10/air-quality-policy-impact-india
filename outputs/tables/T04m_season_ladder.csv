@@ -1,0 +1,7 @@
+,Effect per +5 (%),CI low,CI high
+Station and weekday effects (primary),9.53,1.4,18.32
+plus month effects,5.47,-0.92,12.26
+plus week effects,9.08,3.71,14.73
+plus date effects (stations compared within each date),1.7,-1.22,4.72
+Month mean of the fire count (seasonal part),44.99,26.18,66.61
+Deviation from the month mean (day-to-day part),3.42,-2.81,10.05

@@ -1,0 +1,6 @@
+Source,Columns used,Non-empty cells (%),Resolution,Join key,Unit,Retrieved
+OpenAQ archive (CPCB monitors),8,81.7,hourly mean of 15-minute readings,station_id + hour_ist,ug/m3 (NOx in ppm),23 Oct 2026
+ERA5 reanalysis (Copernicus),9,100.0,"hourly, nearest 0.25 degree cell",station_id + hour (UTC stamp),"m/s, degrees, C, hPa, m, mm",23 Oct 2026
+NASA FIRMS (VIIRS fire detections),16,97.6,daily counts of the previous 1 to 2 IST days,station_id + IST date,count; MW,23 Oct 2026
+CAQM GRAP orders (and PIB releases),2,100.0,hourly stage in force,hour_ist,stage 0 to 4,23 Oct 2026
+Delhi government holiday notifications,3,100.0,daily,IST date,"name, true/false",03 Nov 2026

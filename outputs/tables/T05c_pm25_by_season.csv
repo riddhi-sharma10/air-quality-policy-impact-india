@@ -1,0 +1,9 @@
+season,group,Station-days,Mean,Median,95th pct,Above 60 (%)
+winter,treated,3030,154.4,136.1,307.2,94.7
+winter,control,1165,67.7,65.2,113.0,57.6
+summer,treated,6101,70.4,65.0,126.5,57.9
+summer,control,2379,53.8,48.5,98.6,33.5
+monsoon,treated,8132,38.7,35.0,74.1,11.9
+monsoon,control,2995,31.8,27.2,67.5,6.7
+post_monsoon,treated,2116,161.9,153.4,320.8,85.8
+post_monsoon,control,807,63.7,62.7,120.1,54.0

@@ -1,0 +1,6 @@
+,Median hold-out error (events + placebo dates),Share of dates passing the 25% rule,Events passing,Dates with a fit
+Frozen,0.484,0.059,0,17
+(a) Parsimonious weather,0.301,0.176,0,17
+(b) Frozen with ridge,0.313,0.118,1,17
+(c) Control cities,0.302,0.235,1,17
+(d) Control cities + weather,0.294,0.235,0,17

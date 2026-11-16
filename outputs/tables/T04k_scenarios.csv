@@ -1,0 +1,5 @@
+Scenario,Mean PM2.5 (ug/m3),Change (ug/m3),Change CI low,Change CI high,Days above 60 (%),Change (points),Share CI low,Share CI high
+(a) Observed fires,162.54,0.0,0.0,0.0,92.5,0.0,0.0,0.0
+(b) Fires capped at the winter median (2),153.19,-9.35,-19.56,-0.19,91.89,-0.61,-1.62,-0.02
+(c) Fires halved,155.69,-6.85,-14.6,-0.12,92.03,-0.46,-1.11,0.0
+(d) Fires set to zero,149.47,-13.07,-26.75,-0.25,91.38,-1.11,-2.83,-0.02

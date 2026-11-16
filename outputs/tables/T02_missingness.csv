@@ -1,0 +1,19 @@
+Column,Missing (count),Missing (%)
+local_wind_speed,417957,54.8
+nox,358508,47.0
+local_temp_c,193555,25.4
+local_rh,185085,24.2
+so2,177639,23.3
+pm10,106271,13.9
+pm25,98753,12.9
+no,96826,12.7
+o3,93282,12.2
+no2,93186,12.2
+co,93363,12.2
+n_nh_100km_lag2,24624,3.2
+n_up_nh_100km_45deg_lag1,20736,2.7
+n_nh_100km_lag1,18144,2.4
+hours_since_stage_change,7506,1.0
+blh_m,270,0.0
+u10,270,0.0
+wind_speed,270,0.0

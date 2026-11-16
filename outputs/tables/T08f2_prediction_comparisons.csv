@@ -1,0 +1,4 @@
+Comparison,RMSE gain (ug/m3),CI low,CI high,Improves
+Persistence + weather against persistence alone,1.947,-0.507,4.168,False
+Fire added to persistence + weather,-0.091,-0.161,-0.005,False
+Fire added to weather only (frozen comparison),0.905,0.368,1.396,True

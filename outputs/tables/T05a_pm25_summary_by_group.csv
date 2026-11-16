@@ -1,0 +1,4 @@
+group,Station-days,Mean,Median,SD,5th pct,95th pct,99th pct,Days above 60 (%)
+treated,19379,80.2,57.1,68.2,20.3,232.5,328.5,47.4
+control,7346,48.1,42.5,28.5,13.9,98.9,138.5,28.7
+all stations,26725,71.4,52.1,61.6,18.0,208.1,311.6,42.2

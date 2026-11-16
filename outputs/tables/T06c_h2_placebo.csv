@@ -1,0 +1,5 @@
+Event,Real effect days 1-3 (%),Placebo dates,Share of placebos below the real event (all),Placebo dates with usable fit,Share below (usable only),Median placebo effect (%),"Control cities, same date (%)",Control fit usable
+19 Oct 2025,272.745,2,1.0,0,,-41.505,262.401,True
+11 Nov 2025,-21.673,2,0.0,0,,183.185,-14.948,False
+16 Apr 2026,14.943,7,0.714,0,,-17.186,14.355,True
+19 May 2026,-33.104,6,0.0,1,0.0,-19.306,2.734,False

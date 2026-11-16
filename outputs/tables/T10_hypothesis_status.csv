@@ -1,0 +1,8 @@
+Hypothesis,Criterion,Observed,Met,Informative,Source
+H1,Primary effect above 0 with the decision interval excluding 0,"+9.5% [+1.4, +18.3]",True,True,"T04b, T04h"
+H1,Same sign in at least 75% of robustness runs,20 of 20 (100%),True,True,T04g
+H1,Fire model has a lower test error than the weather-only model,"RMSE gain +0.91 ug/m3 [+0.37, +1.40]; both models are less accurate than Persistence (yesterday)",True,True,T08
+H2,"Pooled effect below 0 with the 95% interval excluding 0 (usable events, days 1 to 3)",no usable event: nothing to pool,False,False,T06b
+H2,Real events in the lowest 10% of their placebo distribution,0% of 2 placebo dates are below the primary event,True,False,T06c
+H2,Same sign in at least 75% of robustness runs,16 of 17 (94%); no run has a usable fit,True,False,T06e
+H2,At least 3 usable events,0 usable of 5 events,False,True,T06a

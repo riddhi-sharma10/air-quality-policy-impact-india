@@ -1,0 +1,21 @@
+Run,Effect (%),CI low,CI high,Basis,Fit usable,Descriptive,Same sign as primary
+"PRIMARY: counterfactual, events as defined, windows days 1 to 3 and 4 to 7",-21.67,-39.82,1.31,2 days,False,False,True
+exclude uncertain and inferred stage hours,,,,0 days,False,False,False
+window of 3 days,-21.67,-39.82,1.31,2 days,False,False,True
+window of 5 days,-26.5,-45.61,-1.53,4 days,False,False,True
+window of 7 days,-21.01,-40.51,3.83,6 days,False,False,True
+window of 14 days,-33.11,-46.67,-16.03,13 days,False,False,True
+stations with at least 90% PM2.5 coverage,-19.12,-38.62,5.31,2 days,False,False,True
+without fire terms,-18.7,-35.68,-0.78,3 days,False,False,True
+leave out Delhi,-7.83,-27.92,20.24,2 days,False,False,True
+leave out Ghaziabad,-22.12,-40.08,0.31,2 days,False,False,True
+leave out Noida,-22.35,-40.58,0.65,2 days,False,False,True
+leave out Gurugram,-22.26,-39.94,0.14,2 days,False,False,True
+Stage I and II events only,-12.31,-33.1,14.94,2 event(s),False,False,True
+Stage III and IV events only,-21.67,,,1 event(s),False,False,True
+drop events within the January outage,-15.55,-33.1,14.94,3 event(s),False,False,True
+drop the largest event,-5.12,-21.67,14.94,2 event(s),False,False,True
+"secondary event set S1 (Stage I or higher, 7 clean days)",-15.55,-33.1,14.94,3 event(s),False,False,True
+"secondary event set S2 (Stage II or higher, 5 clean days)",70.87,-21.67,272.74,2 event(s),False,False,False
+all stage changes (descriptive),14.94,-21.67,91.09,median and quartiles of 5 activations,False,True,False
+control cities as placebo region,-14.95,,,"same date, control series",False,False,True

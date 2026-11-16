@@ -1,0 +1,7 @@
+Model,RMSE,MAE,R2
+Climatology (month),32.378,22.404,0.387
+Persistence (yesterday),25.344,16.854,0.625
+Weather only,43.912,28.288,-0.127
+Weather and fire,43.007,27.883,-0.081
+Persistence + weather,23.397,15.395,0.68
+Persistence + weather + fire,23.488,15.423,0.678

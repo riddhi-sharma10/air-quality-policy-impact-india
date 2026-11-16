@@ -1,0 +1,9 @@
+parameter,Hours with data,Removed: pollution table,Hour-to-hour jumps >300 (counted only),Removed: final table (B-11),Total removed,Share removed (%)
+pm25,667585,2994,819,0,2994,0.45
+pm10,659824,2751,3368,0,2751,0.42
+no,667307,645,0,91,736,0.11
+no2,670921,678,0,32,710,0.11
+nox,405071,182,0,0,182,0.04
+so2,586051,238,0,64,302,0.05
+co,671331,1295,0,3,1298,0.19
+o3,671142,838,0,190,1028,0.15

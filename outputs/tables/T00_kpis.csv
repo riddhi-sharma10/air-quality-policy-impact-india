@@ -1,0 +1,10 @@
+KPI,Treated (full window),Control (full window),Treated (winter),Control (winter),Note
+Mean daily PM2.5 (ug/m3),78.9,47.3,163.4,65.1,
+Days above 60 ug/m3 (count),258.0,149.0,122.0,87.0,
+Days above 60 ug/m3 (% of valid days),47.6,27.4,94.6,66.9,
+Valid group-days (count),542.0,544.0,129.0,130.0,
+Hours with valid PM2.5 (% of station-hours),87.0,86.1,84.7,84.5,
+Network-outage hours (count),928.0,928.0,424.0,424.0,
+Hours at GRAP Stage III or IV (count),971.0,0.0,971.0,0.0,
+"3-day response of PM2.5 after a stage change (%, primary event)",,,-21.7,,"11 Nov 2025; 95% interval -39.8% to +1.3%; 1 primary event, 0 usable of 5; NOT RELIABLE: the counterfactual fails the hold-out rule (error 90%)"
+Share of variation explained by fire beyond weather (R-squared points),,,1.79,,"95% interval 0.01 to 7.21; 3.2% of the variation left by weather and stations (extension 8B.6, 4,757 station-days)"

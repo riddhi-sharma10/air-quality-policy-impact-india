@@ -1,0 +1,5 @@
+Criterion (frozen),Observed,Met,Informative
+"Pooled effect below 0 with the 95% interval excluding 0 (usable events, days 1 to 3)",no usable event: nothing to pool,False,False
+Real events in the lowest 10% of their placebo distribution,0% of 2 placebo dates are below the primary event,True,False
+Same sign in at least 75% of robustness runs,16 of 17 (94%); no run has a usable fit,True,False
+At least 3 usable events,0 usable of 5 events,False,True

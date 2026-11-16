@@ -1,0 +1,6 @@
+Join,Key,Matched,Unmatched,Rows after
+pollution,"station, hour",763344,0,763344
+weather,"station, ERA5 stamp",763074,270,763344
+policy,hour,763344,0,763344
+fire lags,"station, IST date",763344,0,763344
+"upwind, previous day","station, IST date",760752,2592,763344

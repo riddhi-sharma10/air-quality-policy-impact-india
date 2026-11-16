@@ -1,0 +1,13 @@
+Tolerance,Event,Placebo dates,Usable fits,Share below the real event
+15% (frozen),19 Oct 2025,2,0,1.0
+15% (frozen),11 Nov 2025,2,0,0.0
+15% (frozen),16 Apr 2026,7,0,0.714
+15% (frozen),19 May 2026,6,1,0.0
+30% (added),19 Oct 2025,12,0,0.917
+30% (added),11 Nov 2025,10,0,0.3
+30% (added),16 Apr 2026,44,13,0.568
+30% (added),19 May 2026,45,14,0.044
+50% (added),19 Oct 2025,26,1,0.923
+50% (added),11 Nov 2025,11,0,0.364
+50% (added),16 Apr 2026,136,67,0.632
+50% (added),19 May 2026,142,74,0.028

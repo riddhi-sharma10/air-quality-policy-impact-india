@@ -1,0 +1,8 @@
+sub_area,group,stations
+Delhi,treated,33
+Ghaziabad,treated,3
+Noida,treated,2
+Gurugram,treated,1
+Patna,control,7
+Lucknow,control,5
+Kanpur,control,3

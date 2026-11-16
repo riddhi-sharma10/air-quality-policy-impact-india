@@ -1,0 +1,18 @@
+Kind,Date,Frozen,(a) Parsimonious weather,(b) Frozen with ridge,(c) Control cities,(d) Control cities + weather
+event,19 Oct 2025,0.288,0.293,0.266,0.354,0.294
+event,11 Nov 2025,0.897,0.401,0.464,0.681,0.411
+event,16 Apr 2026,0.484,0.26,0.331,0.399,0.541
+event,19 May 2026,9278655.73,2.004,0.182,0.189,1.925
+placebo,placebo 23 Apr 2026,1.089,0.435,0.313,0.307,0.43
+placebo,placebo 26 Apr 2026,0.495,0.341,0.324,0.268,0.566
+placebo,placebo 26 Oct 2025,0.377,0.292,0.347,0.353,0.292
+placebo,placebo 27 Oct 2025,0.412,0.291,0.349,0.353,0.291
+placebo,placebo 02 Apr 2026,0.643,0.202,0.199,0.186,0.159
+placebo,placebo 03 Apr 2026,0.701,0.206,0.329,0.187,0.257
+placebo,placebo 05 Apr 2026,0.889,0.29,0.75,0.267,0.181
+placebo,placebo 06 Apr 2026,0.769,0.327,0.266,0.296,0.225
+placebo,placebo 07 Apr 2026,0.342,0.301,0.252,0.226,0.226
+placebo,placebo 08 Apr 2026,0.381,0.316,0.288,0.285,0.308
+placebo,placebo 09 Apr 2026,0.476,0.427,0.313,0.338,0.427
+placebo,placebo 06 Oct 2025,0.228,0.248,0.251,0.325,0.255
+placebo,placebo 22 Sep 2026,0.323,0.318,0.329,0.302,0.312

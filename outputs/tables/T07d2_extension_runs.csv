@@ -1,0 +1,20 @@
+Cell,Added after seeing results,Description
+8B.1,True,"dose-response: effect of the upwind fire count by bin (0, 1-2, 3-5, 6-10, >10) and a quadratic term"
+8B.2,True,heterogeneity: fire effect in 10 subgroups (5 dimensions) with interaction tests
+8B.3,True,"season ladder: fire effect with month, week and date effects"
+8B.3,True,within-between split of the fire count (month mean and deviation)
+8B.4,True,timing: separate effects of yesterday's and the day before yesterday's all-direction 100 km count
+8B.5,True,"association-based scenarios for the fire count (observed, capped at the median, halved, zero)"
+8B.6,True,"variance decomposition: R-squared of station and weekday effects, plus weather, plus fire, with block-bootstrap interval for the fire increment"
+8B.7,True,leave-one-month-out check of the fire gain with and without yesterday's PM2.5
+8B.8,True,"persistence plus weather, and persistence plus weather plus fire, under the frozen train and test periods"
+8B.9,True,"boosted model (HistGradientBoostingRegressor), settings tuned by blocked cross-validation inside the training period"
+8B.9,True,"permutation importance of each single input of the boosted model (boundary-layer height, wind speed and the others)"
+9B.1,True,"diagnosis of the frozen counterfactual: days per parameter, condition number, hold-out error by day"
+9B.2,True,four alternative counterfactuals compared on hold-out accuracy for events and placebo dates (method chosen on accuracy only)
+9B.3,True,"difference-in-differences event study with the control cities, placebo-date bands and a pre-trend check"
+9B.4,True,pooled event-time profile of actual minus predicted for all upward activations with a usable counterfactual (clustered by episode)
+9B.5,True,"spike-day benchmark: raw change after comparable days without a stage change (strict set and broad set), no counterfactual model"
+9B.6,True,"mean-reversion regression of the 3-day change on deviation and trend (treated and control; winter and all days), excess fall of each real event"
+9B.7,True,chosen weather-only counterfactual run on the control cities at all rising dates without a stage change (null distribution of the method's effects)
+9B.8,True,power curves from empirical noise (spike-day raw changes and control-city placebo effects) for 1 to 40 events

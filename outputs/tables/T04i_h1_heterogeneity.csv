@@ -1,0 +1,11 @@
+Dimension,Subgroup,Station-days,Effect per +5 (%),CI low,CI high,B minus A (points),Diff CI low,Diff CI high,Difference detected
+Season part,Oct to Nov,2079,2.67,-8.0,14.57,-3.98,-16.49,8.54,False
+Season part,Dec to Feb,2678,6.94,-0.31,14.72,-3.98,-16.49,8.54,False
+Sub-area,Delhi,4073,9.69,1.46,18.58,-1.29,-3.56,0.99,False
+Sub-area,"Ghaziabad, Noida, Gurugram",684,8.58,0.52,17.28,-1.29,-3.56,0.99,False
+Wind speed,At or below the median (2.0 m/s),2388,4.72,-4.47,14.79,-5.91,-18.07,6.24,False
+Wind speed,Above the median,2369,10.77,-0.09,22.81,-5.91,-18.07,6.24,False
+Boundary-layer height,At or below the median (268 m),2390,5.42,-1.2,12.48,13.02,0.99,25.06,True
+Boundary-layer height,Above the median,2367,14.74,-1.22,33.27,13.02,0.99,25.06,True
+Wind from,North-west quadrant,3617,9.54,1.58,18.13,1.02,-16.77,18.81,False
+Wind from,Other directions,1140,0.36,-19.16,24.61,1.02,-16.77,18.81,False

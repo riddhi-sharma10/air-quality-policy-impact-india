@@ -1,0 +1,42 @@
+Hypothesis,Run,Robustness check
+H1,"PRIMARY: upwind count, winter sample, station fixed effects",False
+H1,interpolate gaps of up to 3 hours instead of dropping,True
+H1,drop preliminary (NRT) fire rows,True
+H1,drop days after satellite-outage fire days,True
+H1,12-hour validity rule,True
+H1,20-hour validity rule,True
+H1,full window instead of the winter sample,True
+H1,add month fixed effects,True
+H1,add GRAP stage as a control,True
+H1,leave out Delhi,True
+H1,leave out Ghaziabad,True
+H1,leave out Noida,True
+H1,leave out Gurugram,True
+H1,"leave one station out (all stations, range reported)",True
+H1,fire radiative power instead of counts,True
+H1,"all-direction count, 50 km",True
+H1,"all-direction count, 100 km",True
+H1,"all-direction count, 200 km",True
+H1,all-direction 100 km count of the previous two days,True
+H1,placebo: next day's fire (expected about zero),True
+H1,control cities only (comparison sample),True
+H2,"PRIMARY: counterfactual, events as defined, windows days 1 to 3 and 4 to 7",False
+H2,exclude uncertain and inferred stage hours,True
+H2,window of 3 days,True
+H2,window of 5 days,True
+H2,window of 7 days,True
+H2,window of 14 days,True
+H2,stations with at least 90% PM2.5 coverage,True
+H2,leave out Delhi,True
+H2,leave out Ghaziabad,True
+H2,leave out Noida,True
+H2,leave out Gurugram,True
+H2,without fire terms,True
+H2,Stage I and II events only,True
+H2,Stage III and IV events only,True
+H2,drop events within the January outage,True
+H2,drop the largest event,True
+H2,"secondary event set S1 (Stage I or higher, 7 clean days)",True
+H2,"secondary event set S2 (Stage II or higher, 5 clean days)",True
+H2,all stage changes (descriptive),True
+H2,control cities as placebo region,True

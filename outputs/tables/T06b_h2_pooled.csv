@@ -1,0 +1,7 @@
+Set,Basis,Events,Mean effect days 1-3 (%),Median (%),CI low (%),CI high (%)
+Primary set,usable events only (decision basis),0,,,,
+Primary set,"all events, regardless of fit (descriptive)",1,-21.67,-21.67,,
+S1,usable events only (decision basis),0,,,,
+S1,"all events, regardless of fit (descriptive)",3,-15.55,-21.67,-33.1,14.94
+S2,usable events only (decision basis),0,,,,
+S2,"all events, regardless of fit (descriptive)",2,70.87,70.87,-21.67,272.74

@@ -1,0 +1,10 @@
+,Reference days,Days,Max KS,Input with max KS,KS flag level,Max PSI,Max PSI with no drift (95th percentile),RMSE weather and fire (ug/m3),RMSE persistence (ug/m3),RMSE / training RMSE,Input drift flag,Error flag
+2026-01,41,31,0.555,t2m_c,0.408,3.971,3.441,109.06,50.035,2.256,True,True
+2026-02,41,28,0.649,blh_m,0.421,4.965,3.107,39.59,33.338,0.819,True,False
+2026-03,71,31,0.559,rh_pct,0.369,3.747,1.804,33.56,25.946,0.694,True,False
+2026-04,92,30,0.335,wind_dir_cos,0.361,0.611,1.822,42.81,26.126,0.885,False,False
+2026-05,91,31,0.327,wind_speed,0.357,1.823,1.667,23.38,18.58,0.484,False,False
+2026-06,92,30,0.511,rh_pct,0.361,3.306,1.78,18.58,16.699,0.384,True,False
+2026-07,92,31,0.337,sp_hpa,0.356,1.924,1.746,16.17,16.254,0.334,False,False
+2026-08,92,31,0.348,sp_hpa,0.356,3.499,1.734,13.67,9.995,0.283,False,False
+2026-09,92,30,0.398,sp_hpa,0.361,2.69,1.8,24.49,15.955,0.507,True,False

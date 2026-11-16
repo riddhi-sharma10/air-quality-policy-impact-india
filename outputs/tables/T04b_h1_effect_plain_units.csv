@@ -1,0 +1,4 @@
+Effect on PM2.5 (%),Estimate,Date CI low,Date CI high,Station CI low,Station CI high,Decision CI low,Decision CI high
+Per +5 upwind detections (primary),9.5,1.4,18.3,8.4,10.7,1.4,18.3
+Per +10 (for comparison with the earlier pass),20.0,2.8,40.0,17.5,22.5,2.8,40.0
+Per +1 SD (5.0 detections),9.5,1.4,18.3,8.4,10.7,1.4,18.3

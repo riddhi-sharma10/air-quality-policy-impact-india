@@ -1,0 +1,23 @@
+Group,Day,Mean actual minus predicted (%),Band low (%),Band high (%),Episodes
+Stage I,-7,-0.66,,,1
+Stage I,-6,7.13,,,1
+Stage I,-5,-23.6,,,1
+Stage I,-4,-24.08,,,1
+Stage I,-3,8.23,,,1
+Stage I,-2,-9.99,,,1
+Stage I,-1,-16.58,,,1
+Stage I,0,-28.46,,,1
+Stage I,1,-26.35,,,1
+Stage I,2,-7.26,,,1
+Stage I,3,-2.01,,,1
+Stage I,4,9.91,,,1
+Stage I,5,10.08,,,1
+Stage I,6,30.96,,,1
+Stage I,7,4.52,,,1
+Stage I,8,-56.04,,,1
+Stage I,9,-57.08,,,1
+Stage I,10,-52.25,,,1
+Stage I,11,-38.73,,,1
+Stage I,12,-29.71,,,1
+Stage I,13,,,,0
+Stage I,14,-16.74,,,1

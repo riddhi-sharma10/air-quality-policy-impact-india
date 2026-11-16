@@ -1,0 +1,9 @@
+Noise source,Events,Power at a 10% fall,Power at a 20% fall,Power at a 30% fall,Power at a 40% fall,Minimum detectable fall (80% power)
+Raw changes after rising days,1,0.089,0.217,0.366,0.65,0.48
+Raw changes after rising days,2,0.113,0.282,0.564,0.845,0.39
+Raw changes after rising days,4,0.181,0.492,0.845,0.986,0.29
+Raw changes after rising days,8,0.289,0.77,0.986,1.0,0.21
+Control-city placebo effects,1,0.064,0.122,0.246,0.566,0.52
+Control-city placebo effects,2,0.064,0.081,0.13,0.334,0.56
+Control-city placebo effects,4,0.07,0.11,0.221,0.547,0.48
+Control-city placebo effects,8,0.085,0.166,0.42,0.829,0.4

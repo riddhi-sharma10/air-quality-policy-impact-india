@@ -1,0 +1,7 @@
+Action,Start,End,Stakeholder,Indicator
+1. Record GRAP order times,2026-11-01,2027-03-31,CAQM,% of changes with a documented hour: target 100%
+4. Keep stations reporting through outages,2026-11-01,2027-03-31,CAQM with state boards,valid station-hours Oct to Feb: target at least 90%
+5. Persistence-based advisory pilot and monitoring,2026-11-01,2027-09-30,City health departments,monthly RMSE below 1.5 x training RMSE
+3. Monitors and smoke estimates in burning districts,2027-01-01,2027-09-30,State pollution control boards,stations in burning districts
+2. Design of a testable H2 study,2027-01-01,2027-09-30,CAQM with state boards and an academic partner,design agreed; events per winter
+2. Collection over several winters,2027-10-01,2029-03-31,CAQM with state boards and an academic partner,"usable events: at least 3, then 17"

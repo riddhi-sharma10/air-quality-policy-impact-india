@@ -1,0 +1,5 @@
+Term,Effect per +5 (%),CI low,CI high
+Yesterday's count (lag 1),5.7,1.38,10.19
+Count of the day before yesterday (lag 2 minus lag 1),0.28,-3.6,4.31
+Both days together (+5 on each day),5.99,1.34,10.84
+Reference: yesterday's count alone (one-term model),5.51,1.51,9.67

@@ -1,0 +1,11 @@
+Block,Hypothesis,Runs or estimates,Counted by the frozen rule,Agree with the hypothesis,Agree clearly
+Planned runs (T07d),H1,21,20,20,16
+Planned runs (T07d),H2,20,17,16,3
+Extension: Dose-response bins,H1,4,0,4,1
+Extension: Subgroups,H1,10,0,10,3
+Extension: Season ladder,H1,4,0,4,2
+Extension: Within and between,H1,2,0,2,1
+Extension: Timing terms,H1,2,0,2,1
+Extension: Alternative counterfactuals,H2,20,0,8,1
+Extension: Difference-in-differences events,H2,5,0,2,0
+Extension: Mean-reversion excess (treated),H2,10,0,2,0

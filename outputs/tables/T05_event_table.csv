@@ -1,0 +1,31 @@
+Change,hour_ist,stage_before,stage_after,direction,days_since_previous,days_to_next,outage_hours_within_7_days,qualifies,order_action,time_source,stage_hour_uncertain,another_change_within_7d,reason,pm25_7d_before,pm25_trend_pct_per_day,primary_event
+1,2025-02-24 19:00:00,2,1,down,5.8,19.2,0,False,revoke,pib_posted,True,True,"revocation, not an activation",67.5,-2.9,False
+2,2025-03-15 23:00:00,1,0,down,19.2,8.9,0,False,revoke,pib_posted,True,False,"revocation, not an activation",95.1,0.5,False
+3,2025-03-24 20:00:00,0,1,up,8.9,5.0,0,False,invoke,pib_posted,True,True,below Stage 2,69.2,5.8,False
+4,2025-03-29 19:00:00,1,0,down,5.0,4.0,2,False,revoke,pib_posted,True,True,"revocation, not an activation",90.9,-0.9,False
+5,2025-04-02 19:00:00,0,1,up,4.0,29.0,16,False,invoke,pib_posted,True,True,below Stage 2,72.3,-7.2,False
+6,2025-05-01 19:00:00,1,0,down,29.0,15.1,2,False,revoke,pib_posted,True,False,"revocation, not an activation",85.9,-7.5,False
+7,2025-05-16 21:00:00,0,1,up,15.1,1.9,2,False,invoke,pib_posted,True,True,below Stage 2,80.8,9.5,False
+8,2025-05-18 19:00:00,1,0,down,1.9,2.7,4,False,revoke,pib_posted,True,True,"revocation, not an activation",78.5,7.7,False
+9,2025-05-21 12:00:00,0,1,up,2.7,2.0,35,False,invoke,assumed,True,True,below Stage 2,87.5,-8.2,False
+10,2025-05-23 12:00:00,1,0,down,2.0,15.0,36,False,revoke,assumed,True,True,"revocation, not an activation",62.4,-8.4,False
+11,2025-06-07 12:00:00,0,1,up,15.0,8.3,14,False,invoke,assumed,True,False,below Stage 2,56.5,-7.0,False
+12,2025-06-15 20:00:00,1,0,down,8.3,120.7,7,False,revoke,pib_posted,True,False,"revocation, not an activation",66.1,-2.0,False
+13,2025-10-14 12:00:00,0,1,up,120.7,5.0,11,False,invoke,assumed,True,True,below Stage 2,55.7,20.3,False
+14,2025-10-19 12:00:00,1,2,up,5.0,23.2,12,False,invoke,assumed,True,True,another change within 7 days,98.3,11.9,False
+15,2025-11-11 18:00:00,2,3,up,23.2,14.8,15,True,invoke,pib_posted,True,False,qualifies,195.8,18.2,True
+16,2025-11-26 12:00:00,3,2,down,14.8,16.9,3,False,revoke,assumed,True,False,"revocation, not an activation",238.5,-3.8,False
+17,2025-12-13 10:00:00,2,3,up,16.9,0.4,3,False,invoke,meeting,False,True,another change within 7 days,156.4,-1.8,False
+18,2025-12-13 19:00:00,3,4,up,0.4,10.7,3,False,invoke,meeting,False,True,another change within 7 days,166.4,5.2,False
+19,2025-12-24 12:00:00,4,3,down,10.7,9.0,9,False,revoke,assumed,True,False,"revocation, not an activation",234.8,2.3,False
+20,2026-01-02 12:00:00,3,2,down,9.0,14.4,7,False,revoke,assumed,True,False,"revocation, not an activation",249.8,-3.0,False
+21,2026-01-16 21:00:00,2,3,up,14.4,1.0,242,False,invoke,pib_posted,True,True,another change within 7 days,204.4,,False
+22,2026-01-17 21:00:00,3,4,up,1.0,2.6,238,False,invoke,meeting,False,True,another change within 7 days,,,False
+23,2026-01-20 12:00:00,4,3,down,2.6,2.0,175,False,revoke,assumed,True,True,"revocation, not an activation",,,False
+24,2026-01-22 12:00:00,3,2,down,2.0,27.3,127,False,revoke,assumed,True,True,"revocation, not an activation",175.1,,False
+25,2026-02-18 19:00:00,2,1,down,27.3,26.0,54,False,revoke,pib_posted,True,False,"revocation, not an activation",105.3,-3.4,False
+26,2026-03-16 20:00:00,1,0,down,26.0,30.7,18,False,revoke,pib_posted,True,False,"revocation, not an activation",82.4,-9.9,False
+27,2026-04-16 12:00:00,0,1,up,30.7,18.4,25,False,invoke,assumed,True,False,below Stage 2,62.1,9.8,False
+28,2026-05-04 21:00:00,1,0,down,18.4,15.0,35,False,revoke,pib_posted,True,False,"revocation, not an activation",56.9,-8.1,False
+29,2026-05-19 20:00:00,0,1,up,15.0,10.0,6,False,invoke,pib_posted,True,False,below Stage 2,60.4,-0.3,False
+30,2026-05-29 20:00:00,1,0,down,10.0,124.1,10,False,revoke,pib_posted,True,False,"revocation, not an activation",70.6,5.8,False
